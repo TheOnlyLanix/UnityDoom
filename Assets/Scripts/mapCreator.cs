@@ -31,7 +31,7 @@ public class mapCreator : MonoBehaviour
         }
 
         mapSelected += 1;
-        mapSelected = 13;
+        //mapSelected = 13;
         openedMap = reader.newWad.maps[mapSelected-1];
         fillInfo(openedMap); //fill in any missing map information
         drawMap();
