@@ -21,6 +21,7 @@ public class mapCreator : MonoBehaviour
     public int mapSelected = 0;
     public Button Map_Next;
     public Button Map_Prev;
+    private bool hasOpenedAllDoors = false; // TODO: temporary
 
     public void buttonMapNextClicked()
     {
@@ -60,6 +61,16 @@ public class mapCreator : MonoBehaviour
     }
 
 
+    public void buttonMapOpenDoorsClicked()
+    {
+        if (hasOpenedAllDoors) { return; }
+        foreach(GameObject go in openedMap.doors)
+        {
+            go.transform.Translate(new Vector3(0, 64f, 0));
+        }
+        hasOpenedAllDoors = true;
+    }
+
     void drawMap()
     {
         for (int i = 0; i < openedMap.sectors.Count(); i++)    //start with a loop for each sector
@@ -69,7 +80,7 @@ public class mapCreator : MonoBehaviour
         }
 
         player.transform.position = new Vector3(openedMap.things[0].xPos, 60, openedMap.things[0].yPos);
-
+        hasOpenedAllDoors = false;
     }
     
     private GameObject CreateDoomObject(string name, Mesh mesh, Material[] materials, int lightLevel)
@@ -142,7 +153,8 @@ public class mapCreator : MonoBehaviour
         Triangulator.CombineSubmeshes(ref mesh, sectorMeshes, ref sectorMaterials);
 
         //create the game object
-        CreateDoomObject("Sector_" + sectorIndex + "_Door", mesh, sectorMaterials, sector.lightLevel);
+        GameObject go = CreateDoomObject("Sector_" + sectorIndex + "_Door", mesh, sectorMaterials, sector.lightLevel);
+        openedMap.doors.Add(go); // TODO: temporary
     }
 
     void drawVert(Vector3 pos)
