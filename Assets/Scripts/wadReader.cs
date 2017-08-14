@@ -12,19 +12,11 @@ public class wadReader : MonoBehaviour
 
     public WAD newWad;
 
-    public int spriteSelected = 0;
     public string label;
 
     PLAYPAL playPal;
 
     public Shader DoomShader;
-
-    //UI Elements
-    //Sprite
-    public RectTransform SpritePanel;
-    public GameObject SpritePreview;
-    public Button Sprite_Next;
-    public Button Sprite_Prev;
 
     enum type { Sprite, Flat, Patch };
 
@@ -51,26 +43,8 @@ public class wadReader : MonoBehaviour
         ReadWADFlats();
         ReadWADSprites();
         ReadMAPEntries();
-
-        SpritePreview.GetComponent<Image>().sprite = newWad.sprites[spriteSelected];
     }
 
-    public void buttonNextSpriteClicked()
-    {
-        spriteSelected += 1;
-        SpritePreview.GetComponent<Image>().sprite = newWad.sprites[spriteSelected];
-
-    }
-
-    public void buttonPrevSpriteClicked()
-    {
-        if (spriteSelected > 0)
-        {
-            spriteSelected -= 1;
-            SpritePreview.GetComponent<Image>().sprite = newWad.sprites[spriteSelected];
-
-        }
-    }
 
     void ReadWADHeader()
     {
