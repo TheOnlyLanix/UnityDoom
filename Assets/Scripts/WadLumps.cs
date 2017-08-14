@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
-
-
+using System;
 
 public class WadLumps : MonoBehaviour
 {
@@ -204,6 +203,24 @@ public class SECTORS
     public List<List<LINEDEFS>> borders = new List<List<LINEDEFS>>(); //loops of lines for the sector
     public List<List<LINEDEFS>> holes = new List<List<LINEDEFS>>(); //loops of lines for the sector
     public List<LINEDEFS> otherLines = new List<LINEDEFS>(); //lines internal to the sector (not borders)
+
+    // filled info
+    public List<SECTORS> neighbors = new List<SECTORS>(); //neighboring sectors
+    public bool isDoor() { return floorHeight == ceilingHeight; }
+
+    public int MinNeighborCeilingHeight()
+    {
+        if (neighbors.Count == 0)
+            return ceilingHeight;
+
+        int minHeight = neighbors[0].ceilingHeight;
+        foreach(SECTORS neighbor in neighbors)
+        {
+            minHeight = (int)Math.Min(minHeight, neighbor.ceilingHeight);
+        }
+
+        return minHeight;
+    }
 }
 
 /////--------------------/////End Map Lump Definitions/////--------------------/////

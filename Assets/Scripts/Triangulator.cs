@@ -126,7 +126,7 @@ namespace DoomTriangulator
             return newSubMesh;
         }
 
-        public static List<SubMesh> CreateWalls(SECTORS sector, WAD wad)
+        public static List<SubMesh> CreateWalls(SECTORS sector, WAD wad, bool generatingDoor)
         {
             List<SubMesh> sMeshs = new List<SubMesh>();
 
@@ -144,18 +144,32 @@ namespace DoomTriangulator
                 if (fSector != null && bSector != null && bSector != sector)
                     continue;
 
-                // create the middle wall(s)
+                if (sector.isDoor())
+                {
+                    // special door logic
+                    if (generatingDoor)
+                    {
+                        // door objects only contain upper walls that border a front and back sector
+                        if (fSector != null && bSector != null)
+                            sMeshs.AddRange(CreateUpperWalls(sector, line, wad));
+                    }
+                    else
+                    {
+                        // sector objects contain all mid and lower walls
+                        sMeshs.AddRange(CreateMidWalls(line, wad));
+                        sMeshs.AddRange(CreateLowerWalls(line, wad));
+                        // sector objects also contain upper walls of lines who only have one sector
+                        if (fSector == null || bSector == null)
+                            sMeshs.AddRange(CreateUpperWalls(sector, line, wad));
+                    }
+                }
+                else
+                {
+                    // regular sector, create all walls
                     sMeshs.AddRange(CreateMidWalls(line, wad));
-
-                // for lower and upper walls we need the line to have both sectors
-                if (fSector == null || bSector == null)
-                    continue;
-
-                // create the lower wall(s)
                     sMeshs.AddRange(CreateLowerWalls(line, wad));
-
-                // create the upper wall(s)
                     sMeshs.AddRange(CreateUpperWalls(sector, line, wad));
+                }
             }
 
             return sMeshs;
@@ -251,6 +265,8 @@ namespace DoomTriangulator
             {
                 startHeight = line.getFrontSector().floorHeight;
                 endHeight = line.getFrontSector().ceilingHeight;
+                if (line.getFrontSector().isDoor())
+                    endHeight = line.getFrontSector().MinNeighborCeilingHeight();
             }
             else if (line.getFrontSector() == null && line.getBackSector() != null)
             {
@@ -289,6 +305,7 @@ namespace DoomTriangulator
 
         public static List<SubMesh> CreateLowerWalls(LINEDEFS line, WAD wad)            // lowtex
         {
+            List<SubMesh> walls = new List<SubMesh>();
             float startHeight = 0;
             float endHeight = 0;
 
@@ -300,11 +317,10 @@ namespace DoomTriangulator
             }
             else
             {
-                Debug.Log("???");
+                return walls;
             }
 
             // generate a wall for each textured side
-            List<SubMesh> walls = new List<SubMesh>();
             if (line.side1 != null && wad.textures.ContainsKey(line.side1.lowTex))
                 walls.Add(CreateWall(line, line.getFrontSector(), wad.textures[line.side1.lowTex], startHeight, endHeight, false, WallType.Lower));
 
@@ -316,6 +332,7 @@ namespace DoomTriangulator
 
         public static List<SubMesh> CreateUpperWalls(SECTORS sector, LINEDEFS line, WAD wad)            // uppertex
         {
+            List<SubMesh> walls = new List<SubMesh>();
             float startHeight = 0;
             float endHeight = 0;
 
@@ -327,11 +344,10 @@ namespace DoomTriangulator
             }
             else
             {
-                Debug.Log("???");
+                return walls;
             }
 
             // generate a wall for each textured side
-            List<SubMesh> walls = new List<SubMesh>();
             if (line.side1 != null && wad.textures.ContainsKey(line.side1.upTex))
                 walls.Add(CreateWall(line, line.getFrontSector(), wad.textures[line.side1.upTex], startHeight, endHeight, false, WallType.Upper));
 
