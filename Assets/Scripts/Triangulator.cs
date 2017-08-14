@@ -144,7 +144,7 @@ namespace DoomTriangulator
                 if (fSector != null && bSector != null && bSector != sector)
                     continue;
 
-                if (sector.isDoor())
+                if (sector.isDoor)
                 {
                     // special door logic
                     if (generatingDoor)
@@ -265,7 +265,7 @@ namespace DoomTriangulator
             {
                 startHeight = line.getFrontSector().floorHeight;
                 endHeight = line.getFrontSector().ceilingHeight;
-                if (line.getFrontSector().isDoor())
+                if (line.getFrontSector().isDoor)
                     endHeight = line.getFrontSector().MinNeighborCeilingHeight();
             }
             else if (line.getFrontSector() == null && line.getBackSector() != null)

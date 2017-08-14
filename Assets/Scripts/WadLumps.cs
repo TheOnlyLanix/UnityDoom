@@ -58,6 +58,7 @@ public class DoomMap
     public List<SIDEDEFS> sidedefs = new List<SIDEDEFS>();
     public List<Vector3> vertexes = new List<Vector3>();
     public List<SECTORS> sectors = new List<SECTORS>();
+    public Dictionary<int, List<SECTORS>> sectorsByTag = new Dictionary<int, List<SECTORS>>();
 
 }
 
@@ -206,7 +207,7 @@ public class SECTORS
 
     // filled info
     public List<SECTORS> neighbors = new List<SECTORS>(); //neighboring sectors
-    public bool isDoor() { return floorHeight == ceilingHeight; }
+    public bool isDoor = false;
 
     public int MinNeighborCeilingHeight()
     {
