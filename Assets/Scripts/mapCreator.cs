@@ -12,7 +12,7 @@ public class mapCreator : MonoBehaviour
     public DoomMap openedMap;
 
     public Transform mapParent;
-
+    public GameObject player;
     public wadReader reader;
 
     public int secNum = 0;
@@ -36,9 +36,6 @@ public class mapCreator : MonoBehaviour
         openedMap = reader.newWad.maps[mapSelected-1];
         fillInfo(openedMap); //fill in any missing map information
         drawMap();
-
-
-
     }
 
     public void buttonMapPrevCLicked()
@@ -70,6 +67,9 @@ public class mapCreator : MonoBehaviour
             //if(i != 157) { continue; }
             CreateSector(i);
         }
+
+        player.transform.position = new Vector3(openedMap.things[0].xPos, 60, openedMap.things[0].yPos);
+
     }
     
     private GameObject CreateDoomObject(string name, Mesh mesh, Material[] materials, int lightLevel)
@@ -95,7 +95,7 @@ public class mapCreator : MonoBehaviour
         //fill in the materials and mesh for the gameobject
         go.GetComponent<MeshRenderer>().materials = materials;
         go.GetComponent<MeshFilter>().mesh = mesh;
-
+        go.AddComponent<MeshCollider>();
         return go;
     }
 
