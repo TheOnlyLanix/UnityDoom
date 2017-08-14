@@ -64,7 +64,7 @@ namespace DoomTriangulator
                 foreach (Vertex vertex in triangle.vertices)
                 {
                     double theta = Math.Atan2(my - vertex.y, mx - vertex.x);
-                    while (sorted.ContainsKey(theta)) { theta += 0.0001d; }
+                    //while (sorted.ContainsKey(theta)) { theta += 0.0001; } // maybe needed?
                     sorted.Add(theta, vertex);
                 }
                 triangleIndices.Add(vertexPool.vertices.IndexOf(sorted.Values[2]));
@@ -126,7 +126,7 @@ namespace DoomTriangulator
             return newSubMesh;
         }
 
-        public static List<SubMesh> CreateWalls(SECTORS sector, WAD wad)
+        public static List<SubMesh> CreateWalls(SECTORS sector, WAD wad, bool generatingDoor)
         {
             List<SubMesh> sMeshs = new List<SubMesh>();
 
@@ -144,18 +144,32 @@ namespace DoomTriangulator
                 if (fSector != null && bSector != null && bSector != sector)
                     continue;
 
-                // create the middle wall(s)
+                if (sector.isDoor())
+                {
+                    // special door logic
+                    if (generatingDoor)
+                    {
+                        // door objects only contain upper walls that border a front and back sector
+                        if (fSector != null && bSector != null)
+                            sMeshs.AddRange(CreateUpperWalls(sector, line, wad));
+                    }
+                    else
+                    {
+                        // sector objects contain all mid and lower walls
+                        sMeshs.AddRange(CreateMidWalls(line, wad));
+                        sMeshs.AddRange(CreateLowerWalls(line, wad));
+                        // sector objects also contain upper walls of lines who only have one sector
+                        if (fSector == null || bSector == null)
+                            sMeshs.AddRange(CreateUpperWalls(sector, line, wad));
+                    }
+                }
+                else
+                {
+                    // regular sector, create all walls
                     sMeshs.AddRange(CreateMidWalls(line, wad));
-
-                // for lower and upper walls we need the line to have both sectors
-                if (fSector == null || bSector == null)
-                    continue;
-
-                // create the lower wall(s)
                     sMeshs.AddRange(CreateLowerWalls(line, wad));
-
-                // create the upper wall(s)
                     sMeshs.AddRange(CreateUpperWalls(sector, line, wad));
+                }
             }
 
             return sMeshs;
@@ -222,17 +236,15 @@ namespace DoomTriangulator
             sMesh.mesh.vertices = tmpVerts.ToArray();
             sMesh.material = texture;
 
-            Vector3 linefront = line.frontVector();
-
             if (flipped)
             {
                 sMesh.mesh.triangles = new int[6] { 2, 1, 0, 0, 3, 2 };
-                sMesh.mesh.normals = new Vector3[4] { -linefront, -linefront, -linefront, -linefront };
+                sMesh.mesh.normals = new Vector3[4] { -line.frontVector(), -line.frontVector(), -line.frontVector(), -line.frontVector() };
             }
             else
             {
                 sMesh.mesh.triangles = new int[6] { 0, 1, 2, 2, 3, 0 };
-                sMesh.mesh.normals = new Vector3[4] { linefront, linefront, linefront, linefront };
+                sMesh.mesh.normals = new Vector3[4] { line.frontVector(), line.frontVector(), line.frontVector(), line.frontVector() };
             }
 
             return sMesh;
@@ -253,6 +265,8 @@ namespace DoomTriangulator
             {
                 startHeight = line.getFrontSector().floorHeight;
                 endHeight = line.getFrontSector().ceilingHeight;
+                if (line.getFrontSector().isDoor())
+                    endHeight = line.getFrontSector().MinNeighborCeilingHeight();
             }
             else if (line.getFrontSector() == null && line.getBackSector() != null)
             {
@@ -291,6 +305,7 @@ namespace DoomTriangulator
 
         public static List<SubMesh> CreateLowerWalls(LINEDEFS line, WAD wad)            // lowtex
         {
+            List<SubMesh> walls = new List<SubMesh>();
             float startHeight = 0;
             float endHeight = 0;
 
@@ -302,11 +317,10 @@ namespace DoomTriangulator
             }
             else
             {
-                Debug.Log("???");
+                return walls;
             }
 
             // generate a wall for each textured side
-            List<SubMesh> walls = new List<SubMesh>();
             if (line.side1 != null && wad.textures.ContainsKey(line.side1.lowTex))
                 walls.Add(CreateWall(line, line.getFrontSector(), wad.textures[line.side1.lowTex], startHeight, endHeight, false, WallType.Lower));
 
@@ -318,6 +332,7 @@ namespace DoomTriangulator
 
         public static List<SubMesh> CreateUpperWalls(SECTORS sector, LINEDEFS line, WAD wad)            // uppertex
         {
+            List<SubMesh> walls = new List<SubMesh>();
             float startHeight = 0;
             float endHeight = 0;
 
@@ -329,11 +344,10 @@ namespace DoomTriangulator
             }
             else
             {
-                Debug.Log("???");
+                return walls;
             }
 
             // generate a wall for each textured side
-            List<SubMesh> walls = new List<SubMesh>();
             if (line.side1 != null && wad.textures.ContainsKey(line.side1.upTex))
                 walls.Add(CreateWall(line, line.getFrontSector(), wad.textures[line.side1.upTex], startHeight, endHeight, false, WallType.Upper));
 
@@ -418,9 +432,20 @@ namespace DoomTriangulator
                 // create triangle
                 Triangle2D triangle = new Triangle2D(line, l2, l3);
 
+                // select a triangle for debugging
+                bool debugTriangle = false;
+
+                // validate that it has an area
+                if (!triangle.ValidArea())
+                {
+                    if (debugTriangle) { Debug.Log("InvalidArea"); }
+                    goto continueSearch;
+                }
+
                 // validate normals
                 if (!triangle.ValidNormals())
                 {
+                    if (debugTriangle) { Debug.Log("InvalidNormals"); }
                     goto continueSearch;
                 }
 
@@ -429,6 +454,7 @@ namespace DoomTriangulator
                 {
                     if (triangle.Identical(triangle2))
                     {
+                        if (debugTriangle) { Debug.Log("IsntUnique"); }
                         goto continueSearch;
                     }
                 }
@@ -436,9 +462,18 @@ namespace DoomTriangulator
                 // validate that it doesn't cross any lines
                 foreach (Line line2 in lines)
                 {
+                    if (triangle.vertices.Contains(line2.vertices[0]) && triangle.vertices.Contains(line2.vertices[1]))
+                    {
+                        continue;
+                    }
                     if (triangle.lines.Contains(line2)) { continue; }
+
                     if (triangle.Intersects(line2))
                     {
+                        if (debugTriangle)
+                        {
+                            Debug.Log("TrianglesCross");
+                        }
                         goto continueSearch;
                     }
                 }
@@ -447,13 +482,14 @@ namespace DoomTriangulator
                 foreach (Vertex vertex2 in vertices)
                 {
                     if (triangle.vertices.Contains(vertex2)) { continue; }
-                    for (double tx = vertex2.x - 0.0001; tx <= vertex2.x + 0.0001; tx += 0.0002)
+                    for (double tx = vertex2.x - 0.01; tx <= vertex2.x + 0.01; tx += 0.01)
                     {
-                        for (double ty = vertex2.y - 0.0001; ty <= vertex2.y + 0.0001; ty += 0.0002)
+                        for (double ty = vertex2.y - 0.01; ty <= vertex2.y + 0.01; ty += 0.01)
                         {
                             Vertex tmp = new Vertex(tx, ty);
                             if (triangle.Inside(tmp))
                             {
+                                if (debugTriangle) { Debug.Log("ContainsVert"); }
                                 goto continueSearch;
                             }
                         }
@@ -464,6 +500,7 @@ namespace DoomTriangulator
                 // keep track of new lines
                 if (!lines.Contains(l2)) { lines.Add(l2); unmarked.Add(l2); }
                 if (!lines.Contains(l3)) { lines.Add(l3); unmarked.Add(l3); }
+                if (debugTriangle) { Debug.Log("Added"); }
                 triangles.Add(triangle);
 
                 continueSearch:;
@@ -549,6 +586,41 @@ namespace DoomTriangulator
 
         }
 
+        public bool ValidArea()
+        {
+            List<double> thetas = new List<double>();
+            double mx = (vertices[0].x + vertices[1].x + vertices[2].x) / 3.0;
+            double my = (vertices[0].y + vertices[1].y + vertices[2].y) / 3.0;
+
+            // make sure that every vertex has a different angle from the center
+            // this is needed to make the triangle point the right way
+            foreach(Vertex vertex in vertices)
+            {
+                double theta = Math.Atan2(my - vertex.y, mx - vertex.x);
+                if(thetas.Contains(theta))
+                {
+                    return false;
+                }
+                else
+                {
+                    thetas.Add(theta);
+                }
+            }
+
+            // make sure that this triangle isn't actually a line
+            return this.Area() > 0;
+        }
+
+        public double Area()
+        {
+            /* RIPPED FROM http://james-ramsden.com/area-of-a-triangle-in-3d-c-code/ */
+            double a = vertices[0].DistanceTo(vertices[1]);
+            double b = vertices[1].DistanceTo(vertices[2]);
+            double c = vertices[2].DistanceTo(vertices[0]);
+            double s = (a + b + c) / 2;
+            return Math.Sqrt(s * (s - a) * (s - b) * (s - c));
+        }
+
         public bool ValidNormals()
         {
             // in order to check normals we do a raycast from every line that came from a linedef
@@ -566,9 +638,8 @@ namespace DoomTriangulator
                 double dy = Math.Sin(line.Normal());
 
                 // find line starting position
-                double slength = 0.0001;
-                double sx = (line.vertices[0].x + line.vertices[1].x) / 2.0 + dx * slength;
-                double sy = (line.vertices[0].y + line.vertices[1].y) / 2.0 + dy * slength;
+                double sx = (line.vertices[0].x + line.vertices[1].x) / 2.0;
+                double sy = (line.vertices[0].y + line.vertices[1].y) / 2.0;
 
                 // find line ending position
                 double elength = 10000;
@@ -577,9 +648,8 @@ namespace DoomTriangulator
 
                 // create line and check if it collides with triangle
                 Line temp = new Line(new Vertex(sx, sy), new Vertex(ex, ey), false, false);
-                if (!temp.Intersects(this))
+                if (!temp.Intersects(this, line))
                 {
-
                     // if the line doesn't intersect the triangle it is facing the wrong way
                     return false;
                 }
@@ -589,23 +659,12 @@ namespace DoomTriangulator
             return true;
         }
 
-        public bool Intersects(Triangle2D triangle)
-        {
-            foreach (Line line in lines)
-            {
-                if (line.Intersects(triangle))
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-
         public bool Intersects(Line line)
         {
             foreach (Line line2 in lines)
             {
                 if (line2 == line) { continue; }
+
                 if (line.Intersects(line2))
                 {
                     return true;
@@ -663,8 +722,6 @@ namespace DoomTriangulator
 
         public double Normal()
         {
-            // NOTE: this may be flipped, I don't know.
-            // if all normals are facing the wrong way change this to ' - Math.PI / 2.0' instead of +
             if (normalFlip == false)
                 return Math.Atan2(this.vertices[1].y - this.vertices[0].y, this.vertices[1].x - this.vertices[0].x) - Math.PI / 2.0;
             else
@@ -672,10 +729,11 @@ namespace DoomTriangulator
 
         }
 
-        public bool Intersects(Triangle2D triangle)
+        public bool Intersects(Triangle2D triangle, Line ignoreLine)
         {
             foreach (Line line in triangle.lines)
             {
+                if (line == ignoreLine) { continue; }
                 if (this.Intersects(line))
                 {
                     return true;
