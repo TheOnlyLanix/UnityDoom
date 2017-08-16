@@ -10,11 +10,18 @@ namespace DoomTriangulator
     public class Triangulator : MonoBehaviour
     {
         public enum WallType { Upper, Middle, Lower };
+        public enum GeneratingGo { Sector, Door, Floor };
 
         // This class is the actual triangulator, you feed it a list of linedefs and it spits out triangles
         
-        public static SubMesh CreateFloor(SECTORS sector, Material mat)
+        public static SubMesh CreateFloor(SECTORS sector, Material mat, GeneratingGo generating)
         {
+            if (sector.isDoor && generating == GeneratingGo.Door)
+                return null;
+
+            if (sector.isMovingFloor && generating != GeneratingGo.Floor)
+                return null;
+
             Mesh mesh = new Mesh();
             VertexPool vertexPool = new VertexPool();
             List<Triangle2D> triangles = new List<Triangle2D>();
@@ -87,15 +94,27 @@ namespace DoomTriangulator
 
         }
 
-        public static SubMesh CreateCeiling(Mesh floor, SECTORS sector, Material mat)
+        public static SubMesh CreateCeiling(SubMesh floor, SECTORS sector, Material mat, GeneratingGo generating)
         {
+            if (sector.isMovingFloor && generating == GeneratingGo.Floor)
+                return null;
+
+            if (sector.isMovingFloor && generating != GeneratingGo.Floor)
+                floor = CreateFloor(sector, mat, GeneratingGo.Floor);
+
+            if (sector.isDoor && generating != GeneratingGo.Door)
+                return null;
+
+            if (sector.isDoor && generating == GeneratingGo.Door)
+                floor = CreateFloor(sector, mat, sector.isMovingFloor ? GeneratingGo.Floor : GeneratingGo.Sector);
+
             //reverse
             Mesh ceiling = new Mesh();
 
-            List<Vector3> tmpVerts = new List<Vector3>(floor.vertices);
-            List<Vector2> tmpUvs = new List<Vector2>(floor.uv);
-            List<int> tmpTris = new List<int>(floor.triangles);
-            List<Vector3> tmpNrm = new List<Vector3>(floor.normals);
+            List<Vector3> tmpVerts = new List<Vector3>(floor.mesh.vertices);
+            List<Vector2> tmpUvs = new List<Vector2>(floor.mesh.uv);
+            List<int> tmpTris = new List<int>(floor.mesh.triangles);
+            List<Vector3> tmpNrm = new List<Vector3>(floor.mesh.normals);
 
 
             for (int a = 0; a < tmpVerts.Count; a++)
@@ -126,7 +145,7 @@ namespace DoomTriangulator
             return newSubMesh;
         }
 
-        public static List<SubMesh> CreateWalls(SECTORS sector, WAD wad, bool generatingDoor)
+        public static List<SubMesh> CreateWalls(SECTORS sector, WAD wad, GeneratingGo generating)
         {
             List<SubMesh> sMeshs = new List<SubMesh>();
 
@@ -139,43 +158,43 @@ namespace DoomTriangulator
                 if (fSector == null && bSector == null)
                     continue;
 
-                // if this line exists in both sectors, only draw if this is the back sector
-                // otherwise we will draw this wall twice
-                if (fSector != null && bSector != null && bSector != sector)
-                    continue;
+                // figure out which sector this wall actually belongs to
 
-                if (sector.isDoor)
+                bool hasBothSectors = (fSector != null && bSector != null);
+                bool genMidWalls = (generating == GeneratingGo.Sector);
+                bool genLowerWalls = hasBothSectors;
+                bool genUpperWalls = hasBothSectors;
+
+                if(hasBothSectors)
                 {
-                    // special door logic
-                    if (generatingDoor)
+                    if (sector.isDoor)
                     {
-                        // door objects only contain upper walls that border a front and back sector
-                        if (fSector != null && bSector != null)
-                            sMeshs.AddRange(CreateUpperWalls(sector, line, wad));
+                        genLowerWalls = (generating != GeneratingGo.Door);
+                        genUpperWalls = (generating == GeneratingGo.Door);
                     }
-                    else
+
+                    if (sector.isMovingFloor)
                     {
-                        // sector objects contain all mid and lower walls
-                        sMeshs.AddRange(CreateMidWalls(line, wad));
-                        sMeshs.AddRange(CreateLowerWalls(line, wad));
-                        // sector objects also contain upper walls of lines who only have one sector
-                        if (fSector == null || bSector == null)
-                            sMeshs.AddRange(CreateUpperWalls(sector, line, wad));
+                        genLowerWalls = (generating == GeneratingGo.Floor);
+                        genUpperWalls = (generating != GeneratingGo.Floor);
                     }
                 }
-                else
-                {
-                    // regular sector, create all walls
-                    sMeshs.AddRange(CreateMidWalls(line, wad));
-                    sMeshs.AddRange(CreateLowerWalls(line, wad));
+
+                // create all walls
+                if (genMidWalls)
+                    sMeshs.AddRange(CreateMidWalls(sector, line, wad));
+
+                if (genLowerWalls)
+                    sMeshs.AddRange(CreateLowerWalls(sector, line, wad));
+
+                if (genUpperWalls)
                     sMeshs.AddRange(CreateUpperWalls(sector, line, wad));
-                }
             }
 
             return sMeshs;
         }
         
-        public static SubMesh CreateWall(LINEDEFS line, SECTORS sector, Material texture, float startHeight, float endHeight, bool flipped, WallType wallType)
+        public static SubMesh CreateWall(SECTORS sector, LINEDEFS line, Material texture, float startHeight, float endHeight, bool flipped, WallType wallType)
         {
             List<Vector3> tmpVerts = new List<Vector3>();
             List<Vector2> tmpUv = new List<Vector2>();
@@ -250,7 +269,7 @@ namespace DoomTriangulator
             return sMesh;
         }
 
-        public static List<SubMesh> CreateMidWalls(LINEDEFS line, WAD wad)            // midtex
+        public static List<SubMesh> CreateMidWalls(SECTORS sector, LINEDEFS line, WAD wad)            // midtex
         {
             float startHeight = 0;
             float endHeight = 0;
@@ -265,8 +284,21 @@ namespace DoomTriangulator
             {
                 startHeight = line.getFrontSector().floorHeight;
                 endHeight = line.getFrontSector().ceilingHeight;
+
                 if (line.getFrontSector().isDoor)
-                    endHeight = line.getFrontSector().MinNeighborCeilingHeight();
+                    endHeight = line.getFrontSector().LowestNeighborCeiling();
+
+                if (line.getFrontSector().isMovingFloor)
+                {
+                    if (line.getFrontSector().isMovingFloorDown)
+                        startHeight = Math.Min(startHeight, line.getFrontSector().movementBounds[0]);
+                        //startHeight = line.getFrontSector().LowestNeighborFloor();
+
+                    if (line.getFrontSector().isMovingFloorUp)
+                        endHeight = Math.Max(endHeight, line.getFrontSector().movementBounds[1]);
+                        //endHeight = line.getFrontSector().HighestNeighborCeiling();
+                }
+
             }
             else if (line.getFrontSector() == null && line.getBackSector() != null)
             {
@@ -280,52 +312,44 @@ namespace DoomTriangulator
 
             // generate a wall for each textured side
             List<SubMesh> walls = new List<SubMesh>();
-            if (line.side1 != null && wad.textures.ContainsKey(line.side1.midTex))
+            if (line.getFrontSector() == sector && line.side1 != null && wad.textures.ContainsKey(line.side1.midTex))
             {
                 Material texture = wad.textures[line.side1.midTex];
 
                 if (line.getFrontSector() != null && line.getBackSector() != null)
                     endHeight = Math.Min(startHeight + texture.mainTexture.height, endHeight);  //dont tile middle textures with 2 sides
 
-                walls.Add(CreateWall(line, line.getFrontSector(), texture, startHeight, endHeight, false, WallType.Middle));
+                walls.Add(CreateWall(line.getFrontSector(), line, texture, startHeight, endHeight, false, WallType.Middle));
             }
 
-            if (line.side2 != null && wad.textures.ContainsKey(line.side2.midTex))
+            if (line.getBackSector() == sector && line.side2 != null && wad.textures.ContainsKey(line.side2.midTex))
             {
                 Material texture = wad.textures[line.side2.midTex];
 
                 if (line.getFrontSector() != null && line.getBackSector() != null)
                     endHeight = Math.Min(startHeight + texture.mainTexture.height, endHeight);  //dont tile middle textures with 2 sides
 
-                walls.Add(CreateWall(line, line.getBackSector(), texture, startHeight, endHeight, true, WallType.Middle));
+                walls.Add(CreateWall(line.getBackSector(), line, texture, startHeight, endHeight, true, WallType.Middle));
             }
             
             return walls;
         }
 
-        public static List<SubMesh> CreateLowerWalls(LINEDEFS line, WAD wad)            // lowtex
+        public static List<SubMesh> CreateLowerWalls(SECTORS sector, LINEDEFS line, WAD wad)            // lowtex
         {
             List<SubMesh> walls = new List<SubMesh>();
-            float startHeight = 0;
-            float endHeight = 0;
 
             // figure out start and end heights
-            if (line.getFrontSector() != null && line.getBackSector() != null)
-            {
-                startHeight = Math.Min(line.getFrontSector().floorHeight, line.getBackSector().floorHeight);
-                endHeight = Math.Max(line.getFrontSector().floorHeight, line.getBackSector().floorHeight);
-            }
-            else
-            {
-                return walls;
-            }
+            SECTORS otherSector = (sector == line.getFrontSector()) ? line.getBackSector() : line.getFrontSector();
+            float startHeight = Math.Min(sector.floorHeight + sector.movementBounds[0] - sector.movementBounds[1], otherSector.floorHeight + otherSector.movementBounds[0] - otherSector.movementBounds[1]);
+            float endHeight = sector.floorHeight;
 
             // generate a wall for each textured side
-            if (line.side1 != null && wad.textures.ContainsKey(line.side1.lowTex))
-                walls.Add(CreateWall(line, line.getFrontSector(), wad.textures[line.side1.lowTex], startHeight, endHeight, false, WallType.Lower));
+            if (line.getBackSector() == sector && line.side1 != null && wad.textures.ContainsKey(line.side1.lowTex))
+                walls.Add(CreateWall(line.getFrontSector(), line, wad.textures[line.side1.lowTex], startHeight, endHeight, false, WallType.Lower));
 
-            if (line.side2 != null && wad.textures.ContainsKey(line.side2.lowTex))
-                walls.Add(CreateWall(line, line.getBackSector(), wad.textures[line.side2.lowTex], startHeight, endHeight, true, WallType.Lower));
+            if (line.getFrontSector() == sector && line.side2 != null && wad.textures.ContainsKey(line.side2.lowTex))
+                walls.Add(CreateWall(line.getBackSector(), line, wad.textures[line.side2.lowTex], startHeight, endHeight, true, WallType.Lower));
 
             return walls;
         }
@@ -337,22 +361,15 @@ namespace DoomTriangulator
             float endHeight = 0;
 
             // figure out start and end heights
-            if (line.getFrontSector() != null && line.getBackSector() != null)
-            {
-                startHeight = Math.Min(line.getFrontSector().ceilingHeight, line.getBackSector().ceilingHeight);
-                endHeight = Math.Max(line.getFrontSector().ceilingHeight, line.getBackSector().ceilingHeight);
-            }
-            else
-            {
-                return walls;
-            }
+            startHeight = Math.Min(line.getFrontSector().ceilingHeight, line.getBackSector().ceilingHeight);
+            endHeight = Math.Max(line.getFrontSector().ceilingHeight, line.getBackSector().ceilingHeight);
 
             // generate a wall for each textured side
-            if (line.side1 != null && wad.textures.ContainsKey(line.side1.upTex))
-                walls.Add(CreateWall(line, line.getFrontSector(), wad.textures[line.side1.upTex], startHeight, endHeight, false, WallType.Upper));
+            if (line.getBackSector() == sector && line.side1 != null && wad.textures.ContainsKey(line.side1.upTex))
+                walls.Add(CreateWall(line.getFrontSector(), line, wad.textures[line.side1.upTex], startHeight, endHeight, false, WallType.Upper));
 
-            if (line.side2 != null && wad.textures.ContainsKey(line.side2.upTex))
-                walls.Add(CreateWall(line, line.getBackSector(), wad.textures[line.side2.upTex], startHeight, endHeight, true, WallType.Upper));
+            if (line.getFrontSector() == sector && line.side2 != null && wad.textures.ContainsKey(line.side2.upTex))
+                walls.Add(CreateWall(line.getBackSector(), line, wad.textures[line.side2.upTex], startHeight, endHeight, true, WallType.Upper));
 
             return walls;
         }

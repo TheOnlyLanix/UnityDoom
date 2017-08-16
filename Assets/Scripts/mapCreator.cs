@@ -33,15 +33,15 @@ public class mapCreator : MonoBehaviour
         }
 
         mapSelected += 1;
-        //mapSelected = 13;
-        openedMap = reader.newWad.maps[mapSelected-1];
+        openedMap = reader.newWad.maps[mapSelected - 1];
+        //int[] mapMapper = { 9, 19, 27 };
+        //openedMap = reader.newWad.maps[mapMapper[(mapSelected - 1) % mapMapper.Length] - 1];
         fillInfo(openedMap); //fill in any missing map information
         drawMap();
     }
 
     public void buttonMapPrevCLicked()
     {
-        
         if (mapSelected > 0)
         {
 
@@ -50,6 +50,7 @@ public class mapCreator : MonoBehaviour
                 GameObject.Destroy(mapParent.GetChild(i).gameObject);
             }
             mapSelected -= 1;
+            if(mapSelected <= 0) { mapSelected = 15; }
             openedMap = reader.newWad.maps[mapSelected-1];
             fillInfo(openedMap); //fill in any missing map information
             drawMap();
@@ -76,15 +77,43 @@ public class mapCreator : MonoBehaviour
         for (int i = 0; i < openedMap.sectors.Count(); i++)    //start with a loop for each sector
         {
             //if(i != 157) { continue; }
-            CreateSector(i);
+            SECTORS sector = openedMap.sectors[i];
+            CreateMapObject(sector, "Sector_" + i, Triangulator.GeneratingGo.Sector);
+
+            if (sector.isDoor)
+                openedMap.doors.Add(CreateMapObject(sector, "Sector_" + i + "_Door", Triangulator.GeneratingGo.Door));
+
+            if (sector.isMovingFloor)
+                CreateMapObject(sector, "Sector_" + i + "_MovingFloor", Triangulator.GeneratingGo.Floor);
         }
 
         player.transform.position = new Vector3(openedMap.things[0].xPos, 60, openedMap.things[0].yPos);
         hasOpenedAllDoors = false;
     }
     
-    private GameObject CreateDoomObject(string name, Mesh mesh, Material[] materials, int lightLevel)
+    private GameObject CreateMapObject(SECTORS sector, string name, Triangulator.GeneratingGo generating)
     {
+        //create lists for combining floor and ceiling meshes
+        List<SubMesh> sectorMeshes = new List<SubMesh>();
+        Material[] sectorMaterials = new Material[2]; //theres a material for the floor and the ceiling
+
+        //create floor
+        SubMesh floor = Triangulator.CreateFloor(sector, reader.newWad.flats[sector.floorFlat], generating);
+        sectorMeshes.Add(floor);
+
+        //create ceiling
+        sectorMeshes.Add(Triangulator.CreateCeiling(floor, sector, reader.newWad.flats[sector.ceilingFlat], generating));
+
+        //create walls
+        sectorMeshes.AddRange(Triangulator.CreateWalls(sector, reader.newWad, generating));
+
+        //remove null submeshes
+        sectorMeshes.RemoveAll(x => x == null);
+
+        //combine the meshes
+        Mesh mesh = new Mesh();
+        Triangulator.CombineSubmeshes(ref mesh, sectorMeshes, ref sectorMaterials);
+
         Renderer rend;
         MaterialPropertyBlock propBlock = new MaterialPropertyBlock();
 
@@ -100,61 +129,14 @@ public class mapCreator : MonoBehaviour
 
         //Set the color for the material independently (for setting light level)
         rend.GetPropertyBlock(propBlock);
-        propBlock.SetColor("_Color", new Color(lightLevel / 255f, lightLevel / 255f, lightLevel / 255f, 1));
+        propBlock.SetColor("_Color", new Color(sector.lightLevel / 255f, sector.lightLevel / 255f, sector.lightLevel / 255f, 1));
         rend.SetPropertyBlock(propBlock);
 
         //fill in the materials and mesh for the gameobject
-        go.GetComponent<MeshRenderer>().materials = materials;
+        go.GetComponent<MeshRenderer>().materials = sectorMaterials;
         go.GetComponent<MeshFilter>().mesh = mesh;
         go.AddComponent<MeshCollider>();
         return go;
-    }
-
-    private void CreateSector(int sectorIndex)
-    {
-        SECTORS sector = openedMap.sectors[sectorIndex];
-
-        //create lists for combining floor and ceiling meshes
-        List<SubMesh> sectorMeshes = new List<SubMesh>();
-        Material[] sectorMaterials = new Material[2]; //theres a material for the floor and the ceiling
-
-        //create floors, walls, and ceilings
-        sectorMeshes.Add(Triangulator.CreateFloor(sector, reader.newWad.flats[sector.floorFlat])); //Create floor (the hardest part)
-        sectorMeshes.AddRange(Triangulator.CreateWalls(sector, reader.newWad, false)); //create walls
-        if (!sector.isDoor)
-            sectorMeshes.Add(Triangulator.CreateCeiling(sectorMeshes[0].mesh, sector, reader.newWad.flats[sector.ceilingFlat])); //create ceiling
-
-        //combine the meshes
-        Mesh mesh = new Mesh();
-        Triangulator.CombineSubmeshes(ref mesh, sectorMeshes, ref sectorMaterials);
-
-        //create the game object
-        CreateDoomObject("Sector_" + sectorIndex, mesh, sectorMaterials, sector.lightLevel);
-
-        if (sector.isDoor)
-            CreateDoor(sectorIndex);
-    }
-
-    private void CreateDoor(int sectorIndex)
-    {
-        SECTORS sector = openedMap.sectors[sectorIndex];
-
-        //create lists for combining floor and ceiling meshes
-        List<SubMesh> sectorMeshes = new List<SubMesh>();
-        Material[] sectorMaterials = new Material[2]; //theres a material for the floor and the ceiling
-
-        //create floors, walls, and ceilings
-        SubMesh floor = Triangulator.CreateFloor(sector, reader.newWad.flats[sector.floorFlat]); //Create floor (the hardest part)
-        sectorMeshes.AddRange(Triangulator.CreateWalls(sector, reader.newWad, true)); //create walls
-        sectorMeshes.Add(Triangulator.CreateCeiling(floor.mesh, sector, reader.newWad.flats[sector.ceilingFlat])); //create ceiling
-
-        //combine the meshes
-        Mesh mesh = new Mesh();
-        Triangulator.CombineSubmeshes(ref mesh, sectorMeshes, ref sectorMaterials);
-
-        //create the game object
-        GameObject go = CreateDoomObject("Sector_" + sectorIndex + "_Door", mesh, sectorMaterials, sector.lightLevel);
-        openedMap.doors.Add(go); // TODO: temporary
     }
 
     void drawVert(Vector3 pos)
@@ -174,10 +156,16 @@ public class mapCreator : MonoBehaviour
         // find and remember each sector's tag
         foreach (SECTORS sector in map.sectors)
         {
-            if(!map.sectorsByTag.ContainsKey(sector.sectorTag))
+            if (!map.sectorsByTag.ContainsKey(sector.sectorTag))
                 map.sectorsByTag.Add(sector.sectorTag, new List<SECTORS> { sector });
             else
                 map.sectorsByTag[sector.sectorTag].Add(sector);
+        }
+
+        // set sector's default movement bounds
+        foreach (SECTORS sector in map.sectors)
+        {
+            sector.movementBounds = new int[2] { sector.floorHeight, sector.floorHeight };
         }
 
         foreach (LINEDEFS line in map.linedefs)
@@ -191,17 +179,32 @@ public class mapCreator : MonoBehaviour
 
             //tag local sector as door
             if (back != null && LinedefTypes.localDoors.Contains(line.types))
-            {
                 back.isDoor = true;
-            }
 
-            //tag remote sector as door
+            //tag remote sector(s) as door
             if (line.tag != 0 && LinedefTypes.remoteDoors.Contains(line.types) && map.sectorsByTag.ContainsKey(line.tag))
-            {
-                foreach (SECTORS sector in map.sectorsByTag[line.tag])
-                    sector.isDoor = true;
-            }
+                map.sectorsByTag[line.tag].ForEach(x => x.isDoor = true);
 
+            //tag sector(s) as moving floor
+            if (line.tag != 0 && LinedefTypes.floors.Contains(line.types))
+            {
+                if (map.sectorsByTag.ContainsKey(line.tag))
+                {
+                    foreach (SECTORS sector in map.sectorsByTag[line.tag])
+                    {
+                        sector.isMovingFloor = true;
+                        sector.isMovingFloorDown = LinedefTypes.downFloors.Contains(line.types) ? true : sector.isMovingFloorDown;
+                        sector.isMovingFloorUp = LinedefTypes.upFloors.Contains(line.types) ? true : sector.isMovingFloorUp;
+                    }
+                }
+                else
+                {
+                    back.isMovingFloor = true;
+                    back.isMovingFloorDown = LinedefTypes.downFloors.Contains(line.types) ? true : back.isMovingFloorDown;
+                    back.isMovingFloorUp = LinedefTypes.upFloors.Contains(line.types) ? true : back.isMovingFloorUp;
+                }
+            }
+            
             if (front == null && back == null) //if this line is BROKEN
             {
                 continue; //we ignore it
@@ -215,7 +218,7 @@ public class mapCreator : MonoBehaviour
             {
                 front.lines.Add(line);
 
-                if(back != null)
+                if (back != null)
                 {
                     back.lines.Add(line);//add the line to the sector on its back as well..if it exists
                 }
@@ -227,9 +230,9 @@ public class mapCreator : MonoBehaviour
         }
 
         // find and remember each sector's neighboring sectors
-        foreach(SECTORS sector in map.sectors)
+        foreach (SECTORS sector in map.sectors)
         {
-            foreach(LINEDEFS line in sector.lines)
+            foreach (LINEDEFS line in sector.lines)
             {
                 if (line.getFrontSector() != sector && line.getFrontSector() != null && !sector.neighbors.Contains(line.getFrontSector()))
                     sector.neighbors.Add(line.getFrontSector());
@@ -238,12 +241,37 @@ public class mapCreator : MonoBehaviour
                     sector.neighbors.Add(line.getBackSector());
             }
         }
-    }
 
-    public static class LinedefTypes
-    {
-        public static int[] localDoors = { 1, 26, 28, 27, 31, 32, 33, 34, 46, 117, 118 };
-        public static int[] remoteDoors = { 4, 29, 90, 63, 2, 103, 86, 61, 3, 50, 75, 42, 16, 76, 108, 111, 105, 114, 109, 112, 106, 115, 110, 113, 107, 116, 133, 99, 135, 134, 137, 136 };
+        //set sector's movement bounds
+        foreach (LINEDEFS line in map.linedefs)
+        {
+            SECTORS back = line.getBackSector();
+            if (line.tag != 0 && LineDefTypes.types.ContainsKey(line.types))
+            {
+                if (map.sectorsByTag.ContainsKey(line.tag))
+                {
+                    foreach (SECTORS sector in map.sectorsByTag[line.tag])
+                    {
+                        int[] movementBounds = LineDefTypes.types[line.types].GetMovementBoundY(sector);
+                        sector.movementBounds[0] = Math.Min(sector.movementBounds[0], movementBounds[0]);
+                        sector.movementBounds[1] = Math.Max(sector.movementBounds[1], movementBounds[1]);
+                    }
+                }
+                else if (back != null)
+                {
+                    int[] movementBounds = LineDefTypes.types[line.types].GetMovementBoundY(back);
+                    back.movementBounds[0] = Math.Min(back.movementBounds[0], movementBounds[0]);
+                    back.movementBounds[1] = Math.Max(back.movementBounds[1], movementBounds[1]);
+                }
+            }
+        }
+
+        // TODO: REMOVE
+        foreach (int floor in LinedefTypes.floors)
+        {
+            if (!LineDefTypes.types.ContainsKey(floor))
+                Debug.Log("MISSING FLOOR: " + floor);
+        }
     }
 }
 
