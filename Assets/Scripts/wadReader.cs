@@ -17,7 +17,7 @@ public class wadReader : MonoBehaviour
     PLAYPAL playPal;
 
     public Shader DoomShader;
-
+    public mus2mid musmid;
     enum type { Sprite, Flat, Patch };
 
     FileStream wadOpener;
@@ -26,6 +26,7 @@ public class wadReader : MonoBehaviour
 
     void Awake()
     {
+        musmid = GetComponent<mus2mid>();
         wadFilePath = Application.dataPath + "/DOOM2.wad";
 
         wadOpener = new FileStream(wadFilePath, FileMode.Open, FileAccess.Read);
@@ -43,6 +44,8 @@ public class wadReader : MonoBehaviour
         ReadWADFlats();
         ReadWADSprites();
         ReadMAPEntries();
+
+        ReadMusEntries();
     }
 
 
@@ -752,6 +755,147 @@ public class wadReader : MonoBehaviour
         }
         return entryList;
     }
+
+
+    MUS ReadMusEntries()
+    {
+        List<DrctEntry> musList = new List<DrctEntry>();
+
+        foreach (DrctEntry entry in newWad.directory) //find all the mus's in the wad
+        {
+            if (entry.name.StartsWith("D_"))
+            {
+                musList.Add(entry);
+            }
+        }
+
+        foreach (DrctEntry mus in musList)//FOREACH MUS -> save the mus info to our mus class
+        {
+            byte[] musBytes = new byte[mus.size];
+
+            wadOpener.Position = mus.filepos;
+            wadOpener.Read(musBytes, 0, musBytes.Length);
+            MUS newMUS = new MUS();
+
+
+            //read the header of the mus file
+            newMUS.id = new String(System.Text.Encoding.ASCII.GetChars(musBytes, 0, 3));
+            newMUS.scoreLen = BitConverter.ToUInt16(musBytes, 4);
+            newMUS.scoreStart = BitConverter.ToUInt16(musBytes, 6);
+            newMUS.channels = BitConverter.ToUInt16(musBytes, 8);
+            newMUS.sec_channels = BitConverter.ToUInt16(musBytes, 10);
+            newMUS.instrCnt = BitConverter.ToUInt16(musBytes, 12);
+
+            List<int> instrList = new List<int>();//temporary list for storing instruments
+
+            for (int j = 14; j < newMUS.scoreStart; j += 2)
+                instrList.Add(BitConverter.ToUInt16(musBytes, j));//get the instrument
+
+            newMUS.instruments = instrList.ToArray();//store the temporary list to the newMUS list
+
+            int i = newMUS.scoreStart;
+            while (i < musBytes.Length)
+            {
+                //read the 'score'
+                Mus_Event newEvent = new Mus_Event();
+
+
+                newEvent.musEventType = (byte)((musBytes[i] & 0x70) >> 4);
+
+                //END OF FILE EVENT 
+                if (newEvent.musEventType == 6)//Score end (end of mus)
+                {
+                    Debug.Log(i);
+                    newEvent.scoreEnd = true; //set the events scoreEnd bool to true
+                    newMUS.musEvents.Add(newEvent); //save the event
+                    newWad.music.Add(newMUS);//save the MUS
+                    musmid.WriteMidi(newMUS, mus.name);//turn it into a midi
+                    break;
+                }
+
+
+                newEvent.channelNum = (byte)(musBytes[i] & 0x0F);
+                newEvent.last = (((BitConverter.ToChar(musBytes, i) & 0x80) >> 7) == 1);
+
+                i++; //finished reading the descriptor byte
+
+
+                if (newEvent.musEventType == 0)//Release Note
+                {
+                    newEvent.note = (byte)(musBytes[i] & 0x7F);
+                    i++; //finished reading the released note byte
+                }
+                else if (newEvent.musEventType == 1)//Play Note
+                {
+                    newEvent.note = (byte)(musBytes[i] & 0x7F);
+
+                    if (((BitConverter.ToChar(musBytes, i) & 0x80) >> 7) == 1)//if the last bit of the first byte is set, get the new vol from the 2nd byte
+                    {
+                        i++;
+                        newEvent.vol = (byte)(musBytes[i] & 0x7F);
+                    }
+                    i++; //finished reading the note byte (or vol byte if it was set)
+
+                }
+                else if (newEvent.musEventType == 2)//Pitch Wheel
+                {
+                    newEvent.pitch = (byte)(musBytes[i]);
+                    i++;//finished reading pitch wheel byte
+                }
+                else if (newEvent.musEventType == 3)//System Event
+                {
+                    newEvent.sysEventNum = (byte)(musBytes[i] & 0x7F);
+                    i++;//finished reading sys event byte
+                }
+                else if (newEvent.musEventType == 4)//Change Controller
+                {
+                    newEvent.contNum = (byte)(musBytes[i] & 0x7F);
+                    i++;//finished reading controller number byte
+                    newEvent.contVal = (byte)(musBytes[i] & 0x7F);
+                    i++;//finished reading controller value byte
+                }
+                else if (newEvent.musEventType == 5 || newEvent.musEventType == 7)
+                {
+                    i++;//???????extra byte??????????
+                }
+
+
+
+                if (newEvent.last) //delay
+                {
+                    int delay = 0;
+
+                    bool moreDelay = true; //if there is another delay byte after the current byte
+
+                    while (moreDelay)
+                    {
+                        moreDelay = (((BitConverter.ToChar(musBytes, i) & 0x80) >> 7) == 1); //set moreDelay by checking the LAST bit of the CURRENT BYTE
+
+                        byte newByte = musBytes[i];
+                        delay = delay * 128 + (newByte & 0x7F); //set the delay              
+
+                        i++; //next byte
+
+                    }
+
+                    newEvent.time = delay;//set the new time info
+                }
+
+                newMUS.musEvents.Add(newEvent);//save the event information
+
+            }
+
+            //newWad.music.Add(newMUS);
+
+            //musmid.WriteMidi(newMUS, mus.name);
+            return newMUS;
+        }
+
+        return new MUS();
+    }
+
+
+
 
     PLAYPAL ReadColorPalette(string filePath, string name)
     {
