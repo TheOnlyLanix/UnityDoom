@@ -36,7 +36,6 @@ using System.IO;
 using System.Text;
 using UnityEngine;
 
-
 public class mus2mid : MonoBehaviour
 {
 
@@ -62,7 +61,7 @@ public class mus2mid : MonoBehaviour
 
 
 
-    byte[] midiheader = new byte[] {
+    static byte[] midiheader = new byte[] {
         (byte)'M', (byte)'T', (byte)'h', (byte)'d',		// Main header
         0x00, 0x00, 0x00, 0x06,	// Header size
         0x00, 0x00,				// MIDI type (0)
@@ -79,7 +78,7 @@ public class mus2mid : MonoBehaviour
     static int MIDI_TRACKLENGTH_OFS = 18;
 
     // Cached channel velocities
-    byte[] channelvelocities = new byte[]
+    static byte[] channelvelocities = new byte[]
     {
     127, 127, 127, 127, 127, 127, 127, 127,
     127, 127, 127, 127, 127, 127, 127, 127
@@ -91,7 +90,7 @@ public class mus2mid : MonoBehaviour
     // Counter for the length of the track
     static int tracksize;
 
-    byte[] controller_map = new byte[]
+    static byte[] controller_map = new byte[]
     {
     0x00, 0x20, 0x01, 0x07, 0x0A, 0x0B, 0x5B, 0x5D,
     0x40, 0x43, 0x78, 0x7B, 0x7E, 0x7F, 0x79
@@ -104,17 +103,15 @@ public class mus2mid : MonoBehaviour
 
 
 
-    public void WriteMidi(MUS mus, string name)
+    public byte[] WriteMidi(MUS mus, string name)
     {
-        if (!Directory.Exists(Application.dataPath + "/Music"))
-        {
-            Directory.CreateDirectory(Application.dataPath + "/Music"); //create a place to store our new midi
-        }
-
-
+        queuedtime = 0;
+        tracksize = 0;
+        channel_map = new int[NUM_CHANNELS];
+        midi = new List<byte>();
 
         DoMus2mid(mus);
-        File.WriteAllBytes(Application.dataPath + "/Music/" + name, midi.ToArray());
+        return midi.ToArray();
     }
 
 
@@ -357,7 +354,7 @@ public class mus2mid : MonoBehaviour
     //
     // Returns true if successful, false otherwise
 
-    public bool DoMus2mid(MUS mus)
+    public static bool DoMus2mid(MUS mus)
     {
 
         int channel; // Channel number
@@ -404,9 +401,6 @@ public class mus2mid : MonoBehaviour
 
                 //channel = mEvent.channelNum;
                 channel = GetMIDIChannel(mEvent.channelNum);
-
-                if (midi.Count > 39620) // TODO: temporary
-                    midi = midi;
 
                 switch (mEvent.musEventType)
                 {

@@ -6,6 +6,7 @@ using System.Linq;
 using DoomTriangulator;
 using System;
 
+
 public class mapCreator : MonoBehaviour
 {
 
@@ -23,6 +24,14 @@ public class mapCreator : MonoBehaviour
     public Button Map_Prev;
     private bool hasOpenedAllDoors = false; // TODO: temporary
 
+    mus2mid musmid;
+    public MIDIPlayer midiplayer;
+
+    public void Awake()
+    {
+        musmid = GetComponent<mus2mid>();
+    }
+
     public void buttonMapNextClicked()
     {
 
@@ -34,6 +43,12 @@ public class mapCreator : MonoBehaviour
 
         mapSelected += 1;
         openedMap = reader.newWad.maps[mapSelected - 1];
+        MUS mus = reader.ReadMusEntry(mapSelected - 1);
+
+
+        midiplayer.PlayMusic(musmid.WriteMidi(mus, mus.name));
+        //midiplayer.PlayMusic("Midis/D_RUNNIN.mid");
+
         //int[] mapMapper = { 9, 19, 27 };
         //openedMap = reader.newWad.maps[mapMapper[(mapSelected - 1) % mapMapper.Length] - 1];
         fillInfo(openedMap); //fill in any missing map information

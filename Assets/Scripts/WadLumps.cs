@@ -328,6 +328,8 @@ public static class LinedefTypes
 
 public class MUS
 {
+    public string name;
+
     //Header
     public string id;
     public int scoreLen;
