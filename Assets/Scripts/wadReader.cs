@@ -775,8 +775,9 @@ public class wadReader : MonoBehaviour
 
             wadOpener.Position = mus.filepos;
             wadOpener.Read(musBytes, 0, musBytes.Length);
-            MUS newMUS = new MUS();
 
+            MUS newMUS = new MUS();
+            byte[] channelVolume = new byte[16];
 
             //read the header of the mus file
             newMUS.id = new String(System.Text.Encoding.ASCII.GetChars(musBytes, 0, 3));
@@ -785,10 +786,11 @@ public class wadReader : MonoBehaviour
             newMUS.channels = BitConverter.ToUInt16(musBytes, 8);
             newMUS.sec_channels = BitConverter.ToUInt16(musBytes, 10);
             newMUS.instrCnt = BitConverter.ToUInt16(musBytes, 12);
+            newMUS.dummy = BitConverter.ToUInt16(musBytes, 14);
 
             List<int> instrList = new List<int>();//temporary list for storing instruments
 
-            for (int j = 14; j < newMUS.scoreStart; j += 2)
+            for (int j = 16; j < newMUS.scoreStart; j += 2)
                 instrList.Add(BitConverter.ToUInt16(musBytes, j));//get the instrument
 
             newMUS.instruments = instrList.ToArray();//store the temporary list to the newMUS list
@@ -800,26 +802,11 @@ public class wadReader : MonoBehaviour
                 Mus_Event newEvent = new Mus_Event();
 
 
-                newEvent.musEventType = (byte)((musBytes[i] & 0x70) >> 4);
-
-                //END OF FILE EVENT 
-                if (newEvent.musEventType == 6)//Score end (end of mus)
-                {
-                    Debug.Log(i);
-                    newEvent.scoreEnd = true; //set the events scoreEnd bool to true
-                    newMUS.musEvents.Add(newEvent); //save the event
-                    newWad.music.Add(newMUS);//save the MUS
-                    musmid.WriteMidi(newMUS, mus.name);//turn it into a midi
-                    break;
-                }
-
-
                 newEvent.channelNum = (byte)(musBytes[i] & 0x0F);
-                newEvent.last = (((BitConverter.ToChar(musBytes, i) & 0x80) >> 7) == 1);
-
+                newEvent.musEventType = (byte)((musBytes[i] & 0x70) >> 4);
+                newEvent.last = (((musBytes[i] & 0x80) >> 7) == 1);
                 i++; //finished reading the descriptor byte
-
-
+                
                 if (newEvent.musEventType == 0)//Release Note
                 {
                     newEvent.note = (byte)(musBytes[i] & 0x7F);
@@ -827,15 +814,20 @@ public class wadReader : MonoBehaviour
                 }
                 else if (newEvent.musEventType == 1)//Play Note
                 {
+                    bool volBit = ((musBytes[i] & 0x80) >> 7) == 1;
                     newEvent.note = (byte)(musBytes[i] & 0x7F);
+                    i++; //finished reading the note byte
 
-                    if (((BitConverter.ToChar(musBytes, i) & 0x80) >> 7) == 1)//if the last bit of the first byte is set, get the new vol from the 2nd byte
+                    if (volBit) //if the last bit of the first byte is set, get the new vol from the 2nd byte
                     {
-                        i++;
                         newEvent.vol = (byte)(musBytes[i] & 0x7F);
+                        channelVolume[newEvent.channelNum] = newEvent.vol;
+                        i++; //finished reading the vol byte
                     }
-                    i++; //finished reading the note byte (or vol byte if it was set)
-
+                    else //otherwise use the volume of the previous note on the channel is used. 
+                    {
+                        newEvent.vol = channelVolume[newEvent.channelNum];
+                    }
                 }
                 else if (newEvent.musEventType == 2)//Pitch Wheel
                 {
@@ -858,8 +850,17 @@ public class wadReader : MonoBehaviour
                 {
                     i++;//???????extra byte??????????
                 }
-
-
+                else if (newEvent.musEventType == 6)//Score end (end of mus)
+                {
+                    //END OF FILE EVENT 
+                    Debug.Log(i);
+                    newEvent.scoreEnd = true; //set the events scoreEnd bool to true
+                    newEvent.time = newMUS.musEvents[newMUS.musEvents.Count - 1].time; // set the end time to the last event's for some reason?
+                    newMUS.musEvents.Add(newEvent); //save the event
+                    newWad.music.Add(newMUS);//save the MUS
+                    musmid.WriteMidi(newMUS, mus.name);//turn it into a midi
+                    break;
+                }
 
                 if (newEvent.last) //delay
                 {

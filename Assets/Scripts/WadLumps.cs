@@ -335,6 +335,7 @@ public class MUS
     public int channels;
     public int sec_channels;
     public int instrCnt;
+    public int dummy;
 
     public int[] instruments;
 

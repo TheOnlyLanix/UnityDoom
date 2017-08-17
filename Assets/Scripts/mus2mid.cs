@@ -404,8 +404,9 @@ public class mus2mid : MonoBehaviour
 
                 //channel = mEvent.channelNum;
                 channel = GetMIDIChannel(mEvent.channelNum);
-                Debug.Log(channel);
 
+                if (midi.Count > 39620) // TODO: temporary
+                    midi = midi;
 
                 switch (mEvent.musEventType)
                 {
@@ -453,25 +454,8 @@ public class mus2mid : MonoBehaviour
                         continue;
                 }
 
-                if (mEvent.last)
-                {
-                    timedelay = timedelay * 128;
-                    queuedtime += timedelay;
-                }
-
+                queuedtime = mEvent.time;
             }
-            /*  // Now we need to read the time code:
-              if (!hitscoreend)
-              {
-
-                  for (;;)
-                  {
-                      timedelay = timedelay * 128 + (working & 0x7F);
-                      if ((working & 0x80 >> 7) == 0)
-                          break;
-                  }
-                  queuedtime += timedelay;
-              }*/
         }
 
         // End of track
@@ -483,12 +467,12 @@ public class mus2mid : MonoBehaviour
         // Write the track size into the stream
 
 
-        tracksizebuffer[0] = (byte)((tracksize >> 24) & 0xff);
-        tracksizebuffer[1] = (byte)((tracksize >> 16) & 0xff);
-        tracksizebuffer[2] = (byte)((tracksize >> 8) & 0xff);
-        tracksizebuffer[3] = (byte)(tracksize & 0xff);
+        midi[MIDI_TRACKLENGTH_OFS + 0] = (byte)((tracksize >> 24) & 0xff);
+        midi[MIDI_TRACKLENGTH_OFS + 1] = (byte)((tracksize >> 16) & 0xff);
+        midi[MIDI_TRACKLENGTH_OFS + 2] = (byte)((tracksize >> 8) & 0xff);
+        midi[MIDI_TRACKLENGTH_OFS + 3] = (byte)(tracksize & 0xff);
 
-        midi.AddRange(tracksizebuffer);
+        //midi.AddRange(tracksizebuffer);
 
         return true;
     }
