@@ -6,6 +6,7 @@ using System.Linq;
 using DoomTriangulator;
 using System;
 
+
 public class mapCreator : MonoBehaviour
 {
 
@@ -23,6 +24,14 @@ public class mapCreator : MonoBehaviour
     public Button Map_Prev;
     private bool hasOpenedAllDoors = false; // TODO: temporary
 
+    mus2mid musmid;
+    public MIDIPlayer midiplayer;
+
+    public void Awake()
+    {
+        musmid = GetComponent<mus2mid>();
+    }
+
     public void buttonMapNextClicked()
     {
 
@@ -37,10 +46,13 @@ public class mapCreator : MonoBehaviour
         //use this if you want to select one map in particular
         //mapSelected = 8;
         openedMap = reader.newWad.maps[mapSelected - 1];
-        
+
         //use this if you want to pick a selection of maps to choose from instead of going through the whole list
         //int[] mapMapper = { 15, 17, 28 };
         //openedMap = reader.newWad.maps[mapMapper[(mapSelected - 1) % mapMapper.Length] - 1];
+
+        MUS mus = reader.ReadMusEntry(mapSelected - 1);
+        midiplayer.PlayMusic(musmid.WriteMidi(mus, mus.name));
 
         fillInfo(openedMap); //fill in any missing map information
         drawMap();
