@@ -7,7 +7,7 @@ public static class LineDefTypes
 {
     public class LineDefType
     {
-        public virtual int[] GetMovementBoundY(SECTORS sector)
+        public virtual int[] GetMovementBoundY(WAD wad, SECTORS sector)
         {
             return new int[2] { sector.floorHeight, sector.floorHeight };
         }
@@ -40,7 +40,7 @@ public static class LineDefTypes
             this.target = target;
         }
 
-        public override int[] GetMovementBoundY(SECTORS sector)
+        public override int[] GetMovementBoundY(WAD wad, SECTORS sector)
         {
             int[] bound = new int[2];
             switch(target)
@@ -142,12 +142,13 @@ public static class LineDefTypes
                     bound[0] = sector.floorHeight;
                     bound[1] = sector.floorHeight;
                     int texHeight = int.MaxValue;
-                    foreach (SECTORS neighbor in sector.neighbors)
+                    foreach(LINEDEFS line in sector.lines)
                     {
-                        if (neighbor.floorHeight < sector.floorHeight)
-                        {
-                            texHeight = Math.Min(texHeight, sector.floorHeight - neighbor.floorHeight);
-                        }
+                        if (line.side1 != null && wad.textures.ContainsKey(line.side1.lowTex))
+                            texHeight = Math.Min(texHeight, wad.textures[line.side1.lowTex].mainTexture.height);
+
+                        if (line.side2 != null && wad.textures.ContainsKey(line.side2.lowTex))
+                            texHeight = Math.Min(texHeight, wad.textures[line.side2.lowTex].mainTexture.height);
                     }
                     if (texHeight < int.MaxValue)
                         bound[1] = (repeatable == Repeatable.Multiple) ? sector.ceilingHeight : sector.floorHeight + texHeight;
@@ -188,6 +189,7 @@ public static class LineDefTypes
     public static Dictionary<int, LineDefType> types = new Dictionary<int, LineDefType>
     {
         { 5,   new LineDefFloorType(Category.Floor, Trigger.Walk,   Repeatable.Once,     Direction.Up,   Speed.Slow, TextureChange.None, Model.None,    MonsterActivate.No, Crush.No,  Target.LowestNeighborCeiling) },
+        // TODO: 9 is missing because 'donuts' are not fun
         { 14,  new LineDefFloorType(Category.Floor, Trigger.Switch, Repeatable.Once,     Direction.Up,   Speed.Slow, TextureChange.None, Model.None,    MonsterActivate.No, Crush.No,  Target.Absolute32) },
         { 15,  new LineDefFloorType(Category.Floor, Trigger.Switch, Repeatable.Once,     Direction.Up,   Speed.Slow, TextureChange.None, Model.None,    MonsterActivate.No, Crush.No,  Target.Absolute24) },
         { 18,  new LineDefFloorType(Category.Floor, Trigger.Switch, Repeatable.Once,     Direction.Up,   Speed.Slow, TextureChange.None, Model.None,    MonsterActivate.No, Crush.No,  Target.NextNeighborFloor) },

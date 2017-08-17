@@ -405,9 +405,6 @@ public class mus2mid : MonoBehaviour
                 //channel = mEvent.channelNum;
                 channel = GetMIDIChannel(mEvent.channelNum);
 
-                if (midi.Count > 39620) // TODO: temporary
-                    midi = midi;
-
                 switch (mEvent.musEventType)
                 {
                     case 0:

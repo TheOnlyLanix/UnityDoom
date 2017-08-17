@@ -282,32 +282,23 @@ namespace DoomTriangulator
             }
             else if(line.getFrontSector() != null && line.getBackSector() == null)
             {
-                startHeight = line.getFrontSector().floorHeight;
-                endHeight = line.getFrontSector().ceilingHeight;
+                SECTORS fSector = line.getFrontSector();
+                startHeight = fSector.floorHeight;
+                endHeight = fSector.ceilingHeight;
 
-                if (line.getFrontSector().isDoor)
-                    endHeight = line.getFrontSector().LowestNeighborCeiling();
+                if (fSector.isDoor)
+                    endHeight = fSector.LowestNeighborCeiling();
 
-                if (line.getFrontSector().isMovingFloor)
+                if (fSector.isMovingFloor)
                 {
-                    if (line.getFrontSector().isMovingFloorDown)
-                        startHeight = Math.Min(startHeight, line.getFrontSector().movementBounds[0]);
-                        //startHeight = line.getFrontSector().LowestNeighborFloor();
-
-                    if (line.getFrontSector().isMovingFloorUp)
-                        endHeight = Math.Max(endHeight, line.getFrontSector().movementBounds[1]);
-                        //endHeight = line.getFrontSector().HighestNeighborCeiling();
+                    startHeight = Math.Min(startHeight, fSector.movementBounds[0]);
+                    endHeight = Math.Max(endHeight, fSector.movementBounds[1]);
                 }
-
             }
             else if (line.getFrontSector() == null && line.getBackSector() != null)
             {
                 startHeight = line.getBackSector().floorHeight;
                 endHeight = line.getBackSector().ceilingHeight;
-            }
-            else
-            {
-                Debug.Log("??");
             }
 
             // generate a wall for each textured side

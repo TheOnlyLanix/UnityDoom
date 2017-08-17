@@ -210,8 +210,6 @@ public class SECTORS
     public List<SECTORS> neighbors = new List<SECTORS>(); //neighboring sectors
     public bool isDoor = false;
     public bool isMovingFloor = false;
-    public bool isMovingFloorDown = false;
-    public bool isMovingFloorUp = false;
     public int[] movementBounds;
 
     public int LowestNeighborFloor()
@@ -319,11 +317,6 @@ public static class LinedefTypes
 {
     public static int[] localDoors = { 1, 26, 28, 27, 31, 32, 33, 34, 46, 117, 118 };
     public static int[] remoteDoors = { 4, 29, 90, 63, 2, 103, 86, 61, 3, 50, 75, 42, 16, 76, 108, 111, 105, 114, 109, 112, 106, 115, 110, 113, 107, 116, 133, 99, 135, 134, 137, 136 };
-
-    public static int[] floors = { 9, 222, 221, 220, 219, 45, 37, 84, 159, 177, 38, 82, 23, 60, 36, 98, 71, 70, 19, 83, 102, 67, 14, 66, 15, 47, 68, 20, 95, 22, 55, 56, 94, 91, 65, 24, 5, 130, 101, 64, 69, 18, 128, 119, 132, 129, 131, 59, 93, 160, 179, 58, 92, 161, 180, 142, 147, 140, 178, 30, 96, 158, 176 };
-    public static int[] downFloors = { 9, 222, 221, 220, 219, 45, 37, 84, 159, 177, 38, 82, 23, 60, 36, 98, 71, 70, 19, 83, 102 };
-    public static int[] upFloors = { 67, 14, 66, 15, 47, 68, 20, 95, 22, 55, 56, 94, 91, 65, 24, 5, 130, 101, 64, 69, 18, 128, 119, 132, 129, 131, 59, 93, 160, 179, 58, 92, 161, 180, 142, 147, 140, 178, 30, 96, 158, 176 };
-    
 }
 
 public class MUS

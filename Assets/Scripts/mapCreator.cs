@@ -34,8 +34,11 @@ public class mapCreator : MonoBehaviour
 
         mapSelected += 1;
         openedMap = reader.newWad.maps[mapSelected - 1];
-        //int[] mapMapper = { 9, 19, 27 };
+        
+        //use this if you want to pick a selection of maps to choose from instead of going through the whole list
+        //int[] mapMapper = { 15, 17, 28 };
         //openedMap = reader.newWad.maps[mapMapper[(mapSelected - 1) % mapMapper.Length] - 1];
+
         fillInfo(openedMap); //fill in any missing map information
         drawMap();
     }
@@ -50,14 +53,11 @@ public class mapCreator : MonoBehaviour
                 GameObject.Destroy(mapParent.GetChild(i).gameObject);
             }
             mapSelected -= 1;
-            if(mapSelected <= 0) { mapSelected = 15; }
             openedMap = reader.newWad.maps[mapSelected-1];
             fillInfo(openedMap); //fill in any missing map information
             drawMap();
 
-            
             openedMap = reader.newWad.maps[mapSelected];
-
         }
     }
 
@@ -149,13 +149,12 @@ public class mapCreator : MonoBehaviour
         go.transform.position = pos;
     }
 
-
-
     void fillInfo(DoomMap map)
     {
         // find and remember each sector's tag
         foreach (SECTORS sector in map.sectors)
         {
+            if (sector.sectorTag == 0) { continue; }
             if (!map.sectorsByTag.ContainsKey(sector.sectorTag))
                 map.sectorsByTag.Add(sector.sectorTag, new List<SECTORS> { sector });
             else
@@ -186,23 +185,10 @@ public class mapCreator : MonoBehaviour
                 map.sectorsByTag[line.tag].ForEach(x => x.isDoor = true);
 
             //tag sector(s) as moving floor
-            if (line.tag != 0 && LinedefTypes.floors.Contains(line.types))
+            if (line.tag != 0 && LineDefTypes.types.ContainsKey(line.types) && map.sectorsByTag.ContainsKey(line.tag))
             {
-                if (map.sectorsByTag.ContainsKey(line.tag))
-                {
-                    foreach (SECTORS sector in map.sectorsByTag[line.tag])
-                    {
-                        sector.isMovingFloor = true;
-                        sector.isMovingFloorDown = LinedefTypes.downFloors.Contains(line.types) ? true : sector.isMovingFloorDown;
-                        sector.isMovingFloorUp = LinedefTypes.upFloors.Contains(line.types) ? true : sector.isMovingFloorUp;
-                    }
-                }
-                else
-                {
-                    back.isMovingFloor = true;
-                    back.isMovingFloorDown = LinedefTypes.downFloors.Contains(line.types) ? true : back.isMovingFloorDown;
-                    back.isMovingFloorUp = LinedefTypes.upFloors.Contains(line.types) ? true : back.isMovingFloorUp;
-                }
+                foreach (SECTORS sector in map.sectorsByTag[line.tag])
+                    sector.isMovingFloor = true;
             }
             
             if (front == null && back == null) //if this line is BROKEN
@@ -252,25 +238,18 @@ public class mapCreator : MonoBehaviour
                 {
                     foreach (SECTORS sector in map.sectorsByTag[line.tag])
                     {
-                        int[] movementBounds = LineDefTypes.types[line.types].GetMovementBoundY(sector);
+                        int[] movementBounds = LineDefTypes.types[line.types].GetMovementBoundY(reader.newWad, sector);
                         sector.movementBounds[0] = Math.Min(sector.movementBounds[0], movementBounds[0]);
                         sector.movementBounds[1] = Math.Max(sector.movementBounds[1], movementBounds[1]);
                     }
                 }
                 else if (back != null)
                 {
-                    int[] movementBounds = LineDefTypes.types[line.types].GetMovementBoundY(back);
+                    int[] movementBounds = LineDefTypes.types[line.types].GetMovementBoundY(reader.newWad, back);
                     back.movementBounds[0] = Math.Min(back.movementBounds[0], movementBounds[0]);
                     back.movementBounds[1] = Math.Max(back.movementBounds[1], movementBounds[1]);
                 }
             }
-        }
-
-        // TODO: REMOVE
-        foreach (int floor in LinedefTypes.floors)
-        {
-            if (!LineDefTypes.types.ContainsKey(floor))
-                Debug.Log("MISSING FLOOR: " + floor);
         }
     }
 }
