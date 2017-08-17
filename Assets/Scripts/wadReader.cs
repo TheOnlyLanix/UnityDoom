@@ -388,9 +388,9 @@ public class wadReader : MonoBehaviour
             newTex.Apply();
             newTex.name = flat.name;
             newTex.filterMode = FilterMode.Point;
-
             Material newMat = new Material(DoomShader);
             newMat.mainTexture = newTex;
+            newMat.SetFloat("_Mode", 1);
 
             newWad.flats.Add(flat.name, newMat);
 
@@ -575,119 +575,122 @@ public class wadReader : MonoBehaviour
 
     void ReadWADTextures()
     {
-        DrctEntry texEntry = new DrctEntry();
         TEXTUREx newTexture = new TEXTUREx();
         List<Texture> textures = new List<Texture>();
         int texOfs = 0;
 
+        List<DrctEntry> texLumps = new List<DrctEntry>();
 
 
-        foreach (DrctEntry entry in newWad.directory)//Find PNAMES
+        foreach (DrctEntry entry in newWad.directory)//Find texture's lumps
         {
-            if (entry.name.Contains("TEXTURE1"))
+            if (entry.name.StartsWith("TEXTURE"))
             {
-                texEntry = entry;
+                texLumps.Add(entry);
                 break;
             }
         }
 
-        byte[] tbytes = new byte[texEntry.size];
-
-
-        wadOpener.Position = texEntry.filepos;
-        wadOpener.Read(tbytes, 0, tbytes.Length);
-
-
-
-        //Header////
-        newTexture.numTextures = BitConverter.ToInt32(tbytes, 0);
-
-        for (int i = 4; i <= (4 * newTexture.numTextures); i += 4)
+        foreach (DrctEntry texEntry in texLumps)
         {
-            newTexture.offset.Add(BitConverter.ToInt32(tbytes, i));
-        }
-
-        texOfs = (newTexture.numTextures * 4) + 4; //start of maptexture_t?????
+            byte[] tbytes = new byte[texEntry.size];
 
 
-        int lastPatchCount = 0;
-
-        //for every texture
-        foreach (int ofs in newTexture.offset)
-        {
-            MapTexture mtex = new MapTexture();
-
-            //read the info
-            mtex.name = new String(System.Text.Encoding.ASCII.GetChars(tbytes, ofs, 8));
-            mtex.masked = BitConverter.ToBoolean(tbytes, ofs + 8);
-            mtex.width = BitConverter.ToInt16(tbytes, ofs + 12);
-            mtex.height = BitConverter.ToInt16(tbytes, ofs + 14);
-            //mtex.columndirectory = BitConverter.ToInt32(tbytes, ofs + 16);
-            mtex.patchCount = BitConverter.ToInt16(tbytes, ofs + 20);
-            lastPatchCount = mtex.patchCount;
-
-            mtex.name = mtex.name.Replace("\0", "");
+            wadOpener.Position = texEntry.filepos;
+            wadOpener.Read(tbytes, 0, tbytes.Length);
 
 
-            for (int a = ofs + 22; a < ofs + 22 + (10 * mtex.patchCount); a += 10)
+
+            //Header////
+            newTexture.numTextures = BitConverter.ToInt32(tbytes, 0);
+
+            for (int i = 4; i <= (4 * newTexture.numTextures); i += 4)
             {
-                MapPatch mPatch = new MapPatch();
-
-                mPatch.originx = (int)BitConverter.ToInt16(tbytes, a);
-                mPatch.originy = (int)BitConverter.ToInt16(tbytes, a + 2);
-                mPatch.patch = (int)BitConverter.ToInt16(tbytes, a + 4);
-                mtex.mPatch.Add(mPatch);
+                newTexture.offset.Add(BitConverter.ToInt32(tbytes, i));
             }
 
-            newTexture.mtex.Add(mtex);//store the info in newTexture.mtex
+            texOfs = (newTexture.numTextures * 4) + 4; //start of maptexture_t?????
 
-            List<Texture2D> texPatches = new List<Texture2D>();
 
-            Color32[,] texPixels = new Color32[mtex.width, mtex.height]; //store the pixels for the texture (L->R, U->D)
+            int lastPatchCount = 0;
 
-            foreach (MapPatch mpatch in mtex.mPatch) //for each patch in the texture
+            //for every texture
+            foreach (int ofs in newTexture.offset)
             {
-                int width = newWad.patches[mpatch.patch].GetLength(0);
-                int height = newWad.patches[mpatch.patch].GetLength(1);
+                MapTexture mtex = new MapTexture();
 
-                for (int x = 0; x < width; x++) //for each width pixel
+                //read the info
+                mtex.name = new String(System.Text.Encoding.ASCII.GetChars(tbytes, ofs, 8));
+                mtex.masked = BitConverter.ToBoolean(tbytes, ofs + 8);
+                mtex.width = BitConverter.ToInt16(tbytes, ofs + 12);
+                mtex.height = BitConverter.ToInt16(tbytes, ofs + 14);
+                //mtex.columndirectory = BitConverter.ToInt32(tbytes, ofs + 16);
+                mtex.patchCount = BitConverter.ToInt16(tbytes, ofs + 20);
+                lastPatchCount = mtex.patchCount;
+
+                mtex.name = mtex.name.Replace("\0", "");
+
+
+                for (int a = ofs + 22; a < ofs + 22 + (10 * mtex.patchCount); a += 10)
                 {
-                    for (int y = 0; y < height; y++) //for each height pixel
+                    MapPatch mPatch = new MapPatch();
+
+                    mPatch.originx = (int)BitConverter.ToInt16(tbytes, a);
+                    mPatch.originy = (int)BitConverter.ToInt16(tbytes, a + 2);
+                    mPatch.patch = (int)BitConverter.ToInt16(tbytes, a + 4);
+                    mtex.mPatch.Add(mPatch);
+                }
+
+                newTexture.mtex.Add(mtex);//store the info in newTexture.mtex
+
+                List<Texture2D> texPatches = new List<Texture2D>();
+
+                Color32[,] texPixels = new Color32[mtex.width, mtex.height]; //store the pixels for the texture (L->R, U->D)
+
+                foreach (MapPatch mpatch in mtex.mPatch) //for each patch in the texture
+                {
+                    int width = newWad.patches[mpatch.patch].GetLength(0);
+                    int height = newWad.patches[mpatch.patch].GetLength(1);
+
+                    for (int x = 0; x < width; x++) //for each width pixel
                     {
-                        Color pixel = newWad.patches[mpatch.patch][x, (height - 1) - y];
-                        int xofs = x + mpatch.originx;
-                        int yofs = y + mpatch.originy;
-
-                        if (pixel.a > 0 && xofs >= 0 && yofs >= 0 && xofs < mtex.width && yofs < mtex.height)
+                        for (int y = 0; y < height; y++) //for each height pixel
                         {
-                            texPixels[xofs, yofs] = pixel;
-                        }
+                            Color pixel = newWad.patches[mpatch.patch][x, (height - 1) - y];
+                            int xofs = x + mpatch.originx;
+                            int yofs = y + mpatch.originy;
 
+                            if (pixel.a > 0 && xofs >= 0 && yofs >= 0 && xofs < mtex.width && yofs < mtex.height)
+                            {
+                                texPixels[xofs, yofs] = pixel;
+                            }
+
+                        }
+                    }
+
+                }
+
+                Color[] texPix = new Color[mtex.width * mtex.height];
+                Material newMat = new Material(DoomShader);
+
+                for (int i = 0; i < mtex.height; i++)
+                {
+                    for (int j = 0; j < mtex.width; j++)
+                    {
+                        // Debug.Log(i * mtex.height + j);
+                        texPix[i * mtex.width + j] = texPixels[j, i]; //collapse the 2Darry "texPixels" to a 1D array "texPix"
                     }
                 }
-
+                Texture2D newTex = new Texture2D(mtex.width, mtex.height);
+                newTex.filterMode = FilterMode.Point;
+                newTex.SetPixels(texPix);
+                newTex.Apply();
+                newTex.name = mtex.name;
+                newMat.mainTexture = newTex;
+                newWad.textures.Add(newTex.name, newMat);
             }
-
-            Color[] texPix = new Color[mtex.width * mtex.height];
-
-            for (int i = 0; i < mtex.height; i++)
-            {
-                for (int j = 0; j < mtex.width; j++)
-                {
-                    // Debug.Log(i * mtex.height + j);
-                    texPix[i * mtex.width + j] = texPixels[j, i]; //collapse the 2Darry "texPixels" to a 1D array "texPix"
-                }
-            }
-
-            Texture2D newTex = new Texture2D(mtex.width, mtex.height);
-            newTex.filterMode = FilterMode.Point;
-            newTex.SetPixels(texPix);
-            newTex.Apply();
-            newTex.name = mtex.name;
-            Material newMat = new Material(DoomShader);
-            newMat.mainTexture = newTex;
-            newWad.textures.Add(newTex.name, newMat);
         }
+        
     }
 
 
