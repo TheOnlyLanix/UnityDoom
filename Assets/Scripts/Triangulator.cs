@@ -424,7 +424,7 @@ namespace DoomTriangulator
 
         private static void CreateTriangle(Line line, List<Line> lines, List<Line> unmarked, List<Triangle2D> triangles, List<Vertex> vertices)
         {
-            // TODO: sort vertices by least distance
+            // TODO: sort vertices by least distance?
             foreach (Vertex vertex in vertices)
             {
                 if (line.vertices.Contains(vertex))
@@ -442,7 +442,8 @@ namespace DoomTriangulator
 
                 // select a triangle for debugging
                 bool debugTriangle = false;
-
+                //debugTriangle = triangle.Identical(new Vertex[] { new Vertex(1280, 3456), new Vertex(1344, 3520), new Vertex(1472, 3648) });
+                
                 // validate that it has an area
                 if (!triangle.ValidArea())
                 {
@@ -490,9 +491,9 @@ namespace DoomTriangulator
                 foreach (Vertex vertex2 in vertices)
                 {
                     if (triangle.vertices.Contains(vertex2)) { continue; }
-                    for (double tx = vertex2.x - 0.01; tx <= vertex2.x + 0.01; tx += 0.01)
+                    for (double tx = vertex2.x - 0.001; tx <= vertex2.x + 0.001; tx += 0.001)
                     {
-                        for (double ty = vertex2.y - 0.01; ty <= vertex2.y + 0.01; ty += 0.01)
+                        for (double ty = vertex2.y - 0.001; ty <= vertex2.y + 0.001; ty += 0.001)
                         {
                             Vertex tmp = new Vertex(tx, ty);
                             if (triangle.Inside(tmp))
@@ -510,6 +511,7 @@ namespace DoomTriangulator
                 if (!lines.Contains(l3)) { lines.Add(l3); unmarked.Add(l3); }
                 if (debugTriangle) { Debug.Log("Added"); }
                 triangles.Add(triangle);
+                return;
 
                 continueSearch:;
             }
@@ -616,7 +618,7 @@ namespace DoomTriangulator
             }
 
             // make sure that this triangle isn't actually a line
-            return this.Area() > 0;
+            return this.Area() > 0.001;
         }
 
         public double Area()
@@ -698,6 +700,28 @@ namespace DoomTriangulator
                 A = -A;
             }
             return s > 0 && t > 0 && (s + t) <= A;
+        }
+
+        public bool Similar(Vertex[] otherVertices)
+        {
+            foreach (Line bLine in lines)
+            {
+                foreach (Vertex vertex1 in bLine.vertices)
+                {
+                    foreach (Vertex vertex2 in otherVertices)
+                    {
+                        if (vertex1.DistanceTo(vertex2) < 0.001)
+                        {
+                            goto continueSimilarSearch;
+                        }
+                    }
+                }
+                return false;
+                break;
+                continueSimilarSearch:;
+            }
+
+            return true;
         }
 
         public bool Identical(Triangle2D triangle)

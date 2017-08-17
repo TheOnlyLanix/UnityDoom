@@ -33,6 +33,9 @@ public class mapCreator : MonoBehaviour
         }
 
         mapSelected += 1;
+
+        //use this if you want to select one map in particular
+        //mapSelected = 8;
         openedMap = reader.newWad.maps[mapSelected - 1];
         
         //use this if you want to pick a selection of maps to choose from instead of going through the whole list
