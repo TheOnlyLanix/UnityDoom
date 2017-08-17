@@ -28,6 +28,7 @@ public class WAD
     public Dictionary<string, Material> textures = new Dictionary<string, Material>(); //textures
     public List<string> pnames = new List<string>(); //pnames lump
     public List<Color32[,]> patches = new List<Color32[,]>(); //store the patches as textures
+    public List<MUS> music = new List<MUS>();
     //more to come
 
 }
@@ -290,4 +291,36 @@ public class MapPatch
     //int stepdir; //unused
     //int colormap; //unused
 
+}
+
+public class MUS
+{
+    //Header
+    public string id;
+    public int scoreLen;
+    public int scoreStart;
+    public int channels;
+    public int sec_channels;
+    public int instrCnt;
+
+    public int[] instruments;
+
+    //Body
+
+    public List<Mus_Event> musEvents = new List<Mus_Event>();
+}
+
+public class Mus_Event
+{
+    public byte musEventType;
+    public byte channelNum;
+    public bool last;
+    public int time;
+    public byte note;
+    public byte pitch;
+    public byte vol;
+    public byte sysEventNum;
+    public byte contNum;
+    public byte contVal;
+    public bool scoreEnd = false;
 }
