@@ -370,6 +370,23 @@ public class Thing
 
     //first string is the state type
     //the list is the stuff in the state
-    public Dictionary<string, List<string>> States = new Dictionary<string, List<string>>();
+    public Dictionary<string, List<State>> States = new Dictionary<string, List<State>>();
+
+}
+
+
+public class State
+{
+    public string type;
+    public List<StateInfo> info = new List<StateInfo>();
+}
+
+
+public class StateInfo
+{
+    public string sprite;
+    public string sprInd;
+    public string time;
+    public string function;
 
 }

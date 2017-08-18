@@ -31,7 +31,7 @@ public class wadReader : MonoBehaviour
 
         ReadWADHeader();
         ReadWADDirectory();
-        //LoadDECORATEInfo();
+        LoadDECORATEInfo();
     }
 
 
@@ -929,20 +929,22 @@ public class wadReader : MonoBehaviour
 
     }
 
-
+    //thoretically this should load the decorate info from the text document in the resources folder.... 
     void LoadDECORATEInfo()
     {
         string[] decorate = File.ReadAllLines(Application.dataPath + "/Resources/DECORATE.txt"); //get the info from the file
         List<int> inherit = new List<int>();
         Char delimiter = ' ';
+        int skip = 0;
 
         int i = 0;
         while(i < decorate.Length)
         {
             string line = decorate[i];
             Thing newThing = new Thing();
-            int skip = 0;
+            
             bool state = false;//this will let us know if the line we are reading is part of the states
+
 
             if (line.StartsWith("ACTOR"))//new 'thing'
             {
@@ -951,27 +953,19 @@ public class wadReader : MonoBehaviour
                 if (lineSplit.Length > 2)//Inheritance.. save these for last
                 {
                     inherit.Add(i);//saves the line number for later
-                    continue;//skip
                 }
+
                 newThing.name = lineSplit[1]; //string after "ACTOR"
             }
             else if(!state && line.Trim().StartsWith("+"))//Flag
             {
                 newThing.Flags.Add(line);
             }
-            else if (!state && !line.StartsWith("ACTOR") && !line.Trim().StartsWith("+"))//not a state line, not the start of an actor, not a flag.. property??
-            {
-                string[] lineSplit = line.Split(delimiter);
-
-               // if(lineSplit)
-                //newThing.Properties.Add(lineSplit[0], lineSplit[1]);
-
-            }
-            else if (line.Trim() == "{")//every time we find an opening bracket on a line by itself increment skip
+            else if (line.Contains("{"))//every time we find an opening bracket on a line by itself increment skip
             {
                 skip++;
             }
-            else if (line.Trim() == "}")//every time we find an closing bracket on a line by itself decrement skip
+            else if (line.Contains("}"))//every time we find an closing bracket on a line by itself decrement skip
             {
                 skip--;
 
@@ -988,12 +982,56 @@ public class wadReader : MonoBehaviour
             else if(line.Trim().StartsWith("States"))
             {
                 state = true;
+            }
+            else if(line.Contains(":") && state)//state type
+            {
+                State newState = new State();
+
+                newState.type = line;
+
+                i++;
+
+                while(!decorate[i].Contains(":"))
+                {
+                    string[] lineSplit = decorate[i].Split(delimiter);
+                    StateInfo info = new StateInfo();
+
+                    if (lineSplit.Length > 1)
+                    {
+                        info.sprite = lineSplit[0];
+                        info.sprInd = lineSplit[1];
+                        info.time = lineSplit[2];
+                        info.function = lineSplit[3];
+
+                        newState.info.Add(info);
+                    }
+                    else
+                    {
+                        info.function = lineSplit[0];
+                        newState.info.Add(info);
+                    }
+                    i++;
+
+                    if(decorate[i].Contains("}"))
+                    {
+                        i--;
+                        break;
+                        
+                    }
+                }
+            }
+            else if (!state && !line.StartsWith("ACTOR") && !line.Trim().StartsWith("+"))//not a state line, not the start of an actor, not a flag.. property??
+            {
+                string[] lineSplit = line.Split(delimiter);
+
+                // if(lineSplit)
+                //newThing.Properties.Add(lineSplit[0], lineSplit[1]);
 
             }
 
             i++;//read next line
-
+           
         }
-
+        Debug.Log("Finished");
     }
 }

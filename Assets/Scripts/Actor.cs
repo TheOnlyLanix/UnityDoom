@@ -1506,7 +1506,12 @@ public class Actor : MonoBehaviour
 
     }
 
+    List<List<State>> actorStates = new List<List<State>>();
 
+    void fillStates()
+    {
+
+    }
     /*
     States 
     {
