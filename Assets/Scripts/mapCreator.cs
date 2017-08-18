@@ -191,21 +191,32 @@ public class mapCreator : MonoBehaviour
             SECTORS front = line.getFrontSector();
             SECTORS back = line.getBackSector();
 
-            //tag local sector as door
-            if (back != null && LinedefTypes.localDoors.Contains(line.types))
-                back.isDoor = true;
-
-            //tag remote sector(s) as door
-            if (line.tag != 0 && LinedefTypes.remoteDoors.Contains(line.types) && map.sectorsByTag.ContainsKey(line.tag))
-                map.sectorsByTag[line.tag].ForEach(x => x.isDoor = true);
-
-            //tag sector(s) as moving floor
-            if (line.tag != 0 && LineDefTypes.types.ContainsKey(line.types) && map.sectorsByTag.ContainsKey(line.tag))
+            // tag dynamic sectors
+            if (LineDefTypes.types.ContainsKey(line.types))
             {
-                foreach (SECTORS sector in map.sectorsByTag[line.tag])
-                    sector.isMovingFloor = true;
+                switch(LineDefTypes.types[line.types].category)
+                {
+                    case LineDefTypes.Category.Door:
+                        LineDefTypes.LineDefDoorType doorType = (LineDefTypes.types[line.types] as LineDefTypes.LineDefDoorType);
+                        
+                        // tag door sectors
+                        if (doorType.isLocal() && back != null)
+                            back.isDoor = true;
+                        else if (!doorType.isLocal())
+                            map.sectorsByTag[line.tag].ForEach(x => x.isDoor = true);
+
+                        break;
+
+                    case LineDefTypes.Category.Floor:
+                        LineDefTypes.LineDefFloorType floorType = (LineDefTypes.types[line.types] as LineDefTypes.LineDefFloorType);
+
+                        // tag floor sectors
+                        map.sectorsByTag[line.tag].ForEach(x => x.isMovingFloor = true);
+
+                        break;
+                }
             }
-            
+
             if (front == null && back == null) //if this line is BROKEN
             {
                 continue; //we ignore it

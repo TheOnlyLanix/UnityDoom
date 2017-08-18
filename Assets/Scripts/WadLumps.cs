@@ -314,12 +314,6 @@ public class MapPatch
 
 }
 
-public static class LinedefTypes
-{
-    public static int[] localDoors = { 1, 26, 28, 27, 31, 32, 33, 34, 46, 117, 118 };
-    public static int[] remoteDoors = { 4, 29, 90, 63, 2, 103, 86, 61, 3, 50, 75, 42, 16, 76, 108, 111, 105, 114, 109, 112, 106, 115, 110, 113, 107, 116, 133, 99, 135, 134, 137, 136 };
-}
-
 public class MUS
 {
     public string name;
