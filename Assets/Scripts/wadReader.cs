@@ -578,10 +578,6 @@ public class wadReader : MonoBehaviour
 
     void ReadWADTextures()
     {
-        TEXTUREx newTexture = new TEXTUREx();
-        List<Texture> textures = new List<Texture>();
-        int texOfs = 0;
-
         List<DrctEntry> texLumps = new List<DrctEntry>();
 
 
@@ -590,12 +586,14 @@ public class wadReader : MonoBehaviour
             if (entry.name.StartsWith("TEXTURE"))
             {
                 texLumps.Add(entry);
-                break;
             }
         }
 
         foreach (DrctEntry texEntry in texLumps)
         {
+            TEXTUREx newTexture = new TEXTUREx();
+            int texOfs = 0;
+
             byte[] tbytes = new byte[texEntry.size];
 
 
