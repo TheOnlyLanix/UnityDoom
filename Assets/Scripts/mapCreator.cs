@@ -202,7 +202,7 @@ public class mapCreator : MonoBehaviour
                         // tag door sectors
                         if (doorType.isLocal() && back != null)
                             back.isDoor = true;
-                        else if (!doorType.isLocal())
+                        else if (!doorType.isLocal() && map.sectorsByTag.ContainsKey(line.tag))
                             map.sectorsByTag[line.tag].ForEach(x => x.isDoor = true);
 
                         break;

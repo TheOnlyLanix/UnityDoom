@@ -169,14 +169,14 @@ namespace DoomTriangulator
                 {
                     if (sector.isDoor)
                     {
-                        genLowerWalls = (generating != GeneratingGo.Door);
-                        genUpperWalls = (generating == GeneratingGo.Door);
+                        genLowerWalls = genLowerWalls ? (generating != GeneratingGo.Door) : false;
+                        genUpperWalls = genUpperWalls ? (generating == GeneratingGo.Door) : false;
                     }
 
                     if (sector.isMovingFloor)
                     {
-                        genLowerWalls = (generating == GeneratingGo.Floor);
-                        genUpperWalls = (generating != GeneratingGo.Floor);
+                        genLowerWalls = genLowerWalls ? (generating == GeneratingGo.Floor) : false;
+                        genUpperWalls = genUpperWalls ? (generating != GeneratingGo.Floor) : false;
                     }
                 }
 
