@@ -22,6 +22,8 @@ public class mapCreator : MonoBehaviour
     public int mapSelected = 0;
     public Button Map_Next;
     public Button Map_Prev;
+
+    private List<GameObject> doors = new List<GameObject>(); // TODO: temporary
     private bool hasOpenedAllDoors = false; // TODO: temporary
 
     mus2mid musmid;
@@ -45,6 +47,7 @@ public class mapCreator : MonoBehaviour
 
         //use this if you want to select one map in particular
         //mapSelected = 8;
+
         openedMap = reader.newWad.maps[mapSelected - 1];
 
         //use this if you want to pick a selection of maps to choose from instead of going through the whole list
@@ -80,7 +83,7 @@ public class mapCreator : MonoBehaviour
     public void buttonMapOpenDoorsClicked()
     {
         if (hasOpenedAllDoors) { return; }
-        foreach(GameObject go in openedMap.doors)
+        foreach(GameObject go in doors)
         {
             go.transform.Translate(new Vector3(0, 64f, 0));
         }
@@ -89,6 +92,8 @@ public class mapCreator : MonoBehaviour
 
     void drawMap()
     {
+        doors = new List<GameObject>();
+
         for (int i = 0; i < openedMap.sectors.Count(); i++)    //start with a loop for each sector
         {
             //if(i != 157) { continue; }
@@ -96,7 +101,7 @@ public class mapCreator : MonoBehaviour
             CreateMapObject(sector, "Sector_" + i, Triangulator.GeneratingGo.Sector);
 
             if (sector.isDoor)
-                openedMap.doors.Add(CreateMapObject(sector, "Sector_" + i + "_Door", Triangulator.GeneratingGo.Door));
+                doors.Add(CreateMapObject(sector, "Sector_" + i + "_Door", Triangulator.GeneratingGo.Door));
 
             if (sector.isMovingFloor)
                 CreateMapObject(sector, "Sector_" + i + "_MovingFloor", Triangulator.GeneratingGo.Floor);

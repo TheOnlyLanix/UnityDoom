@@ -355,11 +355,14 @@ namespace DoomTriangulator
             startHeight = Math.Min(line.getFrontSector().ceilingHeight, line.getBackSector().ceilingHeight);
             endHeight = Math.Max(line.getFrontSector().ceilingHeight, line.getBackSector().ceilingHeight);
 
+            // this is an ugly hack in order to get DOOM2 MAP31 to have correct doors:
+            bool backSectorDoor = line.getBackSector() != null && line.getBackSector().isDoor;
+
             // generate a wall for each textured side
             if (line.getBackSector() == sector && line.side1 != null && wad.textures.ContainsKey(line.side1.upTex))
                 walls.Add(CreateWall(line.getFrontSector(), line, wad.textures[line.side1.upTex], startHeight, endHeight, false, WallType.Upper));
 
-            if (line.getFrontSector() == sector && line.side2 != null && wad.textures.ContainsKey(line.side2.upTex))
+            if (line.getFrontSector() == sector && line.side2 != null && wad.textures.ContainsKey(line.side2.upTex) && !backSectorDoor)
                 walls.Add(CreateWall(line.getBackSector(), line, wad.textures[line.side2.upTex], startHeight, endHeight, true, WallType.Upper));
 
             return walls;

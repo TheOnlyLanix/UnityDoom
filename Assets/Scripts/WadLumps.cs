@@ -61,7 +61,6 @@ public class DoomMap
     public List<Vector3> vertexes = new List<Vector3>();
     public List<SECTORS> sectors = new List<SECTORS>();
     public Dictionary<int, List<SECTORS>> sectorsByTag = new Dictionary<int, List<SECTORS>>();
-    public List<GameObject> doors = new List<GameObject>(); // TODO: temporary
 }
 
 //"short" is a signed 16-bit integer (-32768..32767), stored in lo-hi format.
