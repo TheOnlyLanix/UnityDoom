@@ -34,6 +34,28 @@ public class mapCreator : MonoBehaviour
         musmid = GetComponent<mus2mid>();
     }
 
+    static Dictionary<int, Type> MonsterType = new Dictionary<int, Type>
+    {
+        {3004, typeof(ZombieMan)        },
+        {3001, typeof(DoomImp)          },
+        {9,    typeof(ShotgunGuy)       },
+        {65,   typeof(ChaingunGuy)      },
+        {3003, typeof(BaronOfHell)      },
+        {68,   typeof(Arachnotron)      },
+        {7,    typeof(SpiderMastermind) },
+        {3002, typeof(Demon)            },
+        {58,   typeof(Spectre)          },
+        {64,   typeof(Archvile)         },
+        {69,   typeof(HellKnight)       },
+        {16,   typeof(CyberDemon)       },
+        {67,   typeof(Fatso)            },
+        {3006, typeof(LostSoul)         },
+        {71,   typeof(PainElemental)    },
+        {66,   typeof(Revenant)         },
+        {84,   typeof(WolfensteinSS)    },
+        {3005, typeof(Cacodemon)        }
+    };
+
     public void buttonMapNextClicked()
     {
 
@@ -106,9 +128,38 @@ public class mapCreator : MonoBehaviour
             if (sector.isMovingFloor)
                 CreateMapObject(sector, "Sector_" + i + "_MovingFloor", Triangulator.GeneratingGo.Floor);
         }
+        AddMonsters();
 
-        player.transform.position = new Vector3(openedMap.things[0].xPos, 60, openedMap.things[0].yPos);
         hasOpenedAllDoors = false;
+    }
+
+    void AddMonsters()
+    {
+        foreach(THINGS thing in openedMap.things)
+        {
+
+            float Zpos = 0;
+            
+            RaycastHit hit;
+            //getting the Z(Y) height
+            if (Physics.Raycast(new Vector3(thing.xPos, 1000, thing.yPos), Vector3.down, out hit))
+                Zpos = hit.point.y + 1;
+
+            Vector3 pos = new Vector3(thing.xPos, Zpos, thing.yPos);
+
+            GameObject newThing = new GameObject(thing.thingType.ToString());
+            newThing.transform.position = pos;
+
+            if(MonsterType.ContainsKey(thing.thingType))
+                newThing.AddComponent(MonsterType[thing.thingType]);
+
+            if (thing.thingType == 1)
+            {
+                player.transform.position = pos;
+            }
+
+
+        }
     }
     
     private GameObject CreateMapObject(SECTORS sector, string name, Triangulator.GeneratingGo generating)

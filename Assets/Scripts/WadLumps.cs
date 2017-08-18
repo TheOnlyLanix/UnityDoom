@@ -377,9 +377,9 @@ public class State
 
 public class StateInfo
 {
-    public string sprite;
+    public string spr;
     public string sprInd;
-    public string time;
+    public int time;
     public string function;
 
 }
