@@ -31,7 +31,7 @@ public class wadReader : MonoBehaviour
 
         ReadWADHeader();
         ReadWADDirectory();
-        LoadDECORATEInfo();
+        //LoadDECORATEInfo();
     }
 
 
@@ -963,8 +963,8 @@ public class wadReader : MonoBehaviour
             {
                 string[] lineSplit = line.Split(delimiter);
 
-                if(lineSplit)
-                newThing.Properties.Add(lineSplit[0], lineSplit[1]);
+               // if(lineSplit)
+                //newThing.Properties.Add(lineSplit[0], lineSplit[1]);
 
             }
             else if (line.Trim() == "{")//every time we find an opening bracket on a line by itself increment skip
