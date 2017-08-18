@@ -29,6 +29,7 @@ public class WAD
     public List<string> pnames = new List<string>(); //pnames lump
     public List<Color32[,]> patches = new List<Color32[,]>(); //store the patches as textures
     public List<MUS> music = new List<MUS>();
+    public List<Thing> thingdefs = new List<Thing>();
     //more to come
 
 }
@@ -352,4 +353,23 @@ public class Mus_Event
     public byte contNum;
     public byte contVal;
     public bool scoreEnd = false;
+}
+
+
+/// <summary>
+/// Stores the Properties, Flags, and States for a Thing
+/// </summary>
+public class Thing
+{
+
+    public string name;
+    public int len;
+
+    public Dictionary<string, string> Properties = new Dictionary<string, string>();//property, then value
+    public List<string> Flags = new List<string>();// flags are +FLAG
+
+    //first string is the state type
+    //the list is the stuff in the state
+    public Dictionary<string, List<string>> States = new Dictionary<string, List<string>>();
+
 }

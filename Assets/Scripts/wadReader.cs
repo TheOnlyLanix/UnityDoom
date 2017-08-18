@@ -31,7 +31,10 @@ public class wadReader : MonoBehaviour
 
         ReadWADHeader();
         ReadWADDirectory();
+        LoadDECORATEInfo();
     }
+
+
 
     void Start()
     {
@@ -923,6 +926,74 @@ public class wadReader : MonoBehaviour
         }
 
         return pal;
+
+    }
+
+
+    void LoadDECORATEInfo()
+    {
+        string[] decorate = File.ReadAllLines(Application.dataPath + "/Resources/DECORATE.txt"); //get the info from the file
+        List<int> inherit = new List<int>();
+        Char delimiter = ' ';
+
+        int i = 0;
+        while(i < decorate.Length)
+        {
+            string line = decorate[i];
+            Thing newThing = new Thing();
+            int skip = 0;
+            bool state = false;//this will let us know if the line we are reading is part of the states
+
+            if (line.StartsWith("ACTOR"))//new 'thing'
+            {
+                string[] lineSplit = line.Split(delimiter);
+
+                if (lineSplit.Length > 2)//Inheritance.. save these for last
+                {
+                    inherit.Add(i);//saves the line number for later
+                    continue;//skip
+                }
+                newThing.name = lineSplit[1]; //string after "ACTOR"
+            }
+            else if(!state && line.Trim().StartsWith("+"))//Flag
+            {
+                newThing.Flags.Add(line);
+            }
+            else if (!state && !line.StartsWith("ACTOR") && !line.Trim().StartsWith("+"))//not a state line, not the start of an actor, not a flag.. property??
+            {
+                string[] lineSplit = line.Split(delimiter);
+
+                if(lineSplit)
+                newThing.Properties.Add(lineSplit[0], lineSplit[1]);
+
+            }
+            else if (line.Trim() == "{")//every time we find an opening bracket on a line by itself increment skip
+            {
+                skip++;
+            }
+            else if (line.Trim() == "}")//every time we find an closing bracket on a line by itself decrement skip
+            {
+                skip--;
+
+                if(state)
+                {
+                    state = false;
+                }
+
+                if (skip == 0)//once we've found all of the brackets for the thing, we add it.. and continue
+                {
+                    newWad.thingdefs.Add(newThing);
+                }
+            }
+            else if(line.Trim().StartsWith("States"))
+            {
+                state = true;
+
+            }
+
+            i++;//read next line
+
+        }
 
     }
 }
