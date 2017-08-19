@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,6 +7,7 @@ public class ThingController : MonoBehaviour {
 
     public int health;
     GameObject player;
+    THINGS thing;
     Actor actor;
     MeshRenderer mr;
     GameObject sprObj;
@@ -17,8 +19,9 @@ public class ThingController : MonoBehaviour {
     //TODO: SOUNDS
     public void OnCreate(List<Texture2D> sprites, THINGS thing)
     {
-        actor = GetComponent<Actor>();
         player = GameObject.Find("FPSController");
+        this.thing = thing;
+        actor = GetComponent<Actor>();
         
         CapsuleCollider collider = gameObject.AddComponent<CapsuleCollider>();
 
@@ -49,7 +52,6 @@ public class ThingController : MonoBehaviour {
             }
         }
         mr.material.mainTexture = thingSprites[0];
-
     }
 
     // Update is called once per frame
@@ -61,62 +63,49 @@ public class ThingController : MonoBehaviour {
         rot = new Vector3(0, rot.y + 225, 0);
         sprObj.transform.rotation = Quaternion.Euler(rot);
 
-        //This is for the object rotation, will help us know which sprite to use
-        Quaternion lookRot = Quaternion.LookRotation(transform.position - player.transform.position, Vector3.up);
-        float angToPlr = lookRot.eulerAngles.y;
-
-        sidePicker(angToPlr);
-
         //Here we do something for each state
         foreach (State state in actor.actorStates)
         {
             if(state.type == currentState)
             {
-                
+
             }
         }
 
-
+        // Set our texture index according to angle from player
+        Quaternion lookRot = Quaternion.LookRotation(player.transform.position - transform.position, Vector3.up);
+        int angleTexIndex = sidePicker(lookRot.eulerAngles.y);
+        if (angleTexIndex > 4)
+        {
+            angleTexIndex = 8 - angleTexIndex;
+            mr.material.SetTextureScale("_MainTex", new Vector2(-1, 1));
+        }
+        else
+        {
+            mr.material.SetTextureScale("_MainTex", new Vector2(1, 1));
+        }
+        angleTexIndex = Math.Min(angleTexIndex, thingSprites.Count);
+        mr.material.mainTexture = thingSprites[angleTexIndex]; // TODO: we have to sort thingSprites in a more intelligent way, this wont work for everything
     }
 
     int sidePicker(float ang)
     {
-        int side = 0;
-        if (ang < 202.5 && ang > 157.5)//front image
-        {
-            side = 1;
-        }
-        else if (ang < 247.5 && ang > 202.5)//frontleft image
-        {
-            side = 2;
-        }
-        else if (ang < 292.5 && ang > 247.5)//left image
-        {
-            side = 3;
-        }
-        else if (ang < 337.5 && ang > 292.5)//rearleft image
-        {
-            side = 4;
-        }
-        else if (ang > 337.5 || ang < 22.5)//rear image
-        {
-            side = 5;
-        }
-        else if (ang < 67.5 && ang > 22.5)//rear right image
-        {
-            side = 6;
-        }
-        else if (ang < 112.5 && ang > 67.5)//right image
-        {
-            side = 7;
-        }
-        else if (ang < 157.5 && ang > 112.5)//front right image
-        {
-            side = 8;
-        }
-        return side;
-    }
+        // DOOM has 8 frames for 8 directions
+        float sideFrames = 8f;
 
+        // offset angle by half of the angle between frames
+        // this is so we change frames at angle 22.5 instead of angle 0
+        float ang2 = ang + (360f / sideFrames) / 2f;
+
+        // offset angle by -90 degrees, to make north actually north
+        ang2 -= 90;
+
+        // wrap the angle by 360 so we don't have any negative degrees
+        ang2 = (thing.angle + ang2 + 360f) % 360;
+
+        // figure out the actual side
+        return (int)(ang2 * sideFrames / 360f);
+    }
 
     Mesh createPlane()
     {

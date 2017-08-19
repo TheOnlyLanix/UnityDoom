@@ -1814,6 +1814,11 @@ public class BaronOfHell : Monster
 
     public virtual void Awake()
     {
+        OnAwake();
+    }
+
+    public void OnAwake()
+    {
         Health = 1000;
         Radius = 24;
         Height = 64;
@@ -2315,6 +2320,11 @@ public class Demon : Monster
 
     public virtual void Awake()
     {
+        OnAwake();
+    }
+
+    public void OnAwake()
+    {
         Health = 150;
         Radius = 30;
         Height = 56;
@@ -2401,6 +2411,7 @@ public class Spectre : Demon
 
     public override void Awake()
     {
+        OnAwake();
         SeeSound = "spectre/sight";
         AttackSound = "spectre/attack";
         PainSound = "spectre/pain";
@@ -2514,6 +2525,7 @@ public class HellKnight : BaronOfHell
 {
     public override void Awake()
     {
+        OnAwake();
         Health = 500;
 
         //-BOSSDEATH
