@@ -3223,6 +3223,7 @@ public class Cacodemon : Monster
         Height = 56;
         Speed = 8;
         PainChance = 128;
+        sprite = "HEAD";
 
         actorStates = new List<State>
         {

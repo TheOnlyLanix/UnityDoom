@@ -51,7 +51,11 @@ public class ThingController : MonoBehaviour {
                 thingSprites.Add(spr);
             }
         }
-        mr.material.mainTexture = thingSprites[0];
+
+        if (thingSprites.Count > 0)
+            mr.material.mainTexture = thingSprites[0];
+        else
+            Debug.LogError("Could not find sprites for " + actor.name);
     }
 
     // Update is called once per frame
@@ -73,19 +77,22 @@ public class ThingController : MonoBehaviour {
         }
 
         // Set our texture index according to angle from player
-        Quaternion lookRot = Quaternion.LookRotation(player.transform.position - transform.position, Vector3.up);
-        int angleTexIndex = sidePicker(lookRot.eulerAngles.y);
-        if (angleTexIndex > 4)
+        if (thingSprites.Count >= 4)
         {
-            angleTexIndex = 8 - angleTexIndex;
-            mr.material.SetTextureScale("_MainTex", new Vector2(-1, 1));
+            Quaternion lookRot = Quaternion.LookRotation(player.transform.position - transform.position, Vector3.up);
+            int angleTexIndex = sidePicker(lookRot.eulerAngles.y);
+            if (angleTexIndex > 4)
+            {
+                angleTexIndex = 8 - angleTexIndex;
+                mr.material.SetTextureScale("_MainTex", new Vector2(-1, 1));
+            }
+            else
+            {
+                mr.material.SetTextureScale("_MainTex", new Vector2(1, 1));
+            }
+            angleTexIndex = Math.Min(angleTexIndex, thingSprites.Count);
+            mr.material.mainTexture = thingSprites[angleTexIndex]; // TODO: we have to sort thingSprites in a more intelligent way, this wont work for everything
         }
-        else
-        {
-            mr.material.SetTextureScale("_MainTex", new Vector2(1, 1));
-        }
-        angleTexIndex = Math.Min(angleTexIndex, thingSprites.Count);
-        mr.material.mainTexture = thingSprites[angleTexIndex]; // TODO: we have to sort thingSprites in a more intelligent way, this wont work for everything
     }
 
     int sidePicker(float ang)

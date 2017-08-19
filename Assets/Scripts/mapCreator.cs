@@ -12,6 +12,7 @@ public class mapCreator : MonoBehaviour
 
     public DoomMap openedMap;
     public Transform monsterParent;
+    public Transform sectorParent;
     public Transform mapParent;
     public GameObject player;
     public wadReader reader;
@@ -55,19 +56,18 @@ public class mapCreator : MonoBehaviour
         {3005, typeof(Cacodemon)        }
     };
 
-    public void buttonMapNextClicked()
+
+    IEnumerator CreateMap()
     {
-
-
+        //destroy all children of map parent
         for (int i = 0; i < mapParent.childCount; i++)
         {
             GameObject.Destroy(mapParent.GetChild(i).gameObject);
         }
-
-        mapSelected += 1;
+        yield return (new WaitForEndOfFrame());
 
         //use this if you want to select one map in particular
-        //mapSelected = 8;
+        //if (mapSelected == 1) { mapSelected = 14; }
 
         openedMap = reader.newWad.maps[mapSelected - 1];
 
@@ -75,31 +75,29 @@ public class mapCreator : MonoBehaviour
         //int[] mapMapper = { 15, 17, 28 };
         //openedMap = reader.newWad.maps[mapMapper[(mapSelected - 1) % mapMapper.Length] - 1];
 
+        //read and play music
         MUS mus = reader.ReadMusEntry(mapSelected - 1);
         midiplayer.PlayMusic(musmid.WriteMidi(mus, mus.name));
 
-        fillInfo(openedMap); //fill in any missing map information
-        drawMap();
+        //fill in any missing map information
+        fillInfo(openedMap);
+        
+        //add sectors and monsters to map
+        AddSectors();
+        AddMonsters();
+    }
+
+    public void buttonMapNextClicked()
+    {
+        mapSelected++;
+        StartCoroutine(CreateMap());
     }
 
     public void buttonMapPrevCLicked()
     {
-        if (mapSelected > 0)
-        {
-
-            for (int i = 0; i < mapParent.childCount; i++)
-            {
-                GameObject.Destroy(mapParent.GetChild(i).gameObject);
-            }
-            mapSelected -= 1;
-            openedMap = reader.newWad.maps[mapSelected-1];
-            fillInfo(openedMap); //fill in any missing map information
-            drawMap();
-
-            openedMap = reader.newWad.maps[mapSelected];
-        }
+        mapSelected--;
+        StartCoroutine(CreateMap());
     }
-
 
     public void buttonMapOpenDoorsClicked()
     {
@@ -111,8 +109,11 @@ public class mapCreator : MonoBehaviour
         hasOpenedAllDoors = true;
     }
 
-    void drawMap()
+    void AddSectors()
     {
+        sectorParent = new GameObject("sectorParent").transform;
+        sectorParent.parent = mapParent;
+
         doors = new List<GameObject>();
 
         for (int i = 0; i < openedMap.sectors.Count(); i++)    //start with a loop for each sector
@@ -127,18 +128,15 @@ public class mapCreator : MonoBehaviour
             if (sector.isMovingFloor)
                 CreateMapObject(sector, "Sector_" + i + "_MovingFloor", Triangulator.GeneratingGo.Floor);
         }
-        AddMonsters();
 
         hasOpenedAllDoors = false;
     }
 
     void AddMonsters()
     {
-        if(!monsterParent)
-        {
-            monsterParent = new GameObject("monsterParent").transform;
-            monsterParent.parent = mapParent;
-        }
+        monsterParent = new GameObject("monsterParent").transform;
+        monsterParent.parent = mapParent;
+
         foreach(THINGS thing in openedMap.things)
         {
 
@@ -162,13 +160,10 @@ public class mapCreator : MonoBehaviour
                 controller.OnCreate(reader.newWad.sprites, thing);
             }
                 
-
             if (thing.thingType == 1)
             {
                 player.transform.position = pos;
             }
-
-
         }
     }
     
@@ -203,7 +198,7 @@ public class mapCreator : MonoBehaviour
         go.AddComponent<MeshFilter>();
         go.AddComponent<MeshRenderer>();
         go.name = name;
-        go.transform.parent = mapParent;
+        go.transform.parent = sectorParent;
 
         //Set up some variables
         rend = go.GetComponent<Renderer>();
@@ -274,11 +269,13 @@ public class mapCreator : MonoBehaviour
                         break;
 
                     case LineDefTypes.Category.Floor:
-                        LineDefTypes.LineDefFloorType floorType = (LineDefTypes.types[line.types] as LineDefTypes.LineDefFloorType);
-
                         // tag floor sectors
                         map.sectorsByTag[line.tag].ForEach(x => x.isMovingFloor = true);
+                        break;
 
+                    case LineDefTypes.Category.Lift:
+                        // tag lift sectors
+                        map.sectorsByTag[line.tag].ForEach(x => x.isMovingFloor = true);
                         break;
                 }
             }
@@ -330,14 +327,14 @@ public class mapCreator : MonoBehaviour
                 {
                     foreach (SECTORS sector in map.sectorsByTag[line.tag])
                     {
-                        int[] movementBounds = LineDefTypes.types[line.types].GetMovementBoundY(reader.newWad, sector);
+                        int[] movementBounds = LineDefTypes.types[line.types].GetFloorMovementBound(reader.newWad, sector);
                         sector.movementBounds[0] = Math.Min(sector.movementBounds[0], movementBounds[0]);
                         sector.movementBounds[1] = Math.Max(sector.movementBounds[1], movementBounds[1]);
                     }
                 }
                 else if (back != null)
                 {
-                    int[] movementBounds = LineDefTypes.types[line.types].GetMovementBoundY(reader.newWad, back);
+                    int[] movementBounds = LineDefTypes.types[line.types].GetFloorMovementBound(reader.newWad, back);
                     back.movementBounds[0] = Math.Min(back.movementBounds[0], movementBounds[0]);
                     back.movementBounds[1] = Math.Max(back.movementBounds[1], movementBounds[1]);
                 }
