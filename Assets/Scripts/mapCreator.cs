@@ -82,7 +82,17 @@ public class mapCreator : MonoBehaviour
 
         //fill in any missing map information
         fillInfo(openedMap);
-        
+        float minx = 0;
+        float miny = 0;
+        foreach(Vector3 vert in openedMap.vertexes)
+        {
+            if (vert.x > minx)
+                minx = vert.x;
+            if (vert.z > miny)
+                miny = vert.z;
+        }
+        skybox.transform.position = new Vector3(minx, 0, miny);
+
         //add sectors and monsters to map
         AddSectors();
         SetSkyboxTexture();
