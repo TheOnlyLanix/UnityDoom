@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ThingController : MonoBehaviour {
+public class MonsterController : MonoBehaviour {
 
     public int health;
     GameObject player;
@@ -67,15 +67,6 @@ public class ThingController : MonoBehaviour {
         rot = new Vector3(0, rot.y + 225, 0);
         sprObj.transform.rotation = Quaternion.Euler(rot);
 
-        //Here we do something for each state
-        foreach (State state in actor.actorStates)
-        {
-            if(state.type == currentState)
-            {
-
-            }
-        }
-
         // Set our texture index according to angle from player
         if (thingSprites.Count >= 4)
         {
@@ -93,6 +84,15 @@ public class ThingController : MonoBehaviour {
             angleTexIndex = Math.Min(angleTexIndex, thingSprites.Count);
             mr.material.mainTexture = thingSprites[angleTexIndex]; // TODO: we have to sort thingSprites in a more intelligent way, this wont work for everything
         }
+    }
+
+    IEnumerator StateController(int time)
+    {
+        //use this for monster state control.
+
+
+
+        yield return new WaitForSeconds(time / 140);
     }
 
     int sidePicker(float ang)

@@ -138,9 +138,12 @@ namespace DoomTriangulator
             ceiling.triangles = tmpTris.ToArray();
             ceiling.normals = tmpNrm.ToArray();
 
+
+
             SubMesh newSubMesh = new SubMesh();
             newSubMesh.mesh = ceiling;
             newSubMesh.material = mat;
+
 
             return newSubMesh;
         }
@@ -366,6 +369,20 @@ namespace DoomTriangulator
                 walls.Add(CreateWall(line.getBackSector(), line, wad.textures[line.side2.upTex], startHeight, endHeight, true, WallType.Upper));
 
             return walls;
+        }
+
+        public static void CreateSkybox(GameObject skybox)
+        {
+            Mesh skymesh = skybox.GetComponent<MeshFilter>().mesh;
+            int[] newtris = new int[skymesh.triangles.Length];
+
+            for(int i = 0; i < skymesh.triangles.Length; i+=3)
+            {
+                newtris[i] = skymesh.triangles[i];
+                newtris[i + 1] = skymesh.triangles[i + 2];
+                newtris[i + 2] = skymesh.triangles[i + 1];
+            }
+            skymesh.triangles = newtris;
         }
 
         public static void CombineSubmeshes(ref Mesh mesh, List<SubMesh> submeshes, ref Material[] materials)

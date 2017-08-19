@@ -17,9 +17,12 @@ public class wadReader : MonoBehaviour
     PLAYPAL playPal;
 
     public Shader DoomShader;
+    public Shader SkyShader;
     enum type { Sprite, Flat, Patch };
 
     FileStream wadOpener;
+
+    List<RenderTexture> mapRts = new List<RenderTexture>();
 
     //End of UI Elements
 
@@ -375,13 +378,11 @@ public class wadReader : MonoBehaviour
             newTex.Apply();
             newTex.name = flat.name;
             newTex.filterMode = FilterMode.Point;
-            Material newMat = new Material(DoomShader);
+            Material newMat;
+
+            newMat = new Material(DoomShader);
             newMat.mainTexture = newTex;
-            newMat.SetFloat("_Mode", 1);
-
             newWad.flats.Add(flat.name, newMat);
-
-
         }
 
     }
@@ -656,7 +657,9 @@ public class wadReader : MonoBehaviour
                 }
 
                 Color[] texPix = new Color[mtex.width * mtex.height];
-                Material newMat = new Material(DoomShader);
+                Material newMat;
+
+                newMat = new Material(DoomShader);
 
                 for (int i = 0; i < mtex.height; i++)
                 {

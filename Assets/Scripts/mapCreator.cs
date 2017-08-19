@@ -17,12 +17,12 @@ public class mapCreator : MonoBehaviour
     public GameObject player;
     public wadReader reader;
     public int secNum = 0;
-
+    public GameObject skybox;
     //Map stuff
     public int mapSelected = 0;
     public Button Map_Next;
     public Button Map_Prev;
-
+    public Texture2D sky;
     private List<GameObject> doors = new List<GameObject>(); // TODO: temporary
     private bool hasOpenedAllDoors = false; // TODO: temporary
 
@@ -31,6 +31,7 @@ public class mapCreator : MonoBehaviour
 
     public void Awake()
     {
+        CreateSkybox();
         musmid = GetComponent<mus2mid>();
     }
 
@@ -84,7 +85,14 @@ public class mapCreator : MonoBehaviour
         
         //add sectors and monsters to map
         AddSectors();
+        SetSkyboxTexture();
         AddMonsters();
+    }
+
+    void SetSkyboxTexture()
+    {
+        MeshRenderer smr = skybox.GetComponent<MeshRenderer>();
+        smr.material.mainTexture = sky;
     }
 
     public void buttonMapNextClicked()
@@ -129,6 +137,8 @@ public class mapCreator : MonoBehaviour
                 CreateMapObject(sector, "Sector_" + i + "_MovingFloor", Triangulator.GeneratingGo.Floor);
         }
 
+
+
         hasOpenedAllDoors = false;
     }
 
@@ -156,7 +166,7 @@ public class mapCreator : MonoBehaviour
             if(MonsterType.ContainsKey(thing.thingType))
             {
                 newThing.AddComponent(MonsterType[thing.thingType]);
-                ThingController controller = newThing.AddComponent<ThingController>();
+                MonsterController controller = newThing.AddComponent<MonsterController>();
                 controller.OnCreate(reader.newWad.sprites, thing);
             }
                 
@@ -166,7 +176,12 @@ public class mapCreator : MonoBehaviour
             }
         }
     }
-    
+
+    public void CreateSkybox()
+    {
+        Triangulator.CreateSkybox(skybox);
+    }
+
     private GameObject CreateMapObject(SECTORS sector, string name, Triangulator.GeneratingGo generating)
     {
         //create lists for combining floor and ceiling meshes
@@ -178,7 +193,17 @@ public class mapCreator : MonoBehaviour
         sectorMeshes.Add(floor);
 
         //create ceiling
-        sectorMeshes.Add(Triangulator.CreateCeiling(floor, sector, reader.newWad.flats[sector.ceilingFlat], generating));
+        if (!(reader.newWad.flats[sector.ceilingFlat].mainTexture.name == "F_SKY1"))//skip the sky texture
+        {
+            sectorMeshes.Add(Triangulator.CreateCeiling(floor, sector, reader.newWad.flats[sector.ceilingFlat], generating));
+        }
+        else
+        {
+            sky = (Texture2D)reader.newWad.textures["SKY1"].mainTexture;
+        }
+
+        //sectorMeshes.Add(Triangulator.CreateCeiling(floor, sector, ceilingMat, generating));
+
 
         //create walls
         sectorMeshes.AddRange(Triangulator.CreateWalls(sector, reader.newWad, generating));
@@ -213,6 +238,15 @@ public class mapCreator : MonoBehaviour
         go.GetComponent<MeshFilter>().mesh = mesh;
         go.AddComponent<MeshCollider>();
         return go;
+    }
+
+    private Material SetupRenderTextures()
+    {
+        Material mat = new Material(Shader.Find("Custom/SkyShader"));
+        RenderTexture rt = new RenderTexture(64, 64, 16);
+        rt.Create();
+        mat.mainTexture = rt;
+        return mat;
     }
 
     void drawVert(Vector3 pos)
