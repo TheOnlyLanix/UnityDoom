@@ -1,4 +1,4 @@
-﻿Shader "Custom/DoomFlat" {
+﻿Shader "Custom/DoomShader" {
 	Properties {
 		[PerRendererData]_Color ("Color", Color) = (1,1,1,1)
 		_MainTex ("Base (RGB) Trans (A)", 2D) = "white" {}

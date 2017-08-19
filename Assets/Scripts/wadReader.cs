@@ -308,7 +308,6 @@ public class wadReader : MonoBehaviour
                 for (int j = 0; j < columnBytes.Length; j++) //Filling columnBytes with data about the current column
                 {
                     columnBytes[j] = spriteBytes[colPos + j];
-
                 }
 
                 if (columnBytes.Length > 0)
@@ -317,41 +316,27 @@ public class wadReader : MonoBehaviour
 
                     for (int p = 0; p < columnBytes.Length; p += postSize) //for each post (need correct post size and amount of posts or ERROR)
                     {
-
                         if (p < columnBytes.Length)
                         {
-
-
                             for (int j = 0; j < columnBytes[p + 1]; j++) //FOR EACH PIXEL
                             {
-
                                 int yPos; //the position of the pixel from the bottom of the image. (extrapolated from the top. and whatnot..)
                                           //J signifies which pixel (from TOP TO BOTTOM) we are on
-
                                 label = (postSize) + " " + p;
-
                                 yPos = (newPicture.Height - (columnBytes[p] + j)) - 1;
-
                                 newTex.SetPixel(i, yPos, playPal.colors[columnBytes[p + j + 3]]);
-
                             }
-
                             postSize = columnBytes[p + 1] + 4;
-
                         }
-
-
                     }
                 }
-
             }
             // newTex.SetPixel(i, j, new Color(columnBytes[i], columnBytes[i], columnBytes[i]));
             newTex.Apply();
-
-            Sprite newSprite = Sprite.Create(newTex, new Rect(0, 0, newTex.width, newTex.height), Vector2.zero);
-            newSprite.name = sprite.name;
-
-            newWad.sprites.Add(newSprite);
+            newTex.filterMode = FilterMode.Point;
+            newTex.name = sprite.name;
+            newWad.sprites.Add(newTex);
+            
         }
 
 

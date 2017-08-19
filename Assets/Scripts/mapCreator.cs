@@ -11,11 +11,10 @@ public class mapCreator : MonoBehaviour
 {
 
     public DoomMap openedMap;
-
+    public Transform monsterParent;
     public Transform mapParent;
     public GameObject player;
     public wadReader reader;
-
     public int secNum = 0;
 
     //Map stuff
@@ -135,6 +134,11 @@ public class mapCreator : MonoBehaviour
 
     void AddMonsters()
     {
+        if(!monsterParent)
+        {
+            monsterParent = new GameObject("monsterParent").transform;
+            monsterParent.parent = mapParent;
+        }
         foreach(THINGS thing in openedMap.things)
         {
 
@@ -148,10 +152,16 @@ public class mapCreator : MonoBehaviour
             Vector3 pos = new Vector3(thing.xPos, Zpos, thing.yPos);
 
             GameObject newThing = new GameObject(thing.thingType.ToString());
+            newThing.transform.parent = monsterParent;
             newThing.transform.position = pos;
 
             if(MonsterType.ContainsKey(thing.thingType))
+            {
                 newThing.AddComponent(MonsterType[thing.thingType]);
+                ThingController controller = newThing.AddComponent<ThingController>();
+                controller.OnCreate(reader.newWad.sprites, thing);
+            }
+                
 
             if (thing.thingType == 1)
             {

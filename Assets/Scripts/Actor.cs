@@ -29,6 +29,12 @@ public class Actor : MonoBehaviour
     public int WeaveIndexXY = 0;
     public int WeaveIndexZ = 16;
     public int DesignatedTeam = 255;
+    public int Speed = 10;
+    public int PainChance = 100;
+    public int Damage = 10;
+    public string Name = "Actor";
+    public string sprite = "TNT1";
+
 
     public string Paintype = "Normal";
     public string DeathType = "Normal";
@@ -56,6 +62,7 @@ public class Actor : MonoBehaviour
 
     List<int> VisibleAngles = new List<int>();
     List<int> VisiblePitch = new List<int>();
+
 
     // Functions
     bool CheckClass(Thing checkclass, int ptr_select, bool match_superclass)
@@ -1507,7 +1514,7 @@ public class Actor : MonoBehaviour
 
     }
 
-    List<State> actorStates = new List<State>
+    public List<State> actorStates = new List<State>
     {
         new State
         {
@@ -1556,16 +1563,26 @@ public class Actor : MonoBehaviour
 
 }
 
+public class Monster: Actor
+{
+    /*
+    SHOOTABLE
+    COUNTKILL
+    SOLID
+    CANPUSHWALLS
+    CANUSEWALLS
+    ACTIVATEMCROSS
+    CANPASS
+    ISMONSTER
+    */
 
-public class ShotgunGuy : Actor
+    //other monster stuff
+}
+
+
+public class ShotgunGuy : Monster
 {
 
-    new int Health = 30;
-    new int Radius = 20;
-    new int Height = 56;
-    new int Mass = 100;
-    public int Speed = 8;
-    public int PainChance =170;
 
     //Monster
     //+FLOORCLIP
@@ -1579,98 +1596,101 @@ public class ShotgunGuy : Actor
     public string DropItem = "Shotgun";
 
 
-
-    List<State> actorStates = new List<State>
+    public void Awake()
     {
-        new State
-        {
-           type = "Spawn",
-           info = new List<StateInfo>
-           {
-               new StateInfo{spr = "SPOS", sprInd = "AB", time = 10, function = "A_Look"},
-               new StateInfo{function = "Loop" }
-           }
+        Health = 30;
+        Radius = 20;
+        Height = 56;
+        Mass = 100;
+        Speed = 8;
+        PainChance = 170;
+        sprite = "SPOS";
 
-       },
-       new State
-       {
-           type = "See",
-           info = new List<StateInfo>
-           {
-               new StateInfo{spr = "SPOS", sprInd = "AABBCCDD", time = 3, function = "A_Chase"},
-               new StateInfo{function = "Loop"}
-           }
-       },
-       new State
-       {
-           type = "Missile",
-           info = new List<StateInfo>
-           {
-               new StateInfo{spr = "SPOS", sprInd = "E", time = 10, function = "A_FaceTarget" },
-               new StateInfo{spr = "SPOS", sprInd = "F", time = 10, function = "A_SPosAttackUseAtkSound" },
-               new StateInfo{spr = "SPOS", sprInd = "E", time = 10 },
-               new StateInfo{function = "See"}
-           }
-       },
-        new State
+        actorStates = new List<State>
         {
-           type = "Pain",
-           info = new List<StateInfo>
+            new State
+            {
+               type = "Spawn",
+               info = new List<StateInfo>
+               {
+                   new StateInfo{spr = "SPOS", sprInd = "AB", time = 10, function = "A_Look"},
+                   new StateInfo{function = "Loop" }
+               }
+
+           },
+           new State
            {
-               new StateInfo{spr = "SPOS", sprInd = "G", time = 3, function = ""},
-               new StateInfo{spr = "SPOS", sprInd = "G", time = 3, function = "A_Pain"},
-               new StateInfo {function = "See"}
-           }
-        },
-        new State
-        {
-           type = "Death",
-           info = new List<StateInfo>
+               type = "See",
+               info = new List<StateInfo>
+               {
+                   new StateInfo{spr = "SPOS", sprInd = "AABBCCDD", time = 3, function = "A_Chase"},
+                   new StateInfo{function = "Loop"}
+               }
+           },
+           new State
            {
-               new StateInfo{spr = "SPOS", sprInd = "H", time = 5, function = "" },
-               new StateInfo{spr = "SPOS", sprInd = "I", time = 5, function = "A_Scream" },
-               new StateInfo{spr = "SPOS", sprInd = "J", time = 5, function = "A_NoBlocking" },
-               new StateInfo{spr = "SPOS", sprInd = "K", time = 5},
-               new StateInfo{spr = "SPOS", sprInd = "L", time = -1},
-               new StateInfo{function = "Stop"}
-           }
-        },
-        new State
-        {
-           type = "XDeath",
-           info = new List<StateInfo>
-           {
-               new StateInfo{spr = "SPOS", sprInd = "M", time = 5, function = "" },
-               new StateInfo{spr = "SPOS", sprInd = "N", time = 5, function = "A_XScream" },
-               new StateInfo{spr = "SPOS", sprInd = "O", time = 5, function = "A_NoBlocking" },
-               new StateInfo{spr = "SPOS", sprInd = "PQRST", time = 5},
-               new StateInfo{spr = "SPOS", sprInd = "U", time = -1},
-               new StateInfo{function = "Stop"}
-           }
-        },
-        new State
-        {
-           type = "Raise",
-           info = new List<StateInfo>
-           {
-               new StateInfo{spr = "SPOS", sprInd = "L", time = 5},
-               new StateInfo{spr = "SPOS", sprInd = "KJIH", time = 5},
-               new StateInfo{function = "See"}
-           }
-        }
-    };
+               type = "Missile",
+               info = new List<StateInfo>
+               {
+                   new StateInfo{spr = "SPOS", sprInd = "E", time = 10, function = "A_FaceTarget" },
+                   new StateInfo{spr = "SPOS", sprInd = "F", time = 10, function = "A_SPosAttackUseAtkSound" },
+                   new StateInfo{spr = "SPOS", sprInd = "E", time = 10 },
+                   new StateInfo{function = "See"}
+               }
+           },
+            new State
+            {
+               type = "Pain",
+               info = new List<StateInfo>
+               {
+                   new StateInfo{spr = "SPOS", sprInd = "G", time = 3, function = ""},
+                   new StateInfo{spr = "SPOS", sprInd = "G", time = 3, function = "A_Pain"},
+                   new StateInfo {function = "See"}
+               }
+            },
+            new State
+            {
+               type = "Death",
+               info = new List<StateInfo>
+               {
+                   new StateInfo{spr = "SPOS", sprInd = "H", time = 5, function = "" },
+                   new StateInfo{spr = "SPOS", sprInd = "I", time = 5, function = "A_Scream" },
+                   new StateInfo{spr = "SPOS", sprInd = "J", time = 5, function = "A_NoBlocking" },
+                   new StateInfo{spr = "SPOS", sprInd = "K", time = 5},
+                   new StateInfo{spr = "SPOS", sprInd = "L", time = -1},
+                   new StateInfo{function = "Stop"}
+               }
+            },
+            new State
+            {
+               type = "XDeath",
+               info = new List<StateInfo>
+               {
+                   new StateInfo{spr = "SPOS", sprInd = "M", time = 5, function = "" },
+                   new StateInfo{spr = "SPOS", sprInd = "N", time = 5, function = "A_XScream" },
+                   new StateInfo{spr = "SPOS", sprInd = "O", time = 5, function = "A_NoBlocking" },
+                   new StateInfo{spr = "SPOS", sprInd = "PQRST", time = 5},
+                   new StateInfo{spr = "SPOS", sprInd = "U", time = -1},
+                   new StateInfo{function = "Stop"}
+               }
+            },
+            new State
+            {
+               type = "Raise",
+               info = new List<StateInfo>
+               {
+                   new StateInfo{spr = "SPOS", sprInd = "L", time = 5},
+                   new StateInfo{spr = "SPOS", sprInd = "KJIH", time = 5},
+                   new StateInfo{function = "See"}
+               }
+            }
+        };
+
+    }
 }
 
-public class ChaingunGuy : Actor
+public class ChaingunGuy : Monster
 {
-
-    new int Health = 70;
-    new int Radius = 20;
-    new int Height = 56;
-    new int Mass = 100;
-
-    public int Speed = 8;
-    public int PainChance = 170;
 
     //Monster
     //+FLOORCLIP
@@ -1683,97 +1703,104 @@ public class ChaingunGuy : Actor
     public string Obituary = "$OB_CHAINGUY";
     public string DropItem = "Chaingun";
 
-    List<State> actorStates = new List<State>
-    {
-        new State
-        {
-           type = "Spawn",
-           info = new List<StateInfo>
-           {
-               new StateInfo{spr = "CPOS", sprInd = "AB", time = 10, function = "A_Look"},
-               new StateInfo{function = "Loop" }
-           }
 
-       },
-       new State
+    public void Awake()
+    {
+        Health = 70;
+        Radius = 20;
+        Height = 56;
+        Mass = 100;
+
+        Speed = 8;
+        PainChance = 170;
+
+        sprite = "CPOS";
+
+        actorStates = new List<State>
        {
-           type = "See",
-           info = new List<StateInfo>
+           new State
            {
-               new StateInfo{spr = "CPOS", sprInd = "AABBCCDD", time = 3, function = "A_Chase"},
-               new StateInfo{function = "Loop"}
-           }
-       },
-       new State
-       {
-           type = "Missile",
-           info = new List<StateInfo>
+               type = "Spawn",
+               info = new List<StateInfo>
+               {
+                   new StateInfo{spr = "CPOS", sprInd = "AB", time = 10, function = "A_Look"},
+                   new StateInfo{function = "Loop" }
+               }
+
+           },
+           new State
            {
-               new StateInfo{spr = "CPOS", sprInd = "E", time = 10, function = "A_FaceTarget" },
-               new StateInfo{spr = "CPOS", sprInd = "FE", time = 4, function = "A_CPosAttack" },
-               new StateInfo{spr = "CPOS", sprInd = "F", time = 1, function = "A_CPosRefire" },
-               new StateInfo{function = "Missile+1"}
-           }
-       },
-        new State
-        {
-           type = "Pain",
-           info = new List<StateInfo>
+               type = "See",
+               info = new List<StateInfo>
+               {
+                   new StateInfo{spr = "CPOS", sprInd = "AABBCCDD", time = 3, function = "A_Chase"},
+                   new StateInfo{function = "Loop"}
+               }
+           },
+           new State
            {
-               new StateInfo{spr = "CPOS", sprInd = "G", time = 3, function = ""},
-               new StateInfo{spr = "CPOS", sprInd = "G", time = 3, function = "A_Pain"},
-               new StateInfo {function = "See"}
-           }
-        },
-        new State
-        {
-           type = "Death",
-           info = new List<StateInfo>
+               type = "Missile",
+               info = new List<StateInfo>
+               {
+                   new StateInfo{spr = "CPOS", sprInd = "E", time = 10, function = "A_FaceTarget" },
+                   new StateInfo{spr = "CPOS", sprInd = "FE", time = 4, function = "A_CPosAttack" },
+                   new StateInfo{spr = "CPOS", sprInd = "F", time = 1, function = "A_CPosRefire" },
+                   new StateInfo{function = "Missile+1"}
+               }
+           },
+           new State
            {
-               new StateInfo{spr = "CPOS", sprInd = "H", time = 5, function = "" },
-               new StateInfo{spr = "CPOS", sprInd = "I", time = 5, function = "A_Scream" },
-               new StateInfo{spr = "CPOS", sprInd = "J", time = 5, function = "A_NoBlocking" },
-               new StateInfo{spr = "CPOS", sprInd = "KLM", time = 5},
-               new StateInfo{spr = "CPOS", sprInd = "N", time = -1},
-               new StateInfo{function = "Stop"}
-           }
-        },
-        new State
-        {
-           type = "XDeath",
-           info = new List<StateInfo>
+              type = "Pain",
+              info = new List<StateInfo>
+              {
+                  new StateInfo{spr = "CPOS", sprInd = "G", time = 3, function = ""},
+                  new StateInfo{spr = "CPOS", sprInd = "G", time = 3, function = "A_Pain"},
+                  new StateInfo {function = "See"}
+              }
+           },
+           new State
            {
-               new StateInfo{spr = "CPOS", sprInd = "O", time = 5, function = "" },
-               new StateInfo{spr = "CPOS", sprInd = "P", time = 5, function = "A_XScream" },
-               new StateInfo{spr = "CPOS", sprInd = "Q", time = 5, function = "A_NoBlocking" },
-               new StateInfo{spr = "CPOS", sprInd = "RS", time = 5},
-               new StateInfo{spr = "CPOS", sprInd = "T", time = -1},
-               new StateInfo{function = "Stop"}
-           }
-        },
-        new State
-        {
-           type = "Raise",
-           info = new List<StateInfo>
+              type = "Death",
+              info = new List<StateInfo>
+              {
+                  new StateInfo{spr = "CPOS", sprInd = "H", time = 5, function = "" },
+                  new StateInfo{spr = "CPOS", sprInd = "I", time = 5, function = "A_Scream" },
+                  new StateInfo{spr = "CPOS", sprInd = "J", time = 5, function = "A_NoBlocking" },
+                  new StateInfo{spr = "CPOS", sprInd = "KLM", time = 5},
+                  new StateInfo{spr = "CPOS", sprInd = "N", time = -1},
+                  new StateInfo{function = "Stop"}
+              }
+            },
+           new State
            {
-               new StateInfo{spr = "CPOS", sprInd = "N", time = 5},
-               new StateInfo{spr = "CPOS", sprInd = "MLKJIH", time = 5},
-               new StateInfo{function = "See"}
+              type = "XDeath",
+              info = new List<StateInfo>
+              {
+                  new StateInfo{spr = "CPOS", sprInd = "O", time = 5, function = "" },
+                  new StateInfo{spr = "CPOS", sprInd = "P", time = 5, function = "A_XScream" },
+                  new StateInfo{spr = "CPOS", sprInd = "Q", time = 5, function = "A_NoBlocking" },
+                  new StateInfo{spr = "CPOS", sprInd = "RS", time = 5},
+                  new StateInfo{spr = "CPOS", sprInd = "T", time = -1},
+                  new StateInfo{function = "Stop"}
+              }
+           },
+           new State
+           {
+              type = "Raise",
+              info = new List<StateInfo>
+              {
+                  new StateInfo{spr = "CPOS", sprInd = "N", time = 5},
+                  new StateInfo{spr = "CPOS", sprInd = "MLKJIH", time = 5},
+                  new StateInfo{function = "See"}
+              }
            }
-        }
-    };
+       };
+    }
 }
 
-public class BaronOfHell : Actor
+
+public class BaronOfHell : Monster
 {
-
-    new int Health = 1000;
-    new int Radius = 24;
-    new int Height = 64;
-    new int Mass = 1000;
-    public int Speed = 8;
-    public int PainChance = 50;
-
     //Monster
     //+FLOORCLIP
     //+BOSSDEATH
@@ -1785,87 +1812,91 @@ public class BaronOfHell : Actor
     public string Obituary = "$OB_BARON";
     public string HitObituary = "$OB_BARONHIT";
 
-    List<State> actorStates = new List<State>
+    public virtual void Awake()
     {
-        new State
-        {
-           type = "Spawn",
-           info = new List<StateInfo>
-           {
-               new StateInfo{spr = "BOSS", sprInd = "AB", time = 10, function = "A_Look"},
-               new StateInfo{function = "Loop" }
-           }
+        Health = 1000;
+        Radius = 24;
+        Height = 64;
+        Mass = 1000;
+        Speed = 8;
+        PainChance = 50;
+        sprite = "BOSS";
 
-       },
-       new State
-       {
-           type = "See",
-           info = new List<StateInfo>
-           {
-               new StateInfo{spr = "BOSS", sprInd = "AABBCCDD", time = 3, function = "A_Chase"},
-               new StateInfo{function = "Loop"}
-           }
-       },
-       new State
-       {
-           type = "Melee"
-       },
-       new State
-       {
-           type = "Missile",
-           info = new List<StateInfo>
-           {
-               new StateInfo{spr = "BOSS", sprInd = "EF", time = 8, function = "A_FaceTarget" },
-               new StateInfo{spr = "BOSS", sprInd = "G", time = 8, function = "A_BruisAttack" },
-               new StateInfo{function = "See"}
-           }
-       },
-        new State
+        actorStates = new List<State>
         {
-           type = "Pain",
-           info = new List<StateInfo>
+            new State
+            {
+               type = "Spawn",
+               info = new List<StateInfo>
+               {
+                   new StateInfo{spr = "BOSS", sprInd = "AB", time = 10, function = "A_Look"},
+                   new StateInfo{function = "Loop" }
+               }
+
+           },
+           new State
            {
-               new StateInfo{spr = "BOSS", sprInd = "H", time = 2, function = ""},
-               new StateInfo{spr = "BOSS", sprInd = "H", time = 2, function = "A_Pain"},
-               new StateInfo {function = "See"}
-           }
-        },
-        new State
-        {
-           type = "Death",
-           info = new List<StateInfo>
+               type = "See",
+               info = new List<StateInfo>
+               {
+                   new StateInfo{spr = "BOSS", sprInd = "AABBCCDD", time = 3, function = "A_Chase"},
+                   new StateInfo{function = "Loop"}
+               }
+           },
+           new State
            {
-               new StateInfo{spr = "BOSS", sprInd = "I", time = 8, function = "" },
-               new StateInfo{spr = "BOSS", sprInd = "J", time = 8, function = "A_Scream" },
-               new StateInfo{spr = "BOSS", sprInd = "K", time = 8},
-               new StateInfo{spr = "BOSS", sprInd = "L", time = 8, function = "A_NoBlocking" },
-               new StateInfo{spr = "BOSS", sprInd = "MN", time = 8},
-               new StateInfo{spr = "BOSS", sprInd = "O", time = -1, function = "A_BossDeath"},
-               new StateInfo{function = "Stop"}
-           }
-        },
-        new State
-        {
-           type = "Raise",
-           info = new List<StateInfo>
+               type = "Melee"
+           },
+           new State
            {
-               new StateInfo{spr = "BOSS", sprInd = "O", time = 8},
-               new StateInfo{spr = "BOSS", sprInd = "NMLKJI", time = 8},
-               new StateInfo{function = "See"}
-           }
-        }
-    };
+               type = "Missile",
+               info = new List<StateInfo>
+               {
+                   new StateInfo{spr = "BOSS", sprInd = "EF", time = 8, function = "A_FaceTarget" },
+                   new StateInfo{spr = "BOSS", sprInd = "G", time = 8, function = "A_BruisAttack" },
+                   new StateInfo{function = "See"}
+               }
+           },
+            new State
+            {
+               type = "Pain",
+               info = new List<StateInfo>
+               {
+                   new StateInfo{spr = "BOSS", sprInd = "H", time = 2, function = ""},
+                   new StateInfo{spr = "BOSS", sprInd = "H", time = 2, function = "A_Pain"},
+                   new StateInfo {function = "See"}
+               }
+            },
+            new State
+            {
+               type = "Death",
+               info = new List<StateInfo>
+               {
+                   new StateInfo{spr = "BOSS", sprInd = "I", time = 8, function = "" },
+                   new StateInfo{spr = "BOSS", sprInd = "J", time = 8, function = "A_Scream" },
+                   new StateInfo{spr = "BOSS", sprInd = "K", time = 8},
+                   new StateInfo{spr = "BOSS", sprInd = "L", time = 8, function = "A_NoBlocking" },
+                   new StateInfo{spr = "BOSS", sprInd = "MN", time = 8},
+                   new StateInfo{spr = "BOSS", sprInd = "O", time = -1, function = "A_BossDeath"},
+                   new StateInfo{function = "Stop"}
+               }
+            },
+            new State
+            {
+               type = "Raise",
+               info = new List<StateInfo>
+               {
+                   new StateInfo{spr = "BOSS", sprInd = "O", time = 8},
+                   new StateInfo{spr = "BOSS", sprInd = "NMLKJI", time = 8},
+                   new StateInfo{function = "See"}
+               }
+            }
+        };
+    }
 }
 
-public class ZombieMan : Actor
+public class ZombieMan : Monster
 {
-
-    new int Health = 20;
-    new int Radius = 20;
-    new int Height = 56;
-    public int Speed = 8;
-    public int PainChance = 200;
-
     //Monster
     //+FLOORCLIP
 
@@ -1877,7 +1908,16 @@ public class ZombieMan : Actor
     public string Obituary = "$OB_ZOMBIE";
     public string DropItem = "Clip";
 
-    List<State> actorStates = new List<State>
+    public void Awake()
+    {
+        Health = 20;
+        Radius = 20;
+        Height = 56;
+        Speed = 8;
+        PainChance = 200;
+        sprite = "POSS";
+        Name = "ZombieMan";
+        actorStates = new List<State>
     {
         new State
         {
@@ -1956,21 +1996,14 @@ public class ZombieMan : Actor
            }
         }
     };
+    }
 }
 
-public class DoomImp : Actor
+public class DoomImp : Monster
 {
-
-    new int Health = 60;
-    new int Radius = 20;
-    new int Height = 56;
-    new int Mass = 100;
-    public int Speed = 8;
-    public int PainChance = 200;
-
     //Monster
     //+FLOORCLIP
-
+    
     public string SeeSound = "imp/sight";
     public string AttackSound = "imp/attack";
     public string PainSound = "imp/pain";
@@ -1979,7 +2012,17 @@ public class DoomImp : Actor
     public string Obituary = "$OB_IMP";
     public string HitObituary = "$OB_IMPHIT";
 
-    List<State> actorStates = new List<State>
+    public void Awake()
+    {
+        Health = 60;
+        Radius = 20;
+        Height = 56;
+        Mass = 100;
+        Speed = 8;
+        PainChance = 200;
+        sprite = "TROO";
+        Name = "DoomImp";
+        actorStates = new List<State>
     {
         new State
         {
@@ -2062,18 +2105,12 @@ public class DoomImp : Actor
            }
         }
     };
+    }
 }
 
 
-public class Arachnotron : Actor
+public class Arachnotron : Monster
 {
-
-    new int Health = 500;
-    new int Radius = 64;
-    new int Height = 64;
-    new int Mass = 600;
-    public int Speed = 12;
-    public int PainChance = 128;
 
     //Monster
     //+FLOORCLIP
@@ -2086,7 +2123,17 @@ public class Arachnotron : Actor
     public string ActiveSound = "baby/active";
     public string Obituary = "$OB_BABY";
 
-    List<State> actorStates = new List<State>
+    public void Awake()
+    {
+        Health = 500;
+        Radius = 64;
+        Height = 64;
+        Mass = 600;
+        Speed = 12;
+        PainChance = 128;
+        sprite = "BSPI";
+
+        actorStates = new List<State>
     {
         new State
         {
@@ -2156,19 +2203,12 @@ public class Arachnotron : Actor
            }
         }
     };
+    }
 }
 
 
-public class SpiderMastermind : Actor
+public class SpiderMastermind : Monster
 {
-
-    new int Health = 3000;
-    new int Radius = 128;
-    new int Height = 100;
-    new int Mass = 1000;
-    public int Speed = 12;
-    public int PainChance = 40;
-
     //Monster
     new int MinMissileChance = 160;
     //+BOSS
@@ -2185,82 +2225,85 @@ public class SpiderMastermind : Actor
     public string ActiveSound = "spider/active";
     public string Obituary = "$OB_SPIDER";
 
-    List<State> actorStates = new List<State>
+    public void Awake()
     {
-        new State
-        {
-           type = "Spawn",
-           info = new List<StateInfo>
-           {
-               new StateInfo{spr = "SPID", sprInd = "AB", time = 10, function = "A_Look"},
-               new StateInfo{function = "Loop" }
-           }
+        Health = 3000;
+        Radius = 128;
+        Height = 100;
+        Mass = 1000;
+        Speed = 12;
+        PainChance = 40;
+        sprite = "SPID";
 
-       },
-       new State
-       {
-           type = "See",
-           info = new List<StateInfo>
-           {
-               new StateInfo{spr = "SPID", sprInd = "A", time = 3, function = "A_Metal"},
-               new StateInfo{spr = "SPID", sprInd = "ABB", time = 3, function = "A_Chase"},
-               new StateInfo{spr = "SPID", sprInd = "C", time = 3, function = "A_Metal"},
-               new StateInfo{spr = "SPID", sprInd = "CDD", time = 3, function = "A_Chase"},
-               new StateInfo{spr = "SPID", sprInd = "E", time = 3, function = "A_Metal"},
-               new StateInfo{spr = "SPID", sprInd = "EFF", time = 3, function = "A_Chase"},
-               new StateInfo{function = "Loop"}
-           }
-       },
-       new State
-       {
-           type = "Missile",
-           info = new List<StateInfo>
-           {
-               new StateInfo{spr = "SPID", sprInd = "A", time = 20, function = "A_FaceTarget" },
-               new StateInfo{spr = "SPID", sprInd = "G", time = 4, function = "A_SPosAttackUseAtkSound" },
-               new StateInfo{spr = "SPID", sprInd = "H", time = 4, function = "A_SPosAttackUseAtkSound" },
-               new StateInfo{spr = "SPID", sprInd = "H", time = 1, function = "A_SpidRefire" },
-               new StateInfo{function = "Missile+1"}
-           }
-       },
-        new State
+        actorStates = new List<State>
         {
-           type = "Pain",
-           info = new List<StateInfo>
+            new State
+            {
+               type = "Spawn",
+               info = new List<StateInfo>
+               {
+                   new StateInfo{spr = "SPID", sprInd = "AB", time = 10, function = "A_Look"},
+                   new StateInfo{function = "Loop" }
+               }
+
+           },
+           new State
            {
-               new StateInfo{spr = "SPID", sprInd = "I", time = 3, function = ""},
-               new StateInfo{spr = "SPID", sprInd = "I", time = 3, function = "A_Pain"},
-               new StateInfo {function = "See"}
-           }
-        },
-        new State
-        {
-           type = "Death",
-           info = new List<StateInfo>
+               type = "See",
+               info = new List<StateInfo>
+               {
+                   new StateInfo{spr = "SPID", sprInd = "A", time = 3, function = "A_Metal"},
+                   new StateInfo{spr = "SPID", sprInd = "ABB", time = 3, function = "A_Chase"},
+                   new StateInfo{spr = "SPID", sprInd = "C", time = 3, function = "A_Metal"},
+                   new StateInfo{spr = "SPID", sprInd = "CDD", time = 3, function = "A_Chase"},
+                   new StateInfo{spr = "SPID", sprInd = "E", time = 3, function = "A_Metal"},
+                   new StateInfo{spr = "SPID", sprInd = "EFF", time = 3, function = "A_Chase"},
+                   new StateInfo{function = "Loop"}
+               }
+           },
+           new State
            {
-               new StateInfo{spr = "SPID", sprInd = "J", time = 20, function = "A_Scream" },
-               new StateInfo{spr = "SPID", sprInd = "K", time = 10, function = "A_NoBlocking" },
-               new StateInfo{spr = "SPID", sprInd = "LMNOPQR", time = 10},
-               new StateInfo{spr = "SPID", sprInd = "S", time = 30},
-               new StateInfo{spr = "SPID", sprInd = "S", time = -1, function = "A_BossDeath" },
-               new StateInfo{function = "Stop"}
-           }
-        }
-    };
+               type = "Missile",
+               info = new List<StateInfo>
+               {
+                   new StateInfo{spr = "SPID", sprInd = "A", time = 20, function = "A_FaceTarget" },
+                   new StateInfo{spr = "SPID", sprInd = "G", time = 4, function = "A_SPosAttackUseAtkSound" },
+                   new StateInfo{spr = "SPID", sprInd = "H", time = 4, function = "A_SPosAttackUseAtkSound" },
+                   new StateInfo{spr = "SPID", sprInd = "H", time = 1, function = "A_SpidRefire" },
+                   new StateInfo{function = "Missile+1"}
+               }
+           },
+            new State
+            {
+               type = "Pain",
+               info = new List<StateInfo>
+               {
+                   new StateInfo{spr = "SPID", sprInd = "I", time = 3, function = ""},
+                   new StateInfo{spr = "SPID", sprInd = "I", time = 3, function = "A_Pain"},
+                   new StateInfo {function = "See"}
+               }
+            },
+            new State
+            {
+               type = "Death",
+               info = new List<StateInfo>
+               {
+                   new StateInfo{spr = "SPID", sprInd = "J", time = 20, function = "A_Scream" },
+                   new StateInfo{spr = "SPID", sprInd = "K", time = 10, function = "A_NoBlocking" },
+                   new StateInfo{spr = "SPID", sprInd = "LMNOPQR", time = 10},
+                   new StateInfo{spr = "SPID", sprInd = "S", time = 30},
+                   new StateInfo{spr = "SPID", sprInd = "S", time = -1, function = "A_BossDeath" },
+                   new StateInfo{function = "Stop"}
+               }
+            }
+        };
+    }
 }
 
 
-public class Demon : Actor
+public class Demon : Monster
 {
 
-    new int Health = 150;
-    new int Radius = 30;
-    new int Height = 56;
-    new int Mass = 400;
-    public int Speed = 10;
-    public int PainChance = 180;
-
-    //Monster
     //+FLOORCLIP
 
     public string SeeSound = "demon/sight";
@@ -2270,7 +2313,17 @@ public class Demon : Actor
     public string ActiveSound = "demon/active";
     public string Obituary = "$OB_DEMONHIT";
 
-    List<State> actorStates = new List<State>
+    public virtual void Awake()
+    {
+        Health = 150;
+        Radius = 30;
+        Height = 56;
+        Mass = 400;
+        Speed = 10;
+        PainChance = 180;
+        sprite = "SARG";
+
+        actorStates = new List<State>
     {
         new State
         {
@@ -2336,6 +2389,7 @@ public class Demon : Actor
           }
        }
     };
+    }
 }
 
 public class Spectre : Demon
@@ -2345,29 +2399,23 @@ public class Spectre : Demon
     //RenderStyle = OptFuzzy
     //Aplha = 0.5f;
 
-    new string SeeSound = "spectre/sight";
-    new string AttackSound = "spectre/attack";
-    new string PainSound = "spectre/pain";
-    new string DeathSound = "spectre/death";
-    new string ActiveSound = "spectre/active";
-    new string Obituary = "$OB_SPECTREHIT";
+    public override void Awake()
+    {
+        SeeSound = "spectre/sight";
+        AttackSound = "spectre/attack";
+        PainSound = "spectre/pain";
+        DeathSound = "spectre/death";
+        ActiveSound = "spectre/active";
+        Obituary = "$OB_SPECTREHIT";
+    }
+
 
 }
 
 
 
-public class Archvile : Actor
+public class Archvile : Monster
 {
-
-    new int Health = 700;
-    new int Radius = 20;
-    new int Height = 56;
-    new int Mass = 500;
-    public int Speed = 15;
-    public int PainChance = 10;
-
-    //Monster
-    public int MaxTargetRange = 896;
     //+QUICKTORETALIATE
     //+FLOORCLIP
     //+NOTARGET
@@ -2378,8 +2426,19 @@ public class Archvile : Actor
     public string DeathSound = "vile/death";
     public string ActiveSound = "vile/active";
     public string Obituary = "$OB_VILE";
+    public int MaxTargetRange = 896;
 
-    List<State> actorStates = new List<State>
+    public void Awake()
+    {
+        Health = 700;
+        Radius = 20;
+        Height = 56;
+        Mass = 500;
+        Speed = 15;
+        PainChance = 10;
+        sprite = "VILE";
+
+        actorStates = new List<State>
     {
         new State
         {
@@ -2447,23 +2506,28 @@ public class Archvile : Actor
           }
        },
     };
+    }
+   
 }
 
 public class HellKnight : BaronOfHell
 {
+    public override void Awake()
+    {
+        Health = 500;
 
-    new int Health = 500;
+        //-BOSSDEATH
 
-    //-BOSSDEATH
+        SeeSound = "knight/sight";
+        PainSound = "knight/pain";
+        DeathSound = "knight/death";
+        ActiveSound = "knight/active";
+        Obituary = "$OB_KNIGHT";
+        HitObituary = "$OB_KNIGHTHIT";
 
-    new string SeeSound = "knight/sight";
-    new string PainSound = "knight/pain";
-    new string DeathSound = "knight/death";
-    new string ActiveSound = "knight/active";
-    new string Obituary = "$OB_KNIGHT";
-    new string HitObituary = "$OB_KNIGHTHIT";
+        sprite = "BOS2";
 
-    List<State> actorStates = new List<State>
+        actorStates = new List<State>
     {
         new State
         {
@@ -2533,18 +2597,12 @@ public class HellKnight : BaronOfHell
            }
         }
     };
+    }
+    
 }
 
-public class CyberDemon : Actor
+public class CyberDemon : Monster
 {
-
-    new int Health = 4000;
-    new int Radius = 40;
-    new int Height = 110;
-    new int Mass = 1000;
-    public int Speed = 16;
-    public int PainChance = 20;
-
     //Monster
     public int MiniMissileChance = 160;
     //+BOSS
@@ -2561,80 +2619,85 @@ public class CyberDemon : Actor
     public string ActiveSound = "cyber/active";
     public string Obituary = "$OB_CYBORG";
 
-    List<State> actorStates = new List<State>
+    public void Awake()
     {
-        new State
-        {
-           type = "Spawn",
-           info = new List<StateInfo>
-           {
-               new StateInfo{spr = "CYBR", sprInd = "AB", time = 10, function = "A_Look"},
-               new StateInfo{function = "Loop" }
-           }
+        Health = 4000;
+        Radius = 40;
+        Height = 110;
+        Mass = 1000;
+        Speed = 16;
+        PainChance = 20;
+        sprite = "CYBR";
 
-       },
-       new State
-       {
-           type = "See",
-           info = new List<StateInfo>
+        actorStates = new List<State>
+        {
+            new State
+            {
+               type = "Spawn",
+               info = new List<StateInfo>
+               {
+                   new StateInfo{spr = "CYBR", sprInd = "AB", time = 10, function = "A_Look"},
+                   new StateInfo{function = "Loop" }
+               }
+
+           },
+           new State
            {
-               new StateInfo{spr = "CYBR", sprInd = "A", time = 3, function = "A_Hoof"},
-               new StateInfo{spr = "CYBR", sprInd = "ABBCC", time = 3, function = "A_Chase"},
-               new StateInfo{spr = "CYBR", sprInd = "D", time = 3, function = "A_Metal"},
-               new StateInfo{spr = "CYBR", sprInd = "D", time = 3, function = "A_Chase"},
-               new StateInfo{function = "Loop"}
-           }
-       },
-       new State
-       {
-           type = "Missile",
-           info = new List<StateInfo>
+               type = "See",
+               info = new List<StateInfo>
+               {
+                   new StateInfo{spr = "CYBR", sprInd = "A", time = 3, function = "A_Hoof"},
+                   new StateInfo{spr = "CYBR", sprInd = "ABBCC", time = 3, function = "A_Chase"},
+                   new StateInfo{spr = "CYBR", sprInd = "D", time = 3, function = "A_Metal"},
+                   new StateInfo{spr = "CYBR", sprInd = "D", time = 3, function = "A_Chase"},
+                   new StateInfo{function = "Loop"}
+               }
+           },
+           new State
            {
-               new StateInfo{spr = "CYBR", sprInd = "E", time = 6, function = "A_FaceTarget"},
-               new StateInfo{spr = "CYBR", sprInd = "F", time = 12, function = "A_CyberAttack"},
-               new StateInfo{spr = "CYBR", sprInd = "E", time = 12, function = "A_FaceTarget"},
-               new StateInfo{spr = "CYBR", sprInd = "F", time = 12, function = "A_CyberAttack"},
-               new StateInfo{spr = "CYBR", sprInd = "E", time = 12, function = "A_FaceTarget"},
-               new StateInfo{spr = "CYBR", sprInd = "F", time = 12, function = "A_CyberAttack"},
-               new StateInfo{function = "See"}
-           }
-       },
-       new State
-       {
-          type = "Pain",
-          info = new List<StateInfo>
-          {
-              new StateInfo{spr = "CYBR", sprInd = "G", time = 10, function = "A_Pain"},
-              new StateInfo {function = "See"}
-          }
-       },
-       new State
-       {
-          type = "Death",
-          info = new List<StateInfo>
-          {
-              new StateInfo{spr = "CYBR", sprInd = "H", time = 10 },
-              new StateInfo{spr = "CYBR", sprInd = "I", time = 10, function = "A_Scream" },
-              new StateInfo{spr = "CYBR", sprInd = "JKL", time = 10 },
-              new StateInfo{spr = "CYBR", sprInd = "M", time = 10, function = "A_NoBlocking"},
-              new StateInfo{spr = "CYBR", sprInd = "NO", time = 10},
-              new StateInfo{spr = "CYBR", sprInd = "P", time = 30},
-              new StateInfo{spr = "CYBR", sprInd = "P", time = -1, function = "A_BossDeath"},
-              new StateInfo{function = "Stop"}
-          }
-       },
-    };
+               type = "Missile",
+               info = new List<StateInfo>
+               {
+                   new StateInfo{spr = "CYBR", sprInd = "E", time = 6, function = "A_FaceTarget"},
+                   new StateInfo{spr = "CYBR", sprInd = "F", time = 12, function = "A_CyberAttack"},
+                   new StateInfo{spr = "CYBR", sprInd = "E", time = 12, function = "A_FaceTarget"},
+                   new StateInfo{spr = "CYBR", sprInd = "F", time = 12, function = "A_CyberAttack"},
+                   new StateInfo{spr = "CYBR", sprInd = "E", time = 12, function = "A_FaceTarget"},
+                   new StateInfo{spr = "CYBR", sprInd = "F", time = 12, function = "A_CyberAttack"},
+                   new StateInfo{function = "See"}
+               }
+           },
+           new State
+           {
+              type = "Pain",
+              info = new List<StateInfo>
+              {
+                  new StateInfo{spr = "CYBR", sprInd = "G", time = 10, function = "A_Pain"},
+                  new StateInfo {function = "See"}
+              }
+           },
+           new State
+           {
+              type = "Death",
+              info = new List<StateInfo>
+              {
+                  new StateInfo{spr = "CYBR", sprInd = "H", time = 10 },
+                  new StateInfo{spr = "CYBR", sprInd = "I", time = 10, function = "A_Scream" },
+                  new StateInfo{spr = "CYBR", sprInd = "JKL", time = 10 },
+                  new StateInfo{spr = "CYBR", sprInd = "M", time = 10, function = "A_NoBlocking"},
+                  new StateInfo{spr = "CYBR", sprInd = "NO", time = 10},
+                  new StateInfo{spr = "CYBR", sprInd = "P", time = 30},
+                  new StateInfo{spr = "CYBR", sprInd = "P", time = -1, function = "A_BossDeath"},
+                  new StateInfo{function = "Stop"}
+              }
+           },
+        };
+    }
+
 }
 
-public class Fatso : Actor
+public class Fatso : Monster
 {
-
-    new int Health = 600;
-    new int Radius = 48;
-    new int Height = 64;
-    new int Mass = 1000;
-    public int Speed = 8;
-    public int PainChance = 80;
 
     //Monster
     //+FLOORCLIP
@@ -2647,89 +2710,92 @@ public class Fatso : Actor
     public string ActiveSound = "fatso/active";
     public string Obituary = "$OB_FATSO";
 
-    List<State> actorStates = new List<State>
-    {
-        new State
-        {
-           type = "Spawn",
-           info = new List<StateInfo>
-           {
-               new StateInfo{spr = "FATT", sprInd = "AB", time = 15, function = "A_Look"},
-               new StateInfo{function = "Loop" }
-           }
 
-       },
-       new State
-       {
-           type = "See",
-           info = new List<StateInfo>
+    public void Awake()
+    {
+        Health = 600;
+        Radius = 48;
+        Height = 64;
+        Mass = 1000;
+        Speed = 8;
+        PainChance = 80;
+        sprite = "FATT";
+
+        actorStates = new List<State>
+        {
+            new State
+            {
+               type = "Spawn",
+               info = new List<StateInfo>
+               {
+                   new StateInfo{spr = "FATT", sprInd = "AB", time = 15, function = "A_Look"},
+                   new StateInfo{function = "Loop" }
+               }
+
+           },
+           new State
            {
-               new StateInfo{spr = "FATT", sprInd = "AABBCCDDEEFF", time = 4, function = "A_Chase"},
-               new StateInfo{function = "Loop"}
-           }
-       },
-       new State
-       {
-           type = "Missile",
-           info = new List<StateInfo>
+               type = "See",
+               info = new List<StateInfo>
+               {
+                   new StateInfo{spr = "FATT", sprInd = "AABBCCDDEEFF", time = 4, function = "A_Chase"},
+                   new StateInfo{function = "Loop"}
+               }
+           },
+           new State
            {
-               new StateInfo{spr = "FATT", sprInd = "G", time = 20, function = "A_FatRaise"},
-               new StateInfo{spr = "FATT", sprInd = "H", time = 10, function = "A_FatAttack1"},
-               new StateInfo{spr = "FATT", sprInd = "IG", time = 5, function = "A_FaceTarget"},
-               new StateInfo{spr = "FATT", sprInd = "H", time = 10, function = "A_FatAttack2"},
-               new StateInfo{spr = "FATT", sprInd = "IG", time = 5, function = "A_FaceTarget"},
-               new StateInfo{spr = "FATT", sprInd = "H", time = 10, function = "A_FatAttack3"},
-               new StateInfo{spr = "FATT", sprInd = "IG", time = 5, function = "A_FaceTarget"},
-               new StateInfo{function = "See"}
-           }
-       },
-       new State
-       {
-          type = "Pain",
-          info = new List<StateInfo>
-          {
-              new StateInfo{spr = "FATT", sprInd = "J", time = 3},
-              new StateInfo{spr = "FATT", sprInd = "J", time = 3, function = "A_Pain"},
-              new StateInfo {function = "See"}
-          }
-       },
-       new State
-       {
-          type = "Death",
-          info = new List<StateInfo>
-          {
-              new StateInfo{spr = "FATT", sprInd = "K", time = 6 },
-              new StateInfo{spr = "FATT", sprInd = "L", time = 6, function = "A_Scream" },
-              new StateInfo{spr = "FATT", sprInd = "M", time = 6, function = "A_NoBLocking" },
-              new StateInfo{spr = "FATT", sprInd = "NOPQRS", time = 6},
-              new StateInfo{spr = "FATT", sprInd = "T", time = -1, function = "A_BossDeath"},
-              new StateInfo{function = "Stop"}
-          }
-       },
-       new State
-       {
-           type = "Raise",
-           info = new List<StateInfo>
+               type = "Missile",
+               info = new List<StateInfo>
+               {
+                   new StateInfo{spr = "FATT", sprInd = "G", time = 20, function = "A_FatRaise"},
+                   new StateInfo{spr = "FATT", sprInd = "H", time = 10, function = "A_FatAttack1"},
+                   new StateInfo{spr = "FATT", sprInd = "IG", time = 5, function = "A_FaceTarget"},
+                   new StateInfo{spr = "FATT", sprInd = "H", time = 10, function = "A_FatAttack2"},
+                   new StateInfo{spr = "FATT", sprInd = "IG", time = 5, function = "A_FaceTarget"},
+                   new StateInfo{spr = "FATT", sprInd = "H", time = 10, function = "A_FatAttack3"},
+                   new StateInfo{spr = "FATT", sprInd = "IG", time = 5, function = "A_FaceTarget"},
+                   new StateInfo{function = "See"}
+               }
+           },
+           new State
            {
-              new StateInfo{spr = "FATT", sprInd = "R", time = 5},
-              new StateInfo{spr = "FATT", sprInd = "QPONMLK", time = 5},
-              new StateInfo{function = "See"}
+              type = "Pain",
+              info = new List<StateInfo>
+              {
+                  new StateInfo{spr = "FATT", sprInd = "J", time = 3},
+                  new StateInfo{spr = "FATT", sprInd = "J", time = 3, function = "A_Pain"},
+                  new StateInfo {function = "See"}
+              }
+           },
+           new State
+           {
+              type = "Death",
+              info = new List<StateInfo>
+              {
+                  new StateInfo{spr = "FATT", sprInd = "K", time = 6 },
+                  new StateInfo{spr = "FATT", sprInd = "L", time = 6, function = "A_Scream" },
+                  new StateInfo{spr = "FATT", sprInd = "M", time = 6, function = "A_NoBLocking" },
+                  new StateInfo{spr = "FATT", sprInd = "NOPQRS", time = 6},
+                  new StateInfo{spr = "FATT", sprInd = "T", time = -1, function = "A_BossDeath"},
+                  new StateInfo{function = "Stop"}
+              }
+           },
+           new State
+           {
+               type = "Raise",
+               info = new List<StateInfo>
+               {
+                  new StateInfo{spr = "FATT", sprInd = "R", time = 5},
+                  new StateInfo{spr = "FATT", sprInd = "QPONMLK", time = 5},
+                  new StateInfo{function = "See"}
+               }
            }
-       }
-    };
+        };
+    }
 }
 
-public class LostSoul : Actor
+public class LostSoul : Monster
 {
-
-    new int Health = 100;
-    new int Radius = 16;
-    new int Height = 56;
-    new int Mass = 50;
-    public int Speed = 8;
-    public int Damage = 3;
-    public int PainChance = 256;
-
     //Monster
     //+FLOAT
     //+NOGRAVITY
@@ -2745,76 +2811,80 @@ public class LostSoul : Actor
     //RenderStyle = SoulTrans;
     public string Obituary = "$OB_SKULL";
 
-    List<State> actorStates = new List<State>
+    public void Awake()
     {
-        new State
-        {
-           type = "Spawn",
-           info = new List<StateInfo>
-           {
-               new StateInfo{spr = "SKUL", sprInd = "AB", time = 10, function = "A_Look"},
-               new StateInfo{function = "Loop" }
-           }
+        Health = 100;
+        Radius = 16;
+        Height = 56;
+        Mass = 50;
+        Speed = 8;
+        Damage = 3;
+        PainChance = 256;
+        sprite = "SKUL";
 
-       },
-       new State
-       {
-           type = "See",
-           info = new List<StateInfo>
+        actorStates = new List<State>
+        {
+            new State
+            {
+               type = "Spawn",
+               info = new List<StateInfo>
+               {
+                   new StateInfo{spr = "SKUL", sprInd = "AB", time = 10, function = "A_Look"},
+                   new StateInfo{function = "Loop" }
+               }
+
+           },
+           new State
            {
-               new StateInfo{spr = "SKUL", sprInd = "AB", time = 6, function = "A_Chase"},
-               new StateInfo{function = "Loop"}
-           }
-       },
-       new State
-       {
-           type = "Missile",
-           info = new List<StateInfo>
+               type = "See",
+               info = new List<StateInfo>
+               {
+                   new StateInfo{spr = "SKUL", sprInd = "AB", time = 6, function = "A_Chase"},
+                   new StateInfo{function = "Loop"}
+               }
+           },
+           new State
            {
-               new StateInfo{spr = "SKUL", sprInd = "C", time = 10, function = "A_FaceTarget"},
-               new StateInfo{spr = "SKUL", sprInd = "D", time = 4, function = "A_SkullAttack"},
-               new StateInfo{spr = "SKUL", sprInd = "CD", time = 4},
-               new StateInfo{function = "Missile+2"}
-           }
-       },
-       new State
-       {
-          type = "Pain",
-          info = new List<StateInfo>
-          {
-              new StateInfo{spr = "SKUL", sprInd = "E", time = 3},
-              new StateInfo{spr = "SKUL", sprInd = "E", time = 3, function = "A_Pain"},
-              new StateInfo {function = "See"}
-          }
-       },
-       new State
-       {
-          type = "Death",
-          info = new List<StateInfo>
-          {
-              new StateInfo{spr = "SKUL", sprInd = "F", time = 6 },
-              new StateInfo{spr = "SKUL", sprInd = "G", time = 6, function = "A_Scream" },
-              new StateInfo{spr = "SKUL", sprInd = "H", time = 6},
-              new StateInfo{spr = "SKUL", sprInd = "I", time = 6, function = "A_NoBlocking"},
-              new StateInfo{spr = "SKUL", sprInd = "J", time = 6},
-              new StateInfo{spr = "SKUL", sprInd = "K", time = 6},
-              new StateInfo{function = "Stop"}
-          }
-       },
-    };
+               type = "Missile",
+               info = new List<StateInfo>
+               {
+                   new StateInfo{spr = "SKUL", sprInd = "C", time = 10, function = "A_FaceTarget"},
+                   new StateInfo{spr = "SKUL", sprInd = "D", time = 4, function = "A_SkullAttack"},
+                   new StateInfo{spr = "SKUL", sprInd = "CD", time = 4},
+                   new StateInfo{function = "Missile+2"}
+               }
+           },
+           new State
+           {
+              type = "Pain",
+              info = new List<StateInfo>
+              {
+                  new StateInfo{spr = "SKUL", sprInd = "E", time = 3},
+                  new StateInfo{spr = "SKUL", sprInd = "E", time = 3, function = "A_Pain"},
+                  new StateInfo {function = "See"}
+              }
+           },
+           new State
+           {
+              type = "Death",
+              info = new List<StateInfo>
+              {
+                  new StateInfo{spr = "SKUL", sprInd = "F", time = 6 },
+                  new StateInfo{spr = "SKUL", sprInd = "G", time = 6, function = "A_Scream" },
+                  new StateInfo{spr = "SKUL", sprInd = "H", time = 6},
+                  new StateInfo{spr = "SKUL", sprInd = "I", time = 6, function = "A_NoBlocking"},
+                  new StateInfo{spr = "SKUL", sprInd = "J", time = 6},
+                  new StateInfo{spr = "SKUL", sprInd = "K", time = 6},
+                  new StateInfo{function = "Stop"}
+              }
+           },
+        };
+    }
 }
 
 
-public class PainElemental : Actor
+public class PainElemental : Monster
 {
-
-    new int Health = 400;
-    new int Radius = 31;
-    new int Height = 56;
-    new int Mass = 400;
-    public int Speed = 8;
-    public int PainChance = 128;
-
     //Monster
     //+FLOAT
     //+NOGRAVITY
@@ -2825,84 +2895,88 @@ public class PainElemental : Actor
     public string DeathSound = "pain/death";
     public string ActiveSound = "pain/active";
 
-    List<State> actorStates = new List<State>
+    public void Awake()
     {
-        new State
-        {
-           type = "Spawn",
-           info = new List<StateInfo>
-           {
-               new StateInfo{spr = "PAIN", sprInd = "A", time = 10, function = "A_Look"},
-               new StateInfo{function = "Loop" }
-           }
+        Health = 400;
+        Radius = 31;
+        Height = 56;
+        Mass = 400;
+        Speed = 8;
+        PainChance = 128;
+        sprite = "PAIN";
 
-       },
-       new State
-       {
-           type = "See",
-           info = new List<StateInfo>
+        actorStates = new List<State>
+        {
+            new State
+            {
+               type = "Spawn",
+               info = new List<StateInfo>
+               {
+                   new StateInfo{spr = "PAIN", sprInd = "A", time = 10, function = "A_Look"},
+                   new StateInfo{function = "Loop" }
+               }
+
+           },
+           new State
            {
-               new StateInfo{spr = "PAIN", sprInd = "AABBCC", time = 3, function = "A_Chase"},
-               new StateInfo{function = "Loop"}
-           }
-       },
-       new State
-       {
-           type = "Missile",
-           info = new List<StateInfo>
+               type = "See",
+               info = new List<StateInfo>
+               {
+                   new StateInfo{spr = "PAIN", sprInd = "AABBCC", time = 3, function = "A_Chase"},
+                   new StateInfo{function = "Loop"}
+               }
+           },
+           new State
            {
-               new StateInfo{spr = "PAIN", sprInd = "D", time = 5, function = "A_FaceTarget"},
-               new StateInfo{spr = "PAIN", sprInd = "E", time = 5, function = "A_FaceTarget"},
-               new StateInfo{spr = "PAIN", sprInd = "F", time = 5, function = "A_FaceTarget"},
-               new StateInfo{spr = "PAIN", sprInd = "F", time = 0, function = "A_PainAttack"},
-               new StateInfo{function = "See"}
-           }
-       },
-       new State
-       {
-          type = "Pain",
-          info = new List<StateInfo>
-          {
-              new StateInfo{spr = "PAIN", sprInd = "G", time = 6},
-              new StateInfo{spr = "PAIN", sprInd = "G", time = 6, function = "A_Pain"},
-              new StateInfo {function = "See"}
-          }
-       },
-       new State
-       {
-          type = "Death",
-          info = new List<StateInfo>
-          {
-              new StateInfo{spr = "PAIN", sprInd = "H", time = 8 },
-              new StateInfo{spr = "PAIN", sprInd = "I", time = 8, function = "A_Scream" },
-              new StateInfo{spr = "PAIN", sprInd = "JK", time = 8},
-              new StateInfo{spr = "PAIN", sprInd = "L", time = 8, function = "A_PainDie" },
-              new StateInfo{spr = "PAIN", sprInd = "M", time = 8},
-              new StateInfo{function = "Stop"}
-          }
-       },
-       new State
-       {
-           type = "Raise",
-           info = new List<StateInfo>
+               type = "Missile",
+               info = new List<StateInfo>
+               {
+                   new StateInfo{spr = "PAIN", sprInd = "D", time = 5, function = "A_FaceTarget"},
+                   new StateInfo{spr = "PAIN", sprInd = "E", time = 5, function = "A_FaceTarget"},
+                   new StateInfo{spr = "PAIN", sprInd = "F", time = 5, function = "A_FaceTarget"},
+                   new StateInfo{spr = "PAIN", sprInd = "F", time = 0, function = "A_PainAttack"},
+                   new StateInfo{function = "See"}
+               }
+           },
+           new State
            {
-              new StateInfo{spr = "PAIN", sprInd = "MLKJIH", time = 8},
-              new StateInfo{function = "See"}
+              type = "Pain",
+              info = new List<StateInfo>
+              {
+                  new StateInfo{spr = "PAIN", sprInd = "G", time = 6},
+                  new StateInfo{spr = "PAIN", sprInd = "G", time = 6, function = "A_Pain"},
+                  new StateInfo {function = "See"}
+              }
+           },
+           new State
+           {
+              type = "Death",
+              info = new List<StateInfo>
+              {
+                  new StateInfo{spr = "PAIN", sprInd = "H", time = 8 },
+                  new StateInfo{spr = "PAIN", sprInd = "I", time = 8, function = "A_Scream" },
+                  new StateInfo{spr = "PAIN", sprInd = "JK", time = 8},
+                  new StateInfo{spr = "PAIN", sprInd = "L", time = 8, function = "A_PainDie" },
+                  new StateInfo{spr = "PAIN", sprInd = "M", time = 8},
+                  new StateInfo{function = "Stop"}
+              }
+           },
+           new State
+           {
+               type = "Raise",
+               info = new List<StateInfo>
+               {
+                  new StateInfo{spr = "PAIN", sprInd = "MLKJIH", time = 8},
+                  new StateInfo{function = "See"}
+               }
            }
-       }
-    };
+        };
+    }
 }
 
 
-public class Revenant : Actor
+public class Revenant : Monster
 {
-
-    new int Health = 300;
-    new int Radius = 20;
-    new int Height = 56;
-    new int Mass = 500;
-    public int Speed = 10;
-    public int PainChance = 100;
 
     //Monster
     public int MeleeThreshold = 196;
@@ -2916,97 +2990,101 @@ public class Revenant : Actor
     public string ActiveSound = "skeleton/active";
     public string HitObituary = "$OB_UNDEADHIT"; // "%o was punched by a revenant."
     public string Obituary = "$OB_UNDEAD"; // "%o couldn't evade a revenant's fireball."
-  
-    List<State> actorStates = new List<State>
-    {
-        new State
-        {
-           type = "Spawn",
-           info = new List<StateInfo>
-           {
-               new StateInfo{spr = "SKEL", sprInd = "AB", time = 10, function = "A_Look"},
-               new StateInfo{function = "Loop" }
-           }
 
-       },
-       new State
-       {
-           type = "See",
-           info = new List<StateInfo>
+    public void Awake()
+    {
+        Health = 300;
+        Radius = 20;
+        Height = 56;
+        Mass = 500;
+        Speed = 10;
+        PainChance = 100;
+        sprite = "SKEL";
+
+        actorStates = new List<State>
+        {
+            new State
+            {
+               type = "Spawn",
+               info = new List<StateInfo>
+               {
+                   new StateInfo{spr = "SKEL", sprInd = "AB", time = 10, function = "A_Look"},
+                   new StateInfo{function = "Loop" }
+               }
+
+           },
+           new State
            {
-               new StateInfo{spr = "SKEL", sprInd = "AABBCCDDEEFF", time = 2, function = "A_Chase"},
-               new StateInfo{function = "Loop"}
-           }
-       },
-       new State
-       {
-           type = "Melee",
-           info = new List<StateInfo>
+               type = "See",
+               info = new List<StateInfo>
+               {
+                   new StateInfo{spr = "SKEL", sprInd = "AABBCCDDEEFF", time = 2, function = "A_Chase"},
+                   new StateInfo{function = "Loop"}
+               }
+           },
+           new State
            {
-               new StateInfo{spr = "SKEL", sprInd = "G", time = 0, function = "A_FaceTarget"},
-               new StateInfo{spr = "SKEL", sprInd = "G", time = 6, function = "A_SkelWoosh"},
-               new StateInfo{spr = "SKEL", sprInd = "H", time = 6, function = "A_FaceTarget"},
-               new StateInfo{spr = "SKEL", sprInd = "I", time = 6, function = "A_SkelFist"},
-               new StateInfo{function = "See"}
-           }
-       },
-       new State
-       {
-           type = "Missile",
-           info = new List<StateInfo>
+               type = "Melee",
+               info = new List<StateInfo>
+               {
+                   new StateInfo{spr = "SKEL", sprInd = "G", time = 0, function = "A_FaceTarget"},
+                   new StateInfo{spr = "SKEL", sprInd = "G", time = 6, function = "A_SkelWoosh"},
+                   new StateInfo{spr = "SKEL", sprInd = "H", time = 6, function = "A_FaceTarget"},
+                   new StateInfo{spr = "SKEL", sprInd = "I", time = 6, function = "A_SkelFist"},
+                   new StateInfo{function = "See"}
+               }
+           },
+           new State
            {
-               new StateInfo{spr = "SKEL", sprInd = "J", time = 0, function = "A_FaceTarget"},
-               new StateInfo{spr = "SKEL", sprInd = "J", time = 10, function = "A_FaceTarget"},
-               new StateInfo{spr = "SKEL", sprInd = "K", time = 10, function = "A_SkelMissile"},
-               new StateInfo{spr = "SKEL", sprInd = "K", time = 10, function = "A_FaceTarget"},
-               new StateInfo{function = "See"}
-           }
-       },
-       new State
-       {
-          type = "Pain",
-          info = new List<StateInfo>
-          {
-              new StateInfo{spr = "SKEL", sprInd = "L", time = 5},
-              new StateInfo{spr = "SKEL", sprInd = "L", time = 5, function = "A_Pain"},
-              new StateInfo {function = "See"}
-          }
-       },
-       new State
-       {
-          type = "Death",
-          info = new List<StateInfo>
-          {
-              new StateInfo{spr = "SKEL", sprInd = "LM", time = 7},
-              new StateInfo{spr = "SKEL", sprInd = "N", time = 7, function = "A_Scream" },
-              new StateInfo{spr = "SKEL", sprInd = "O", time = 7, function = "A_NoBlocking"},
-              new StateInfo{spr = "SKEL", sprInd = "P", time = 7 },
-              new StateInfo{spr = "SKEL", sprInd = "Q", time = -1},
-              new StateInfo{function = "Stop"}
-          }
-       },
-       new State
-       {
-           type = "Raise",
-           info = new List<StateInfo>
+               type = "Missile",
+               info = new List<StateInfo>
+               {
+                   new StateInfo{spr = "SKEL", sprInd = "J", time = 0, function = "A_FaceTarget"},
+                   new StateInfo{spr = "SKEL", sprInd = "J", time = 10, function = "A_FaceTarget"},
+                   new StateInfo{spr = "SKEL", sprInd = "K", time = 10, function = "A_SkelMissile"},
+                   new StateInfo{spr = "SKEL", sprInd = "K", time = 10, function = "A_FaceTarget"},
+                   new StateInfo{function = "See"}
+               }
+           },
+           new State
            {
-              new StateInfo{spr = "SKEL", sprInd = "Q", time = 5},
-              new StateInfo{spr = "SKEL", sprInd = "PONML", time = 5},
-              new StateInfo{function = "See"}
+              type = "Pain",
+              info = new List<StateInfo>
+              {
+                  new StateInfo{spr = "SKEL", sprInd = "L", time = 5},
+                  new StateInfo{spr = "SKEL", sprInd = "L", time = 5, function = "A_Pain"},
+                  new StateInfo {function = "See"}
+              }
+           },
+           new State
+           {
+              type = "Death",
+              info = new List<StateInfo>
+              {
+                  new StateInfo{spr = "SKEL", sprInd = "LM", time = 7},
+                  new StateInfo{spr = "SKEL", sprInd = "N", time = 7, function = "A_Scream" },
+                  new StateInfo{spr = "SKEL", sprInd = "O", time = 7, function = "A_NoBlocking"},
+                  new StateInfo{spr = "SKEL", sprInd = "P", time = 7 },
+                  new StateInfo{spr = "SKEL", sprInd = "Q", time = -1},
+                  new StateInfo{function = "Stop"}
+              }
+           },
+           new State
+           {
+               type = "Raise",
+               info = new List<StateInfo>
+               {
+                  new StateInfo{spr = "SKEL", sprInd = "Q", time = 5},
+                  new StateInfo{spr = "SKEL", sprInd = "PONML", time = 5},
+                  new StateInfo{function = "See"}
+               }
            }
-       }
-    };
+        };
+    }
 }
 
-public class WolfensteinSS : Actor
+public class WolfensteinSS : Monster
 {
-
-    new int Health = 50;
-    new int Radius = 20;
-    new int Height = 56;
-    public int Speed = 8;
-    public int PainChance = 170;
-
     //Monster
     //+FLOORCLIP
 
@@ -3018,98 +3096,102 @@ public class WolfensteinSS : Actor
     public string Obituary = "$OB_WOLFSS"; // "%o couldn't evade a revenant's fireball."
     public string Dropitem = "Clip";
 
-    List<State> actorStates = new List<State>
+    public void Awake()
     {
-        new State
-        {
-           type = "Spawn",
-           info = new List<StateInfo>
-           {
-               new StateInfo{spr = "SSWV", sprInd = "AB", time = 10, function = "A_Look"},
-               new StateInfo{function = "Loop" }
-           }
+        Health = 50;
+        Radius = 20;
+        Height = 56;
+        Speed = 8;
+        PainChance = 170;
+        sprite = "SSWV";
 
-       },
-       new State
-       {
-           type = "See",
-           info = new List<StateInfo>
+        actorStates = new List<State>
+        {
+            new State
+            {
+               type = "Spawn",
+               info = new List<StateInfo>
+               {
+                   new StateInfo{spr = "SSWV", sprInd = "AB", time = 10, function = "A_Look"},
+                   new StateInfo{function = "Loop" }
+               }
+
+           },
+           new State
            {
-               new StateInfo{spr = "SSWV", sprInd = "AABBCCDD", time = 3, function = "A_Chase"},
-               new StateInfo{function = "Loop"}
-           }
-       },
-       new State
-       {
-           type = "Missile",
-           info = new List<StateInfo>
+               type = "See",
+               info = new List<StateInfo>
+               {
+                   new StateInfo{spr = "SSWV", sprInd = "AABBCCDD", time = 3, function = "A_Chase"},
+                   new StateInfo{function = "Loop"}
+               }
+           },
+           new State
            {
-               new StateInfo{spr = "SSWV", sprInd = "E", time = 10, function = "A_FaceTarget"},
-               new StateInfo{spr = "SSWV", sprInd = "F", time = 10, function = "A_FaceTarget"},
-               new StateInfo{spr = "SSWV", sprInd = "G", time = 4, function = "A_CPosAttack"},
-               new StateInfo{spr = "SSWV", sprInd = "F", time = 6, function = "A_FaceTarget"},
-               new StateInfo{spr = "SSWV", sprInd = "G", time = 4, function = "A_CPosAttack"},
-               new StateInfo{spr = "SSWV", sprInd = "F", time = 1, function = "A_CPosRefire"},
-               new StateInfo{function = "Missile+1"}
-           }
-       },
-       new State
-       {
-          type = "Pain",
-          info = new List<StateInfo>
-          {
-              new StateInfo{spr = "SSWV", sprInd = "H", time = 3},
-              new StateInfo{spr = "SSWV", sprInd = "H", time = 3, function = "A_Pain"},
-              new StateInfo {function = "See"}
-          }
-       },
-       new State
-       {
-          type = "Death",
-          info = new List<StateInfo>
-          {
-              new StateInfo{spr = "SSWV", sprInd = "I", time = 5},
-              new StateInfo{spr = "SSWV", sprInd = "J", time = 5, function = "A_Scream" },
-              new StateInfo{spr = "SSWV", sprInd = "K", time = 5, function = "A_NoBlocking"},
-              new StateInfo{spr = "SSWV", sprInd = "L", time = 5 },
-              new StateInfo{spr = "SSWV", sprInd = "M", time = -1},
-              new StateInfo{function = "Stop"}
-          }
-       },
-       new State
-       {
-          type = "XDeath",
-          info = new List<StateInfo>
-          {
-              new StateInfo{spr = "SSWV", sprInd = "N", time = 5},
-              new StateInfo{spr = "SSWV", sprInd = "O", time = 5, function = "A_XScream" },
-              new StateInfo{spr = "SSWV", sprInd = "P", time = 5, function = "A_NoBlocking"},
-              new StateInfo{spr = "SSWV", sprInd = "QRSTU", time = 5 },
-              new StateInfo{spr = "SSWV", sprInd = "V", time = -1},
-              new StateInfo{function = "Stop"}
-          }
-       },
-       new State
-       {
-           type = "Raise",
-           info = new List<StateInfo>
+               type = "Missile",
+               info = new List<StateInfo>
+               {
+                   new StateInfo{spr = "SSWV", sprInd = "E", time = 10, function = "A_FaceTarget"},
+                   new StateInfo{spr = "SSWV", sprInd = "F", time = 10, function = "A_FaceTarget"},
+                   new StateInfo{spr = "SSWV", sprInd = "G", time = 4, function = "A_CPosAttack"},
+                   new StateInfo{spr = "SSWV", sprInd = "F", time = 6, function = "A_FaceTarget"},
+                   new StateInfo{spr = "SSWV", sprInd = "G", time = 4, function = "A_CPosAttack"},
+                   new StateInfo{spr = "SSWV", sprInd = "F", time = 1, function = "A_CPosRefire"},
+                   new StateInfo{function = "Missile+1"}
+               }
+           },
+           new State
            {
-              new StateInfo{spr = "SSWV", sprInd = "M", time = 5},
-              new StateInfo{spr = "SSWV", sprInd = "LKJI", time = 5},
-              new StateInfo{function = "See"}
+              type = "Pain",
+              info = new List<StateInfo>
+              {
+                  new StateInfo{spr = "SSWV", sprInd = "H", time = 3},
+                  new StateInfo{spr = "SSWV", sprInd = "H", time = 3, function = "A_Pain"},
+                  new StateInfo {function = "See"}
+              }
+           },
+           new State
+           {
+              type = "Death",
+              info = new List<StateInfo>
+              {
+                  new StateInfo{spr = "SSWV", sprInd = "I", time = 5},
+                  new StateInfo{spr = "SSWV", sprInd = "J", time = 5, function = "A_Scream" },
+                  new StateInfo{spr = "SSWV", sprInd = "K", time = 5, function = "A_NoBlocking"},
+                  new StateInfo{spr = "SSWV", sprInd = "L", time = 5 },
+                  new StateInfo{spr = "SSWV", sprInd = "M", time = -1},
+                  new StateInfo{function = "Stop"}
+              }
+           },
+           new State
+           {
+              type = "XDeath",
+              info = new List<StateInfo>
+              {
+                  new StateInfo{spr = "SSWV", sprInd = "N", time = 5},
+                  new StateInfo{spr = "SSWV", sprInd = "O", time = 5, function = "A_XScream" },
+                  new StateInfo{spr = "SSWV", sprInd = "P", time = 5, function = "A_NoBlocking"},
+                  new StateInfo{spr = "SSWV", sprInd = "QRSTU", time = 5 },
+                  new StateInfo{spr = "SSWV", sprInd = "V", time = -1},
+                  new StateInfo{function = "Stop"}
+              }
+           },
+           new State
+           {
+               type = "Raise",
+               info = new List<StateInfo>
+               {
+                  new StateInfo{spr = "SSWV", sprInd = "M", time = 5},
+                  new StateInfo{spr = "SSWV", sprInd = "LKJI", time = 5},
+                  new StateInfo{function = "See"}
+               }
            }
-       }
-    };
+        };
+    }
 }
 
-public class Cacodemon : Actor
+public class Cacodemon : Monster
 {
-
-    new int Health = 400;
-    new int Radius = 31;
-    new int Height = 56;
-    public int Speed = 8;
-    public int PainChance = 128;
 
     //Monster
     //+FLOORCLIP
@@ -3122,70 +3204,79 @@ public class Cacodemon : Actor
     public string Obituary = "$OB_CACO";
     public string HitObituary = "$OB_CACOHIT";
 
-    List<State> actorStates = new List<State>
+    public void Awake()
     {
-        new State
-        {
-           type = "Spawn",
-           info = new List<StateInfo>
-           {
-               new StateInfo{spr = "HEAD", sprInd = "A", time = 10, function = "A_Look"},
-               new StateInfo{function = "Loop" }
-           }
+        Health = 400;
+        Radius = 31;
+        Height = 56;
+        Speed = 8;
+        PainChance = 128;
 
-       },
-       new State
-       {
-           type = "See",
-           info = new List<StateInfo>
+        actorStates = new List<State>
+        {
+            new State
+            {
+               type = "Spawn",
+               info = new List<StateInfo>
+               {
+                   new StateInfo{spr = "HEAD", sprInd = "A", time = 10, function = "A_Look"},
+                   new StateInfo{function = "Loop" }
+               }
+
+           },
+           new State
            {
-               new StateInfo{spr = "HEAD", sprInd = "A", time = 3, function = "A_Chase"},
-               new StateInfo{function = "Loop"}
-           }
-       },
-       new State
-       {
-           type = "Missile",
-           info = new List<StateInfo>
+               type = "See",
+               info = new List<StateInfo>
+               {
+                   new StateInfo{spr = "HEAD", sprInd = "A", time = 3, function = "A_Chase"},
+                   new StateInfo{function = "Loop"}
+               }
+           },
+           new State
            {
-               new StateInfo{spr = "HEAD", sprInd = "BC", time = 5, function = "A_FaceTarget"},
-               new StateInfo{spr = "HEAD", sprInd = "D", time = 5, function = "A_HeadAttack"},
-               new StateInfo{function = "See"}
-           }
-       },
-       new State
-       {
-          type = "Pain",
-          info = new List<StateInfo>
-          {
-              new StateInfo{spr = "HEAD", sprInd = "E", time = 3},
-              new StateInfo{spr = "HEAD", sprInd = "E", time = 3, function = "A_Pain"},
-              new StateInfo{spr = "HEAD", sprInd = "F", time = 6},
-              new StateInfo {function = "See"}
-          }
-       },
-       new State
-       {
-          type = "Death",
-          info = new List<StateInfo>
-          {
-              new StateInfo{spr = "HEAD", sprInd = "G", time = 8},
-              new StateInfo{spr = "HEAD", sprInd = "H", time = 8, function = "A_Scream" },
-              new StateInfo{spr = "HEAD", sprInd = "IJ", time = 8},
-              new StateInfo{spr = "HEAD", sprInd = "K", time = 8, function = "A_NoBlocking" },
-              new StateInfo{spr = "HEAD", sprInd = "L", time = -1, function = "A_SetFloorClip"},
-              new StateInfo{function = "Stop"}
-          }
-       },
-       new State
-       {
-           type = "Raise",
-           info = new List<StateInfo>
+               type = "Missile",
+               info = new List<StateInfo>
+               {
+                   new StateInfo{spr = "HEAD", sprInd = "BC", time = 5, function = "A_FaceTarget"},
+                   new StateInfo{spr = "HEAD", sprInd = "D", time = 5, function = "A_HeadAttack"},
+                   new StateInfo{function = "See"}
+               }
+           },
+           new State
            {
-              new StateInfo{spr = "HEAD", sprInd = "L", time = 8, function = "A_UnSetFloorClip"},
-              new StateInfo{spr = "HEAD", sprInd = "KJIHG", time = 8},
-              new StateInfo{function = "See"}
+              type = "Pain",
+              info = new List<StateInfo>
+              {
+                  new StateInfo{spr = "HEAD", sprInd = "E", time = 3},
+                  new StateInfo{spr = "HEAD", sprInd = "E", time = 3, function = "A_Pain"},
+                  new StateInfo{spr = "HEAD", sprInd = "F", time = 6},
+                  new StateInfo {function = "See"}
+              }
+           },
+           new State
+           {
+              type = "Death",
+              info = new List<StateInfo>
+              {
+                  new StateInfo{spr = "HEAD", sprInd = "G", time = 8},
+                  new StateInfo{spr = "HEAD", sprInd = "H", time = 8, function = "A_Scream" },
+                  new StateInfo{spr = "HEAD", sprInd = "IJ", time = 8},
+                  new StateInfo{spr = "HEAD", sprInd = "K", time = 8, function = "A_NoBlocking" },
+                  new StateInfo{spr = "HEAD", sprInd = "L", time = -1, function = "A_SetFloorClip"},
+                  new StateInfo{function = "Stop"}
+              }
+           },
+           new State
+           {
+               type = "Raise",
+               info = new List<StateInfo>
+               {
+                  new StateInfo{spr = "HEAD", sprInd = "L", time = 8, function = "A_UnSetFloorClip"},
+                  new StateInfo{spr = "HEAD", sprInd = "KJIHG", time = 8},
+                  new StateInfo{function = "See"}
+               }
            }
-       }
-    };
+        };
+    }
 }
