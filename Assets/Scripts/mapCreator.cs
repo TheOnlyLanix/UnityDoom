@@ -23,6 +23,7 @@ public class mapCreator : MonoBehaviour
     public Button Map_Next;
     public Button Map_Prev;
     public Texture2D sky;
+    public Skybox skyboxScript;
     private List<GameObject> doors = new List<GameObject>(); // TODO: temporary
     private bool hasOpenedAllDoors = false; // TODO: temporary
 
@@ -97,6 +98,7 @@ public class mapCreator : MonoBehaviour
         AddSectors();
         SetSkyboxTexture();
         AddMonsters();
+        skyboxScript.ChangeSky();
     }
 
     void SetSkyboxTexture()
@@ -206,9 +208,27 @@ public class mapCreator : MonoBehaviour
         sectorMeshes.Add(Triangulator.CreateCeiling(floor, sector, reader.newWad.flats[sector.ceilingFlat], generating));
 
         //set the skybox's texture
-        if (reader.newWad.flats[sector.ceilingFlat].mainTexture.name.StartsWith("F_SKY"))
+        //DOOM2 SPECIFIC!!!!
+        if (mapSelected <= 11)
         {
-            sky = (Texture2D)reader.newWad.textures["SKY1"].mainTexture;
+            Texture2D newSky = (Texture2D)reader.newWad.textures["SKY1"].mainTexture;
+            sky = newSky;
+            skybox.GetComponent<MeshRenderer>().material.SetColor("_LowerFogColor", AverageColorTop(newSky));
+            skybox.GetComponent<MeshRenderer>().material.SetColor("_UpperFogColor", AverageColorBottom(newSky));
+        }
+        else if (mapSelected > 11 && mapSelected <= 20)
+        {
+            Texture2D newSky = (Texture2D)reader.newWad.textures["SKY2"].mainTexture;
+            sky = newSky;
+            skybox.GetComponent<MeshRenderer>().material.SetColor("_LowerFogColor", AverageColorTop(newSky));
+            skybox.GetComponent<MeshRenderer>().material.SetColor("_UpperFogColor", AverageColorBottom(newSky));
+        }
+        else if (mapSelected > 20 && mapSelected <= 32)
+        {
+            Texture2D newSky = (Texture2D)reader.newWad.textures["SKY3"].mainTexture;
+            sky = newSky;
+            skybox.GetComponent<MeshRenderer>().material.SetColor("_LowerFogColor", AverageColorTop(newSky));
+            skybox.GetComponent<MeshRenderer>().material.SetColor("_UpperFogColor", AverageColorBottom(newSky));
         }
 
         //create walls
@@ -245,6 +265,37 @@ public class mapCreator : MonoBehaviour
         go.AddComponent<MeshCollider>();
         return go;
     }
+
+    Color32 AverageColorTop(Texture2D tex)
+    {
+        Color32[] texColors = tex.GetPixels32();
+        int total = tex.width;
+        int r = 0; int g = 0; int b = 0;
+
+        for (int i = (texColors.Length - tex.width); i < texColors.Length; i++)
+        {
+            r += texColors[i].r;
+            g += texColors[i].g;
+            b += texColors[i].b;
+        }
+        return new Color32((byte)(r / total), (byte)(g / total), (byte)(b / total), 0);
+    }
+
+    Color32 AverageColorBottom(Texture2D tex)
+    {
+        Color32[] texColors = tex.GetPixels32();
+        int total = tex.width* (tex.height/2);
+        int r = 0; int g = 0; int b = 0;
+
+        for (int i = 0; i < tex.width * (tex.height / 2); i++)
+        {
+            r += texColors[i].r;
+            g += texColors[i].g;
+            b += texColors[i].b;
+        }
+        return new Color32((byte)(r / total), (byte)(g / total), (byte)(b / total), 0);
+    }
+
 
     void drawVert(Vector3 pos)
     {

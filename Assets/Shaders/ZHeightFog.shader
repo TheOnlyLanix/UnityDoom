@@ -6,7 +6,8 @@ Shader "Custom/ZHeightFog"
     Properties 
     {
         _MainTex ("Base (RGB)", 2D) = "white" {}
-        _FogColor ("Fog Color", Color) = (0.5, 0.5, 0.5, 1)
+        _UpperFogColor ("Upper Fog Color", Color) = (0.5, 0.5, 0.5, 1)
+		_LowerFogColor ("Lower Fog Color", Color) = (0.5, 0.5, 0.5, 1)
 		//Bottom
         _FogMaxHeight ("Fog Lower Max Height", Float) = 0.0
         _FogMinHeight ("Fog Lower Min Height", Float) = -1.0
@@ -27,7 +28,8 @@ Shader "Custom/ZHeightFog"
         #pragma surface surf Lambert finalcolor:finalcolor vertex:vert
   
         sampler2D _MainTex;
-        float4 _FogColor;
+        float4 _UpperFogColor;
+		float4 _LowerFogColor;
         float _FogMaxHeight;
         float _FogMinHeight;
   
@@ -59,7 +61,12 @@ Shader "Custom/ZHeightFog"
             float lerpValue = clamp((IN.pos.y - _FogMinHeight) / (_FogMaxHeight - _FogMinHeight), 0, 1);
 			float lerpValue1 = clamp((IN.pos.y - _FogMaxHeight1) / (_FogMinHeight1 - _FogMaxHeight1), 0, 1);
 			float combine = lerpValue * lerpValue1;
-            color.rgb = lerp (_FogColor.rgb, color.rgb, combine);
+
+			float3 combine1 = lerp (_UpperFogColor.rgb, color.rgb, lerpValue1);
+			float3 combine2 = lerp (_LowerFogColor.rgb, combine1, lerpValue);
+
+			color.rgb = lerp( combine2, color.rgb, combine);
+
             #endif
         }
   

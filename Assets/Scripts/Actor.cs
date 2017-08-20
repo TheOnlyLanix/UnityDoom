@@ -128,7 +128,7 @@ public class Actor : MonoBehaviour
         return 0f;
     }
 
-    bool IsPointerEqual(int ptr_select1, int ptr_select2)
+    public bool IsPointerEqual(int ptr_select1, int ptr_select2)
     {
         return false;
     }
@@ -150,47 +150,47 @@ public class Actor : MonoBehaviour
 
 
     // functions
-    void A_ActiveAndUnblock()
+    public void A_ActiveAndUnblock()
     {
 
     }
 
-    void A_ActiveSound()
+    public void A_ActiveSound()
     {
 
     }
 
-    void A_AlertMonsters(float maxdist, int flags)
+    public void A_AlertMonsters(float maxdist, int flags)
     {
 
     }
 
-    void A_BabyMetal()
+    public void A_BabyMetal()
     {
 
     }
 
-    void A_Bang4Cloud()
+    public void A_Bang4Cloud()
     {
 
     }
 
-    void A_BarrelDestroy()
+    public void A_BarrelDestroy()
     {
 
     }
 
-    void A_BasicAttack(int meleedamage, AudioSource meleesound, Actor missiletype, float missileheight)
+    public void A_BasicAttack(int meleedamage, AudioSource meleesound, Actor missiletype, float missileheight)
     {
 
     }
 
-    void A_BetaSkullAttack()
+    public void A_BetaSkullAttack()
     {
 
     }
 
-    void A_BFGSpray(Actor spraytype, int numrays, int damagecount, float angle, float distance, float vrange, int damage, int flags)
+    public void A_BFGSpray(Actor spraytype, int numrays, int damagecount, float angle, float distance, float vrange, int damage, int flags)
     {
         numrays = 40;
         damagecount = 15;
@@ -200,94 +200,94 @@ public class Actor : MonoBehaviour
 
     }
 
-    void A_BishopMissileWeave()
+    public void A_BishopMissileWeave()
     {
 
     }
 
-    void A_Blast(int flags, float strength, float radius, float speed, Actor blasteffect, AudioSource blastsound)
+    public void A_Blast(int flags, float strength, float radius, float speed, Actor blasteffect, AudioSource blastsound)
     {
         strength = 255;
         radius = 255;
         speed = 20;
     }
 
-    void A_BossDeath()
+    public void A_BossDeath()
     {
 
     }
 
-    void A_BrainAwake()
+    public void A_BrainAwake()
     {
 
     }
 
-    void A_BrainDie()
+    public void A_BrainDie()
     {
 
     }
 
-    void A_BrainExplode()
+    public void A_BrainExplode()
     {
 
     }
 
-    void A_BrainPain()
+    public void A_BrainPain()
     {
 
     }
 
-    void A_BrainScream()
+    public void A_BrainScream()
     {
 
     }
 
-    void A_BrainSpit(Actor spawntype)   // needs special treatment for default
+    public void A_BrainSpit(Actor spawntype)   // needs special treatment for default
     {
 
     }
 
-    void A_BruisAttack()
+    public void A_BruisAttack()
     {
 
     }
 
-    void A_BspiAttack()
+    public void A_BspiAttack()
     {
 
     }
 
-    void A_BulletAttack()
+    public void A_BulletAttack()
     {
 
     }
 
-    void A_Burst(Actor chunktype)
+    public void A_Burst(Actor chunktype)
     {
 
     }
 
-    bool A_CallSpecial(int special, int arg1 = 0, int arg2 = 0, int arg3 = 0, int arg4 = 0, int arg5 = 0)
+    public bool A_CallSpecial(int special, int arg1 = 0, int arg2 = 0, int arg3 = 0, int arg4 = 0, int arg5 = 0)
     {
         return false;
     }
 
-    void A_CentaurDefend()
+    public void A_CentaurDefend()
     {
 
     }
 
-    void A_ChangeFlag(string flagname, bool value)
+    public void A_ChangeFlag(string flagname, bool value)
     {
 
     }
 
-    void A_ChangeVelocity(float x, float y, float z, int flags, int ptr)
+    public void A_ChangeVelocity(float x, float y, float z, int flags, int ptr)
     {
 
     }
 
-    //void A_Chase(state melee = "*", state missile = "none", int flags = 0)
+    //public void A_Chase(state melee = "*", state missile = "none", int flags = 0)
 
     /*
     state A_CheckBlock(state block, int flags = 0, int ptr = AAPTR_DEFAULT, float xofs = 0, float yofs = 0,
@@ -303,7 +303,7 @@ public class Actor : MonoBehaviour
                                    float pitch = 0, float offsetheight = 0, float offsetwidth = 0,
                                    int ptr_target = AAPTR_DEFAULT, float offsetforward = 0);
 */
-    void A_CheckPlayerDone()
+    public void A_CheckPlayerDone()
     {
 
     }
@@ -320,347 +320,347 @@ public class Actor : MonoBehaviour
 
     state A_CheckSpecies(state jump, name species = "", int ptr = AAPTR_DEFAULT);
     */
-    void A_CheckTerrain()
+    public void A_CheckTerrain()
     {
 
     }
 
-    void A_ClassBossHealth()
+    public void A_ClassBossHealth()
     {
 
     }
 
-    void A_ClearLastHeard()
+    public void A_ClearLastHeard()
     {
 
     }
 
-    int A_ClearOverlays(int sstart = 0, int sstop = 0, bool safety = true)
-    {
-        return 0;
-    }
-
-    void A_ClearShadow()
-    {
-
-    }
-
-    void A_ClearSoundTarget()
-    {
-
-    }
-
-    void A_ClearTarget()
-    {
-
-    }
-
-    void A_ComboAttack()
-    {
-
-    }
-
-    void A_CopyFriendliness(int ptr_source)
-    {
-
-    }
-
-    bool A_CopySpriteFrame(int from, int to, int flags = 0)
-    {
-        return false;
-    }
-
-    void A_Countdown()
-    {
-
-    }
-
-    //void A_CountdownArg(int argnum, state targstate = "")
-
-
-    void A_CPosAttack()
-    {
-
-    }
-
-    void A_CPosRefire()
-    {
-
-    }
-
-    void A_CStaffMissileSlither()
-    {
-
-    }
-
-    void A_CustomBulletAttack(float spread_xy, float spread_z, int numbullets, int damageperbullet, int ptr, string pufftype = "BulletPuff", float range = 0, int flags = 0, string missile = "", float Spawnheight = 32, float Spawnofs_xy = 0)
-    {
-
-    }
-
-    void A_CustomComboAttack(string missiletype, float spawnheight, int damage, AudioClip meleesound, string damagetype = "none", bool bleed = true)
-    {
-
-    }
-
-    void A_CustomMeleeAttack(int damage, AudioClip meleesound, AudioClip misssound, string damagetype = "none", bool bleed = true)
-    {
-
-    }
-
-    void A_CustomMissile(string missiletype, int ptr, float spawnheight = 32, float spawnofs_xy = 0, float angle = 0, int flags = 0, float pitch = 0)
-    {
-
-    }
-
-    void A_CustomRailgun(int damage, int spawnofs_xy, Color color1, Color color2, int flags, int aim, float maxdiff, float spread_xy, float spread_z, float range, int duration, string puffType = "BulletPuff", float sparsity = 1.0f, float driftspeed = 1.0f, string spawnclass = "none", float spawnofs_z = 0, int spiraloffset = 270, int limit = 0)
-    {
-
-    }
-
-    void A_CyberAttack()
-    {
-
-    }
-
-    void A_DamageChildren(int amount, int src, int inflict, string damagetype = "none", int flags = 0, string filter = "None", string species = "None")
-    {
-
-    }
-
-    void A_DamageMaster(int amount, int src, int inflict, string damagetype = "none", int flags = 0, string filter = "None", string species = "None")
-    {
-
-    }
-
-    void A_DamageSelf(int amount, int src, int inflict, string damagetype = "none", int flags = 0, string filter = "None", string species = "None")
-    {
-
-    }
-
-    void A_DamageSiblings(int amount, int src, int inflict, string damagetype = "none", int flags = 0, string filter = "None", string species = "None")
-    {
-
-    }
-
-    void A_DamageTarget(int amount, int src, int inflict, string damagetype = "none", int flags = 0, string filter = "None", string species = "None")
-    {
-
-    }
-
-    void A_DamageTracer(int amount, int src, int inflict, string damagetype = "none", int flags = 0, string filter = "None", string species = "None")
-    {
-
-    }
-
-    void A_DeQueueCorpse()
-    {
-
-    }
-    void A_Detonate()
-    {
-
-    }
-    void A_Die(string damagetype = "none")
-    {
-
-    }
-    void A_DropFire()
-    {
-
-    }
-    void A_DropInventory(string itemtype)
-    {
-
-    }
-
-    void A_DropItem(string item, int dropamount = -1, int chance = 256)
-    {
-
-    }
-
-    void A_DropWeaponPieces(Actor p1, Actor p2, Actor p3)
-    {
-
-    }
-
-    void A_DualPainAttack(string spawntype = "LostSoul")
-    {
-
-    }
-
-    int A_Explode(int flags, int damage = -1, int distance = -1, bool alert = false, int fulldamagedistance = 0, int nails = 0, int naildamage = 10, string pufftype = "BulletPuff", string damagetype = "none")
+    public int A_ClearOverlays(int sstart = 0, int sstop = 0, bool safety = true)
     {
         return 0;
     }
 
-    void A_ExtChase(bool usemelee, bool usemissile, bool playactive = true, bool nightmarefast = false)
-    {
-
-    }
-    void A_FaceConsolePlayer(float MaxTurnAngle = 0) // [TP] no-op
+    public void A_ClearShadow()
     {
 
     }
 
-    void A_FaceMaster(float max_turn = 0, float max_pitch = 270, float ang_offset = 0, float pitch_offset = 0, int flags = 0, float z_ofs = 0)
+    public void A_ClearSoundTarget()
     {
 
     }
 
-    bool A_FaceMovementDirection(int ptr, float offset = 0, float anglelimit = 0, float pitchlimit = 0, int flags = 0)
-    {
-        return false;
-    }
-
-    void A_FaceTarget(float max_turn = 0, float max_pitch = 270, float ang_offset = 0, float pitch_offset = 0, int flags = 0, float z_ofs = 0)
+    public void A_ClearTarget()
     {
 
     }
 
-    void A_FaceTracer(float max_turn = 0, float max_pitch = 270, float ang_offset = 0, float pitch_offset = 0, int flags = 0, float z_ofs = 0)
+    public void A_ComboAttack()
     {
 
     }
 
-    void A_FadeIn(float reduce = 0.1f, int flags = 0)
+    public void A_CopyFriendliness(int ptr_source)
     {
 
     }
 
-    void A_FadeOut(float reduce = 0.1f, int flags = 1)
-    {
-
-    }
-
-    void A_FadeTo(float target, float amount = 0.1f, int flags = 0)
-    {
-
-    }
-
-    void A_Fall()
-    {
-
-    }
-
-    void A_FastChase()
-    {
-
-    }
-
-    void A_FatAttack1(string spawntype = "FatShot")
-    {
-
-    }
-
-
-    void A_FatAttack2(string spawntype = "FatShot")
-    {
-
-    }
-
-    void A_FatAttack3(string spawntype = "FatShot")
-    {
-
-    }
-
-    void A_FatRaise()
-    {
-
-    }
-
-    void A_Feathers()
-    {
-
-    }
-
-    void A_Fire(float spawnheight = 0f)
-    {
-
-    }
-
-    void A_FireAssaultGun()
-    {
-
-    }
-
-    void A_FireCrackle()
-    {
-
-    }
-
-    void A_FLoopActiveSound()
-    {
-
-    }
-
-    void A_FreezeDeath()
-    {
-
-    }
-
-    void A_FreezeDeathChunks()
-    {
-
-    }
-
-    void A_GenericFreezeDeath()
-    {
-
-    }
-
-    void A_GetHurt()
-    {
-
-    }
-
-    bool A_GiveInventory(string itemtype, int amount, int giveto)
+    public bool A_CopySpriteFrame(int from, int to, int flags = 0)
     {
         return false;
     }
 
-    void A_GiveQuestItem(int itemno)
+    public void A_Countdown()
     {
 
     }
 
-    int A_GiveToChildren(string itemtype, int amount)
+    //public void A_CountdownArg(int argnum, state targstate = "")
+
+
+    public void A_CPosAttack()
+    {
+
+    }
+
+    public void A_CPosRefire()
+    {
+
+    }
+
+    public void A_CStaffMissileSlither()
+    {
+
+    }
+
+    public void A_CustomBulletAttack(float spread_xy, float spread_z, int numbullets, int damageperbullet, int ptr, string pufftype = "BulletPuff", float range = 0, int flags = 0, string missile = "", float Spawnheight = 32, float Spawnofs_xy = 0)
+    {
+
+    }
+
+    public void A_CustomComboAttack(string missiletype, float spawnheight, int damage, AudioClip meleesound, string damagetype = "none", bool bleed = true)
+    {
+
+    }
+
+    public void A_CustomMeleeAttack(int damage, AudioClip meleesound, AudioClip misssound, string damagetype = "none", bool bleed = true)
+    {
+
+    }
+
+    public void A_CustomMissile(string missiletype, int ptr, float spawnheight = 32, float spawnofs_xy = 0, float angle = 0, int flags = 0, float pitch = 0)
+    {
+
+    }
+
+    public void A_CustomRailgun(int damage, int spawnofs_xy, Color color1, Color color2, int flags, int aim, float maxdiff, float spread_xy, float spread_z, float range, int duration, string puffType = "BulletPuff", float sparsity = 1.0f, float driftspeed = 1.0f, string spawnclass = "none", float spawnofs_z = 0, int spiraloffset = 270, int limit = 0)
+    {
+
+    }
+
+    public void A_CyberAttack()
+    {
+
+    }
+
+    public void A_DamageChildren(int amount, int src, int inflict, string damagetype = "none", int flags = 0, string filter = "None", string species = "None")
+    {
+
+    }
+
+    public void A_DamageMaster(int amount, int src, int inflict, string damagetype = "none", int flags = 0, string filter = "None", string species = "None")
+    {
+
+    }
+
+    public void A_DamageSelf(int amount, int src, int inflict, string damagetype = "none", int flags = 0, string filter = "None", string species = "None")
+    {
+
+    }
+
+    public void A_DamageSiblings(int amount, int src, int inflict, string damagetype = "none", int flags = 0, string filter = "None", string species = "None")
+    {
+
+    }
+
+    public void A_DamageTarget(int amount, int src, int inflict, string damagetype = "none", int flags = 0, string filter = "None", string species = "None")
+    {
+
+    }
+
+    public void A_DamageTracer(int amount, int src, int inflict, string damagetype = "none", int flags = 0, string filter = "None", string species = "None")
+    {
+
+    }
+
+    public void A_DeQueueCorpse()
+    {
+
+    }
+    public void A_Detonate()
+    {
+
+    }
+    public void A_Die(string damagetype = "none")
+    {
+
+    }
+    public void A_DropFire()
+    {
+
+    }
+    public void A_DropInventory(string itemtype)
+    {
+
+    }
+
+    public void A_DropItem(string item, int dropamount = -1, int chance = 256)
+    {
+
+    }
+
+    public void A_DropWeaponPieces(Actor p1, Actor p2, Actor p3)
+    {
+
+    }
+
+    public void A_DualPainAttack(string spawntype = "LostSoul")
+    {
+
+    }
+
+    public int A_Explode(int flags, int damage = -1, int distance = -1, bool alert = false, int fulldamagedistance = 0, int nails = 0, int naildamage = 10, string pufftype = "BulletPuff", string damagetype = "none")
+    {
+        return 0;
+    }
+
+    public void A_ExtChase(bool usemelee, bool usemissile, bool playactive = true, bool nightmarefast = false)
+    {
+
+    }
+    public void A_FaceConsolePlayer(float MaxTurnAngle = 0) // [TP] no-op
+    {
+
+    }
+
+    public void A_FaceMaster(float max_turn = 0, float max_pitch = 270, float ang_offset = 0, float pitch_offset = 0, int flags = 0, float z_ofs = 0)
+    {
+
+    }
+
+    public bool A_FaceMovementDirection(int ptr, float offset = 0, float anglelimit = 0, float pitchlimit = 0, int flags = 0)
+    {
+        return false;
+    }
+
+    public void A_FaceTarget(float max_turn = 0, float max_pitch = 270, float ang_offset = 0, float pitch_offset = 0, int flags = 0, float z_ofs = 0)
+    {
+
+    }
+
+    public void A_FaceTracer(float max_turn = 0, float max_pitch = 270, float ang_offset = 0, float pitch_offset = 0, int flags = 0, float z_ofs = 0)
+    {
+
+    }
+
+    public void A_FadeIn(float reduce = 0.1f, int flags = 0)
+    {
+
+    }
+
+    public void A_FadeOut(float reduce = 0.1f, int flags = 1)
+    {
+
+    }
+
+    public void A_FadeTo(float target, float amount = 0.1f, int flags = 0)
+    {
+
+    }
+
+    public void A_Fall()
+    {
+
+    }
+
+    public void A_FastChase()
+    {
+
+    }
+
+    public void A_FatAttack1(string spawntype = "FatShot")
+    {
+
+    }
+
+
+    public void A_FatAttack2(string spawntype = "FatShot")
+    {
+
+    }
+
+    public void A_FatAttack3(string spawntype = "FatShot")
+    {
+
+    }
+
+    public void A_FatRaise()
+    {
+
+    }
+
+    public void A_Feathers()
+    {
+
+    }
+
+    public void A_Fire(float spawnheight = 0f)
+    {
+
+    }
+
+    public void A_FireAssaultGun()
+    {
+
+    }
+
+    public void A_FireCrackle()
+    {
+
+    }
+
+    public void A_FLoopActiveSound()
+    {
+
+    }
+
+    public void A_FreezeDeath()
+    {
+
+    }
+
+    public void A_FreezeDeathChunks()
+    {
+
+    }
+
+    public void A_GenericFreezeDeath()
+    {
+
+    }
+
+    public void A_GetHurt()
+    {
+
+    }
+
+    public bool A_GiveInventory(string itemtype, int amount, int giveto)
+    {
+        return false;
+    }
+
+    public void A_GiveQuestItem(int itemno)
+    {
+
+    }
+
+    public int A_GiveToChildren(string itemtype, int amount)
     {
         return 0;
     }
 
 
-    int A_GiveToSiblings(string itemtype, int amount)
+    public int A_GiveToSiblings(string itemtype, int amount)
     {
         return 0;
     }
 
-    bool A_GiveToTarget(string itemtype, int amount, int forward_ptr)
+    public bool A_GiveToTarget(string itemtype, int amount, int forward_ptr)
     {
         return false;
     }
 
-    void A_Gravity()
+    public void A_Gravity()
     {
 
     }
 
-    void A_HeadAttack()
+    public void A_HeadAttack()
     {
 
     }
 
-    void A_HideThing()
+    public void A_HideThing()
     {
 
     }
 
-    void A_Hoof()
+    public void A_Hoof()
     {
 
     }
 
-    void A_IceGuyDie()
+    public void A_IceGuyDie()
     {
 
     }
@@ -690,657 +690,657 @@ public class Actor : MonoBehaviour
 
 
 
-    void A_KeenDie(int doortag = 666)
+    public void A_KeenDie(int doortag = 666)
     {
 
     }
 
-    void A_KillChildren(int src, int inflict, int flags, string damagetype = "none", string filter = "None", string species = "None")
+    public void A_KillChildren(int src, int inflict, int flags, string damagetype = "none", string filter = "None", string species = "None")
     {
 
     }
 
-    void A_KillMaster(int src, int inflict, int flags, string damagetype = "none", string filter = "None", string species = "None")
+    public void A_KillMaster(int src, int inflict, int flags, string damagetype = "none", string filter = "None", string species = "None")
     {
 
     }
 
-    void A_KillSiblings(int src, int inflict, int flags, string damagetype = "none", string filter = "None", string species = "None")
+    public void A_KillSiblings(int src, int inflict, int flags, string damagetype = "none", string filter = "None", string species = "None")
     {
 
     }
 
-    void A_KillTarget(int src, int inflict, int flags, string damagetype = "none", string filter = "None", string species = "None")
+    public void A_KillTarget(int src, int inflict, int flags, string damagetype = "none", string filter = "None", string species = "None")
     {
 
     }
 
-    void A_KillTracer(int src, int inflict, int flags, string damagetype = "none", string filter = "None", string species = "None")
+    public void A_KillTracer(int src, int inflict, int flags, string damagetype = "none", string filter = "None", string species = "None")
     {
 
     }
 
-    void A_KlaxonBlare()
+    public void A_KlaxonBlare()
     {
 
     }
 
-    bool A_LineEffect(int boomspecial = 0, int tag = 0)
+    public bool A_LineEffect(int boomspecial = 0, int tag = 0)
     {
         return false;
     }
 
-    void A_Log(string whattoprint)
+    public void A_Log(string whattoprint)
     {
 
     }
 
-    void A_Logfloat(float whattoprint)
+    public void A_Logfloat(float whattoprint)
     {
 
     }
 
-    void A_Logint(int whattoprint)
+    public void A_Logint(int whattoprint)
     {
 
     }
 
-    void A_Look()
+    public void A_Look()
     {
 
     }
 
-    void A_Look2()
+    public void A_Look2()
     {
 
     }
 
-    //void A_LookEx(int flags = 0, float minseedist = 0, float maxseedist = 0, float maxheardist = 0, float fov = 0, state label = "");
+    //public void A_LookEx(int flags = 0, float minseedist = 0, float maxseedist = 0, float maxheardist = 0, float fov = 0, state label = "");
 
-    void A_LoopActiveSound()
+    public void A_LoopActiveSound()
     {
 
     }
-    void A_LowGravity()
+    public void A_LowGravity()
     {
 
     }
-    void A_M_Saw(AudioClip fullsound, AudioClip hitsound, int damage = 2, string pufftype = "BulletPuff")
+    public void A_M_Saw(AudioClip fullsound, AudioClip hitsound, int damage = 2, string pufftype = "BulletPuff")
     {
 
     }
 
-    void A_MeleeAttack()
+    public void A_MeleeAttack()
     {
 
     }
-    void A_Metal()
+    public void A_Metal()
     {
 
     }
-    void A_MissileAttack()
+    public void A_MissileAttack()
     {
 
     }
-    void A_MonsterRail()
+    public void A_MonsterRail()
     {
 
     }
     //state A_MonsterRefire(int chance, state label);
-    void A_Mushroom(string spawntype = "FatShot", int numspawns = 0, int flags = 0, float vrange = 4.0f, float hrange = 0.5f)
+    public void A_Mushroom(string spawntype = "FatShot", int numspawns = 0, int flags = 0, float vrange = 4.0f, float hrange = 0.5f)
     {
 
     }
 
-    void A_NoBlocking()
+    public void A_NoBlocking()
     {
 
     }
 
-    void A_NoGravity()
+    public void A_NoGravity()
     {
 
     }
 
     //bool A_Overlay(int layer, state start = "", bool nooverride = FALSE)
 
-    void A_OverlayFlags(int layer, int flags, bool set)
+    public void A_OverlayFlags(int layer, int flags, bool set)
     {
 
     }
 
-    void A_OverlayOffset(int layer, float wx = 0, float wy = 32, int flags = 0)
+    public void A_OverlayOffset(int layer, float wx = 0, float wy = 32, int flags = 0)
     {
 
     }
 
-    void A_Pain()
+    public void A_Pain()
     {
 
     }
 
-    void A_PainAttack(string spawntype = "LostSoul", float angle = 0, int flags = 0, int limit = -1)
+    public void A_PainAttack(string spawntype = "LostSoul", float angle = 0, int flags = 0, int limit = -1)
     {
 
     }
-    void A_PainDie(string spawntype = "LostSoul")
-    {
-
-    }
-
-
-    void A_PigPain()
+    public void A_PainDie(string spawntype = "LostSoul")
     {
 
     }
 
-    void A_PlayerScream()
+
+    public void A_PigPain()
+    {
+
+    }
+
+    public void A_PlayerScream()
     {
 
     }
 
     //void state A_PlayerSkinCheck(state label)
 
-    void A_PlaySound(float attenuation, AudioClip whattoplay, int slot, float volume = 1.0f, bool looping = false)
+    public void A_PlaySound(float attenuation, AudioClip whattoplay, int slot, float volume = 1.0f, bool looping = false)
     {
 
     }
 
-    void A_PlaySoundEx(AudioClip whattoplay, string slot, bool looping = false, int attenuation = 0)
+    public void A_PlaySoundEx(AudioClip whattoplay, string slot, bool looping = false, int attenuation = 0)
     {
 
     }
 
-    void A_PlayWeaponSound(AudioClip whattoplay)
+    public void A_PlayWeaponSound(AudioClip whattoplay)
     {
 
     }
 
-    void A_PosAttack()
+    public void A_PosAttack()
     {
 
     }
 
-    void A_Print(string whattoprint, float time = 0, string fontname = "")
+    public void A_Print(string whattoprint, float time = 0, string fontname = "")
     {
 
     }
 
-    void A_PrintBold(string whattoprint, float time = 0, string fontname = "")
+    public void A_PrintBold(string whattoprint, float time = 0, string fontname = "")
     {
 
     }
 
-    void A_Punch()
+    public void A_Punch()
     {
 
     }
 
-    void A_Quake(int intensity, int duration, int damrad, int tremrad, AudioClip sfx)
+    public void A_Quake(int intensity, int duration, int damrad, int tremrad, AudioClip sfx)
     {
 
     }
 
-    void A_QuakeEx(int intensityX, int intensityY, int intensityZ, int duration, int damrad, int tremrad, AudioClip sfx, int flags = 0, float mulWaveX = 1, float mulWaveY = 1, float mulWaveZ = 1, int falloff = 0, int highpoint = 0, float rollintensity = 0, float rollWave = 0)
+    public void A_QuakeEx(int intensityX, int intensityY, int intensityZ, int duration, int damrad, int tremrad, AudioClip sfx, int flags = 0, float mulWaveX = 1, float mulWaveY = 1, float mulWaveZ = 1, int falloff = 0, int highpoint = 0, float rollintensity = 0, float rollWave = 0)
     {
 
     }
 
-    void A_QueueCorpse()
+    public void A_QueueCorpse()
     {
 
     }
 
-    void A_RadiusDamageSelf(int damage = 128, float distance = 128, int flags = 0, string flashtype = "None")
+    public void A_RadiusDamageSelf(int damage = 128, float distance = 128, int flags = 0, string flashtype = "None")
     {
 
     }
 
-    int A_RadiusGive(string itemtype, float distance, int flags, int amount = 0, string filter = "None", string species = "None", float mindist = 0f, int limit = 0)
+    public int A_RadiusGive(string itemtype, float distance, int flags, int amount = 0, string filter = "None", string species = "None", float mindist = 0f, int limit = 0)
     {
         return 0;
     }
 
-    void A_RadiusThrust(int flags, int force = 128, int distance = -1, int fullthrustdistance = 0)
+    public void A_RadiusThrust(int flags, int force = 128, int distance = -1, int fullthrustdistance = 0)
     {
 
     }
 
-    void A_RaiseChildren(bool copy)
+    public void A_RaiseChildren(bool copy)
     {
 
     }
 
-    void A_RaiseMaster(bool copy)
+    public void A_RaiseMaster(bool copy)
     {
 
     }
 
-    void A_RaiseSiblings(bool copy)
+    public void A_RaiseSiblings(bool copy)
     {
 
     }
 
-    void A_RearrangePointers(int newtarget, int newmaster, int newtracer, int flags = 0)
+    public void A_RearrangePointers(int newtarget, int newmaster, int newtracer, int flags = 0)
     {
 
     }
 
-    void A_Recoil(float xyvel)
+    public void A_Recoil(float xyvel)
     {
 
     }
 
-    void A_RemoveChildren(bool removeall, int flags, string filter = "None", string species = "None")
+    public void A_RemoveChildren(bool removeall, int flags, string filter = "None", string species = "None")
     {
 
     }
 
-    void A_RemoveForcefield()
+    public void A_RemoveForcefield()
     {
 
     }
 
-    void A_RemoveMaster(int flags = 0, string filter = "None", string species = "None")
+    public void A_RemoveMaster(int flags = 0, string filter = "None", string species = "None")
     {
 
     }
 
-    void A_RemoveSiblings(bool removeall = false, int flags = 0, string filter = "None", string species = "None")
+    public void A_RemoveSiblings(bool removeall = false, int flags = 0, string filter = "None", string species = "None")
     {
 
     }
 
-    void A_RemoveTarget(int flags = 0, string filter = "None", string species = "None")
+    public void A_RemoveTarget(int flags = 0, string filter = "None", string species = "None")
     {
 
     }
 
-    void A_RemoveTracer(int flags = 0, string filter = "None", string species = "None")
+    public void A_RemoveTracer(int flags = 0, string filter = "None", string species = "None")
     {
 
     }
 
-    void A_Remove(int removee, int flags = 0, string filter = "None", string species = "None")
+    public void A_Remove(int removee, int flags = 0, string filter = "None", string species = "None")
     {
 
     }
 
-    void A_ResetHealth(int ptr)
+    public void A_ResetHealth(int ptr)
     {
 
     }
 
-    void A_Respawn(int flags = 1)
+    public void A_Respawn(int flags = 1)
     {
 
     }
 
-    void A_RocketInFlight()
+    public void A_RocketInFlight()
     {
 
     }
 
-    void A_SargAttack()
+    public void A_SargAttack()
     {
 
     }
 
-    void A_ScaleVelocity(float scale, int ptr)
+    public void A_ScaleVelocity(float scale, int ptr)
     {
 
     }
-    void A_Scream()
-    {
-
-    }
-
-    void A_ScreamAndUnblock()
+    public void A_Scream()
     {
 
     }
 
-    void A_SeekerMissile(int threshold, int turnmax, int flags = 0, int chance = 50, int distance = 10)
+    public void A_ScreamAndUnblock()
     {
 
     }
 
-    bool A_SelectWeapon(string whichweapon, int flags)
-    {
-        return false;
-    }
-
-    void A_SentinelBob()
+    public void A_SeekerMissile(int threshold, int turnmax, int flags = 0, int chance = 50, int distance = 10)
     {
 
     }
 
-    void A_SentinelRefire()
-    {
-
-    }
-
-    void A_SetAngle(float angle, int flags, int ptr)
-    {
-
-    }
-
-    void A_SetArg(int pos, int value)
-    {
-
-    }
-
-    void A_SetBlend(Color color1, float alpha, int tics, Color color2)
-    {
-
-    }
-
-    void A_SetChaseThreshold(int threshold, bool def, int ptr)
-    {
-
-    }
-
-    void A_SetDamageType(string damagetype)
-    {
-
-    }
-
-    void A_Setfloat()
-    {
-
-    }
-
-    void A_SetfloatBobPhase(int bob)
-    {
-
-    }
-
-    void A_SetfloatSpeed(float speed, int ptr)
-    {
-
-    }
-
-    void A_SetFloorClip()
-    {
-
-    }
-
-    void A_SetGravity(float gravity)
-    {
-
-    }
-
-    void A_SetHealth(int health, int ptr)
-    {
-
-    }
-
-    bool A_SetInventory(string itemtype, int amount, int ptr, bool beyondMax)
+    public bool A_SelectWeapon(string whichweapon, int flags)
     {
         return false;
     }
 
-    void A_SetInvulnerable()
+    public void A_SentinelBob()
     {
 
     }
 
-    void A_SetMass(int mass)
+    public void A_SentinelRefire()
     {
 
     }
 
-    void A_SetPainthreshold(int threshold, int ptr)
+    public void A_SetAngle(float angle, int flags, int ptr)
     {
 
     }
 
-    void A_SetPitch(float pitch, int flags, int ptr)
+    public void A_SetArg(int pos, int value)
     {
 
     }
 
-    void A_SetReflective()
+    public void A_SetBlend(Color color1, float alpha, int tics, Color color2)
     {
 
     }
 
-    void A_SetReflectiveInvulnerable()
+    public void A_SetChaseThreshold(int threshold, bool def, int ptr)
     {
 
     }
 
-    void A_SetRenderStyle(float alpha, int style)
+    public void A_SetDamageType(string damagetype)
     {
 
     }
 
-    void A_SetRipperLevel(int level)
+    public void A_Setfloat()
     {
 
     }
 
-    void A_SetRipMin(int minimum)
+    public void A_SetfloatBobPhase(int bob)
     {
 
     }
 
-    void A_SetRipMax(int maximum)
+    public void A_SetfloatSpeed(float speed, int ptr)
     {
 
     }
 
-    void A_SetRoll(float roll, int flags, int ptr)
+    public void A_SetFloorClip()
     {
 
     }
 
-    void A_SetScale(float scalex, float scaley, int ptr, bool usezero)
+    public void A_SetGravity(float gravity)
     {
 
     }
 
-    void A_SetShadow()
+    public void A_SetHealth(int health, int ptr)
     {
 
     }
 
-    void A_SetShootable()
-    {
-
-    }
-
-    void A_SetSolid()
-    {
-
-    }
-
-    void A_SetSpecial(int spec, int arg0 = 0, int arg1 = 0, int arg2 = 0, int arg3 = 0, int arg4 = 0)
-    {
-
-    }
-
-    void A_SetSpecies(string species, int ptr)
-    {
-
-    }
-
-    void A_SetSpeed(float speed, int ptr)
-    {
-
-    }
-
-    bool A_SetSpriteAngle(float angle, int ptr)
+    public bool A_SetInventory(string itemtype, int amount, int ptr, bool beyondMax)
     {
         return false;
     }
 
-    bool A_SetSpriteRotation(float angle, int ptr)
+    public void A_SetInvulnerable()
+    {
+
+    }
+
+    public void A_SetMass(int mass)
+    {
+
+    }
+
+    public void A_SetPainthreshold(int threshold, int ptr)
+    {
+
+    }
+
+    public void A_SetPitch(float pitch, int flags, int ptr)
+    {
+
+    }
+
+    public void A_SetReflective()
+    {
+
+    }
+
+    public void A_SetReflectiveInvulnerable()
+    {
+
+    }
+
+    public void A_SetRenderStyle(float alpha, int style)
+    {
+
+    }
+
+    public void A_SetRipperLevel(int level)
+    {
+
+    }
+
+    public void A_SetRipMin(int minimum)
+    {
+
+    }
+
+    public void A_SetRipMax(int maximum)
+    {
+
+    }
+
+    public void A_SetRoll(float roll, int flags, int ptr)
+    {
+
+    }
+
+    public void A_SetScale(float scalex, float scaley, int ptr, bool usezero)
+    {
+
+    }
+
+    public void A_SetShadow()
+    {
+
+    }
+
+    public void A_SetShootable()
+    {
+
+    }
+
+    public void A_SetSolid()
+    {
+
+    }
+
+    public void A_SetSpecial(int spec, int arg0 = 0, int arg1 = 0, int arg2 = 0, int arg3 = 0, int arg4 = 0)
+    {
+
+    }
+
+    public void A_SetSpecies(string species, int ptr)
+    {
+
+    }
+
+    public void A_SetSpeed(float speed, int ptr)
+    {
+
+    }
+
+    public bool A_SetSpriteAngle(float angle, int ptr)
     {
         return false;
     }
 
-    void A_SetTeleFog(string oldpos, string newpos)
-    {
-
-    }
-
-    void A_SetTics(int tics)
-    {
-
-    }
-
-    void A_SetTranslation(string transname)
-    {
-
-    }
-
-    void A_SetTranslucent(float alpha, int style = 0)
-    {
-
-    }
-
-    void A_SetUserArray(string varname, int index, int value)
-    {
-
-    }
-
-    void A_SetUserArrayfloat(string varname, int index, float value)
-    {
-
-    }
-
-    void A_SetUserVar(string varname, int value)
-    {
-
-    }
-
-    void A_SetUserVarfloat(string varname, float value)
-    {
-
-    }
-
-    bool A_SetVisibleRotation(float anglestart, float angleend, float pitchstart, float pitchend, int flags, int ptr)
+    public bool A_SetSpriteRotation(float angle, int ptr)
     {
         return false;
     }
 
-    void A_ShootGun()
+    public void A_SetTeleFog(string oldpos, string newpos)
     {
 
     }
 
-    void A_SkelFist()
+    public void A_SetTics(int tics)
     {
 
     }
 
-    void A_SkelMissile()
+    public void A_SetTranslation(string transname)
     {
 
     }
 
-    void A_SkelWhoosh()
+    public void A_SetTranslucent(float alpha, int style = 0)
     {
 
     }
 
-    void A_SkullAttack(float speed = 20)
+    public void A_SetUserArray(string varname, int index, int value)
     {
 
     }
 
-    void A_SkullPop(string skulltype = "BloodySkull")
+    public void A_SetUserArrayfloat(string varname, int index, float value)
     {
 
     }
 
-    void A_SpawnDebris(string spawntype, bool transfer_translation = false, float mult_h = 1, float mult_v = 1)
+    public void A_SetUserVar(string varname, int value)
     {
 
     }
 
-    void A_SpawnFly(string spawntype = "none")   // needs special treatment for default
+    public void A_SetUserVarfloat(string varname, float value)
     {
 
     }
 
-    bool A_SpawnItem(string itemtype = "Unknown", float distance = 0, float zheight = 0, bool useammo = true, bool transfer_translation = false)
-    {
-        return false;
-    }
-
-    bool A_SpawnItemEx(string itemtype, float xofs = 0, float yofs = 0, float zofs = 0, float xvel = 0, float yvel = 0, float zvel = 0, float angle = 0, int flags = 0, int failchance = 0, int tid = 0)
+    public bool A_SetVisibleRotation(float anglestart, float angleend, float pitchstart, float pitchend, int flags, int ptr)
     {
         return false;
     }
 
-    void A_SpawnParticle(Color color1, int flags = 0, int lifetime = 35, float size = 1, float angle = 0, float xoff = 0, float yoff = 0, float zoff = 0, float velx = 0, float vely = 0, float velz = 0, float accelx = 0, float accely = 0, float accelz = 0, float startalphaf = 1, float fadestepf = -1, float sizestep = 0)
+    public void A_ShootGun()
     {
 
     }
 
-    void A_SpawnSound()
+    public void A_SkelFist()
     {
 
     }
 
-    void A_SpidRefire()
+    public void A_SkelMissile()
     {
 
     }
 
-    void A_SPosAttack()
+    public void A_SkelWhoosh()
     {
 
     }
 
-    void A_SPosAttackUseAtkSound()
+    public void A_SkullAttack(float speed = 20)
     {
 
     }
 
-    void A_StartFire()
+    public void A_SkullPop(string skulltype = "BloodySkull")
     {
 
     }
 
-    void A_Stop()
+    public void A_SpawnDebris(string spawntype, bool transfer_translation = false, float mult_h = 1, float mult_v = 1)
     {
 
     }
 
-    void A_StopSound(int slot) // Bad default but that's what is originally was...
+    public void A_SpawnFly(string spawntype = "none")   // needs special treatment for default
     {
 
     }
 
-    void A_StopSoundEx(string slot)
+    public bool A_SpawnItem(string itemtype = "Unknown", float distance = 0, float zheight = 0, bool useammo = true, bool transfer_translation = false)
+    {
+        return false;
+    }
+
+    public bool A_SpawnItemEx(string itemtype, float xofs = 0, float yofs = 0, float zofs = 0, float xvel = 0, float yvel = 0, float zvel = 0, float angle = 0, int flags = 0, int failchance = 0, int tid = 0)
+    {
+        return false;
+    }
+
+    public void A_SpawnParticle(Color color1, int flags = 0, int lifetime = 35, float size = 1, float angle = 0, float xoff = 0, float yoff = 0, float zoff = 0, float velx = 0, float vely = 0, float velz = 0, float accelx = 0, float accely = 0, float accelz = 0, float startalphaf = 1, float fadestepf = -1, float sizestep = 0)
     {
 
     }
 
-    void A_SwapTeleFog()
+    public void A_SpawnSound()
     {
 
     }
 
-    int A_TakeFromChildren(string itemtype, int amount = 0)
+    public void A_SpidRefire()
+    {
+
+    }
+
+    public void A_SPosAttack()
+    {
+
+    }
+
+    public void A_SPosAttackUseAtkSound()
+    {
+
+    }
+
+    public void A_StartFire()
+    {
+
+    }
+
+    public void A_Stop()
+    {
+
+    }
+
+    public void A_StopSound(int slot) // Bad default but that's what is originally was...
+    {
+
+    }
+
+    public void A_StopSoundEx(string slot)
+    {
+
+    }
+
+    public void A_SwapTeleFog()
+    {
+
+    }
+
+    public int A_TakeFromChildren(string itemtype, int amount = 0)
     {
         return 0;
     }
 
-    int A_TakeFromSiblings(string itemtype, int amount = 0)
+    public int A_TakeFromSiblings(string itemtype, int amount = 0)
     {
         return 0;
     }
 
-    bool A_TakeFromTarget(string itemtype, int amount, int flags, int forward_ptr)
+    public bool A_TakeFromTarget(string itemtype, int amount, int flags, int forward_ptr)
     {
         return false;
     }
 
-    bool A_TakeInventory(string itemtype, int amount, int flags, int giveto)
+    public bool A_TakeInventory(string itemtype, int amount, int flags, int giveto)
     {
         return false;
     }
@@ -1349,107 +1349,107 @@ public class Actor : MonoBehaviour
     //                                   class<Actor> fogtype = "TeleportFog", int flags = 0, float mindist = 0, float maxdist = 0,
     //                                   int ptr = AAPTR_DEFAULT);
 
-    bool A_ThrowGrenade(string itemtype, float zheight = 0, float xyvel = 0, float zvel = 0, bool useammo = true)
+    public bool A_ThrowGrenade(string itemtype, float zheight = 0, float xyvel = 0, float zvel = 0, bool useammo = true)
     {
         return false;
     }
 
-    void A_TossGib()
+    public void A_TossGib()
     {
 
     }
 
-    void A_Tracer()
+    public void A_Tracer()
     {
 
     }
 
-    void A_Tracer2()
+    public void A_Tracer2()
     {
 
     }
 
-    void A_TransferPointer(int ptr_source, int ptr_recipient, int sourcefield, int recipientfield, int flags)
+    public void A_TransferPointer(int ptr_source, int ptr_recipient, int sourcefield, int recipientfield, int flags)
     {
 
     }
 
-    void A_TroopAttack()
+    public void A_TroopAttack()
     {
 
     }
 
-    void A_TurretLook()
+    public void A_TurretLook()
     {
 
     }
 
-    void A_Turn(float angle = 0)
+    public void A_Turn(float angle = 0)
     {
 
     }
 
-    void A_UnHideThing()
+    public void A_UnHideThing()
     {
 
     }
 
-    void A_Unsetfloat()
+    public void A_Unsetfloat()
     {
 
     }
 
-    void A_UnSetFloorClip()
+    public void A_UnSetFloorClip()
     {
 
     }
 
-    void A_UnSetInvulnerable()
+    public void A_UnSetInvulnerable()
     {
 
     }
 
-    void A_UnSetReflective()
+    public void A_UnSetReflective()
     {
 
     }
 
-    void A_UnSetReflectiveInvulnerable()
+    public void A_UnSetReflectiveInvulnerable()
     {
 
     }
 
-    void A_UnSetShootable()
+    public void A_UnSetShootable()
     {
 
     }
 
-    void A_UnsetSolid()
+    public void A_UnsetSolid()
     {
 
     }
 
-    void A_VileAttack(AudioClip snd, int initialdmg = 20, int blastdmg = 70, int blastradius = 70, float thrustfac = 1.0f, string damagetype = "Fire", int flags = 0)
+    public void A_VileAttack(AudioClip snd, int initialdmg = 20, int blastdmg = 70, int blastradius = 70, float thrustfac = 1.0f, string damagetype = "Fire", int flags = 0)
     {
 
     }
 
-    void A_VileChase()
+    public void A_VileChase()
     {
 
     }
 
-    void A_VileStart()
+    public void A_VileStart()
     {
 
     }
 
-    void A_VileTarget(string fire = "ArchvileFire")
+    public void A_VileTarget(string fire = "ArchvileFire")
     {
 
     }
 
-    void A_Wander(int flags = 0)
+    public void A_Wander(int flags = 0)
     {
 
     }
@@ -1458,57 +1458,57 @@ public class Actor : MonoBehaviour
     //                                 int flags = 0, state success_state = "", float heightoffset = 0, float radiusoffset = 0,
     //                                 float pitch = 0);
 
-    void A_WeaponOffset(float wx = 0, float wy = 32, int flags = 0)
+    public void A_WeaponOffset(float wx = 0, float wy = 32, int flags = 0)
     {
 
     }
 
-    void A_Weave(int xspeed, int yspeed, float xdist, float ydist)
+    public void A_Weave(int xspeed, int yspeed, float xdist, float ydist)
     {
 
     }
 
-    void A_WolfAttack(int flags, AudioClip whattoplay, float snipe = 1.0f, int maxdamage = 64, int blocksize = 128, int pointblank = 2, int longrange = 4, float runspeed = 160.0f, string pufftype = "BulletPuff")
+    public void A_WolfAttack(int flags, AudioClip whattoplay, float snipe = 1.0f, int maxdamage = 64, int blocksize = 128, int pointblank = 2, int longrange = 4, float runspeed = 160.0f, string pufftype = "BulletPuff")
     {
 
     }
 
-    void A_XScream()
+    public void A_XScream()
     {
 
     }
 
-    int ACS_NamedExecute(string script, int mapnum = 0, int arg1 = 0, int arg2 = 0, int arg3 = 0)
-    {
-        return 0;
-    }
-
-    int ACS_NamedSuspend(string script, int mapnum = 0)
+    public int ACS_NamedExecute(string script, int mapnum = 0, int arg1 = 0, int arg2 = 0, int arg3 = 0)
     {
         return 0;
     }
 
-    int ACS_NamedTerminate(string script, int mapnum = 0)
+    public int ACS_NamedSuspend(string script, int mapnum = 0)
     {
         return 0;
     }
 
-    int ACS_NamedLockedExecute(string script, int mapnum = 0, int arg1 = 0, int arg2 = 0, int lck = 0)
+    public int ACS_NamedTerminate(string script, int mapnum = 0)
     {
         return 0;
     }
 
-    int ACS_NamedLockedExecuteDoor(string script, int mapnum = 0, int arg1 = 0, int arg2 = 0, int lck = 0)
+    public int ACS_NamedLockedExecute(string script, int mapnum = 0, int arg1 = 0, int arg2 = 0, int lck = 0)
     {
         return 0;
     }
 
-    int ACS_NamedExecuteWithResult(string script, int arg1 = 0, int arg2 = 0, int arg3 = 0, int arg4 = 0)
+    public int ACS_NamedLockedExecuteDoor(string script, int mapnum = 0, int arg1 = 0, int arg2 = 0, int lck = 0)
     {
         return 0;
     }
 
-    void ACS_NamedExecuteAlways(string script, int mapnum = 0, int arg1 = 0, int arg2 = 0, int arg3 = 0)
+    public int ACS_NamedExecuteWithResult(string script, int arg1 = 0, int arg2 = 0, int arg3 = 0, int arg4 = 0)
+    {
+        return 0;
+    }
+
+    public void A_CS_NamedExecuteAlways(string script, int mapnum = 0, int arg1 = 0, int arg2 = 0, int arg3 = 0)
     {
 
     }
@@ -1847,21 +1847,26 @@ public class BaronOfHell : Monster
                        new StateInfo{function = "Loop"}
                    }
                }
-            },
+           },
            { "Melee", new State
-               {
-               //Add info here
-               }
-            },
-           { "Missile", new State
                {
                    info = new List<StateInfo>
                    {
                        new StateInfo{spr = "BOSS", sprInd = "EF", time = 8, function = "A_FaceTarget" },
-                       new StateInfo{spr = "BOSS", sprInd = "G", time = 8, function = "A_BruisAttack" },
+                       new StateInfo{spr = "BOSS", sprInd = "G", time = 8, function = "A_MeleeAttack" },
                        new StateInfo{function = "See"}
                    }
                }
+            },
+            { "Missile", new State
+                {
+                    info = new List<StateInfo>
+                    {
+                        new StateInfo{spr = "BOSS", sprInd = "EF", time = 8, function = "A_FaceTarget" },
+                        new StateInfo{spr = "BOSS", sprInd = "G", time = 8, function = "A_BruisAttack" },
+                        new StateInfo{function = "See"}
+                    }
+                }
             },
             { "Pain", new State
                 {
@@ -2028,6 +2033,7 @@ public class DoomImp : Monster
         PainChance = 200;
         sprite = "TROO";
         Name = "Imp";
+
         actorStates = new Dictionary<string, State>
         {
             { "Spawn", new State
@@ -2041,16 +2047,22 @@ public class DoomImp : Monster
                }
             },
             { "See", new State
-            {
-               info = new List<StateInfo>
-               {
-                   new StateInfo{spr = "TROO", sprInd = "AABBCCDD", time = 3, function = "A_Chase"},
-                   new StateInfo{function = "Loop"}
-               }
-            } },
+                {
+                   info = new List<StateInfo>
+                   {
+                       new StateInfo{spr = "TROO", sprInd = "AABBCCDD", time = 3, function = "A_Chase"},
+                       new StateInfo{function = "Loop"}
+                   }
+                }
+            },
             { "Melee", new State
                 {
-                //Add info here
+                   info = new List<StateInfo>
+                   {
+                       new StateInfo{spr = "TROO", sprInd = "EF", time = 8, function = "A_FaceTarget"},
+                       new StateInfo{spr = "TROO", sprInd = "G", time = 10, function = "A_MeleeAttack"},
+                       new StateInfo{function = "Loop"}
+                   }
                 }
             },
             { "Missile", new State
@@ -2568,7 +2580,12 @@ public class HellKnight : BaronOfHell
             },
             { "Melee", new State
                 {
-                    //Add info here
+                   info = new List<StateInfo>
+                   {
+                       new StateInfo{spr = "BOS2", sprInd = "EF", time = 8, function = "A_FaceTarget" },
+                       new StateInfo{spr = "BOS2", sprInd = "G", time = 8, function = "A_BruisAttack" },
+                       new StateInfo{function = "See"}
+                   }
                 }
             },
             { "Missile", new State
@@ -2576,7 +2593,7 @@ public class HellKnight : BaronOfHell
                    info = new List<StateInfo>
                    {
                        new StateInfo{spr = "BOS2", sprInd = "EF", time = 8, function = "A_FaceTarget" },
-                       new StateInfo{spr = "BOS2", sprInd = "G", time = 8, function = "A_BruisAttack" },
+                       new StateInfo{spr = "BOS2", sprInd = "G", time = 8, function = "A_MeleeAttack" },
                        new StateInfo{function = "See"}
                    }
                 }
