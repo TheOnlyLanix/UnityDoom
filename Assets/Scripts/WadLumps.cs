@@ -23,7 +23,7 @@ public class WAD
 
     public List<DoomMap> maps = new List<DoomMap>(); //maps and associated lumps
     [HideInInspector]
-    public List<Texture2D> sprites = new List<Texture2D>(); //sprites
+    public List<PICTURES> sprites = new List<PICTURES>(); //sprites
     public Dictionary<string, Material> flats = new Dictionary<string, Material>(); //flats (ceiling and floor textures)
     public Dictionary<string, Material> textures = new Dictionary<string, Material>(); //textures
     public List<string> pnames = new List<string>(); //pnames lump
@@ -257,9 +257,8 @@ public class PICTURES
     public int Height;
     public int LeftOffset;
     public int TopOffset;
-
-
     //End Heaader//
+    public Texture2D texture;
 }
 
 

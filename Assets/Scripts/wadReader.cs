@@ -335,7 +335,8 @@ public class wadReader : MonoBehaviour
             newTex.Apply();
             newTex.filterMode = FilterMode.Point;
             newTex.name = sprite.name;
-            newWad.sprites.Add(newTex);
+            newPicture.texture = newTex;
+            newWad.sprites.Add(newPicture);
             
         }
 

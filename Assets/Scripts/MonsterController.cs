@@ -6,14 +6,14 @@ using UnityEngine;
 public class StateController
 {
     Actor actor;
-    List<Texture2D> sprites = new List<Texture2D>();
+    List<PICTURES> sprites = new List<PICTURES>();
     State state;
     float time = 0;
     int infoIndex = 0;
     int sprIndex = 0;
     public bool stopped = false;
 
-    public StateController(Actor actor, List<Texture2D> allSprites)
+    public StateController(Actor actor, List<PICTURES> allSprites)
     {
         state = actor.actorStates["Spawn"];
         this.actor = actor;
@@ -32,9 +32,9 @@ public class StateController
         }
 
         // remember every sprite that matches a state sprite
-        foreach(Texture2D sprite in allSprites)
+        foreach(PICTURES sprite in allSprites)
         {
-            if (stateSprites.Contains(sprite.name.Substring(0, 4)))
+            if (stateSprites.Contains(sprite.texture.name.Substring(0, 4)))
             {
                 sprites.Add(sprite);
             }
@@ -121,38 +121,40 @@ public class StateController
         }
     }
 
-    public void UpdateMaterial(Material mat, int side)
+    public PICTURES UpdateMaterial(Material mat, int side)
     {
         // find out current state's sprite according to side
         string sprAndSide = state.info[infoIndex].sprInd[sprIndex] + side.ToString();
-        foreach (Texture2D sprite in sprites)
+        foreach (PICTURES sprite in sprites)
         {
-            if (sprite.name.Substring(4).Contains(sprAndSide))
+            if (sprite.texture.name.Substring(4).Contains(sprAndSide))
             {
-                mat.mainTexture = sprite;
-                if (sprite.name.Substring(4, 2) == sprAndSide)
+                mat.mainTexture = sprite.texture;
+                if (sprite.texture.name.Substring(4, 2) == sprAndSide)
                     mat.SetTextureScale("_MainTex", new Vector2(1, 1));
                 else
                     mat.SetTextureScale("_MainTex", new Vector2(-1, 1)); // if it was found as the second item in the list, flip it
 
-                return;
+                return sprite;
             }
         }
 
         // if we found no match, find our current state's sprite with no sides
         sprAndSide = state.info[infoIndex].sprInd[sprIndex] + "0";
-        foreach (Texture2D sprite in sprites)
+        foreach (PICTURES sprite in sprites)
         {
-            if (sprite.name.Substring(4).Contains(sprAndSide))
+            if (sprite.texture.name.Substring(4).Contains(sprAndSide))
             {
-                mat.mainTexture = sprite;
-                if (sprite.name.Substring(4, 2) == sprAndSide)
+                mat.mainTexture = sprite.texture;
+                if (sprite.texture.name.Substring(4, 2) == sprAndSide)
                     mat.SetTextureScale("_MainTex", new Vector2(1, 1));
                 else
                     mat.SetTextureScale("_MainTex", new Vector2(-1, 1)); // if it was found as the second item in the list, flip it
-                return;
+                return sprite;
             }
         }
+
+        return null;
     }
 }
 
@@ -163,6 +165,7 @@ public class MonsterController : MonoBehaviour {
     THINGS thing;
     Actor actor;
     MeshRenderer mr;
+    Mesh mesh;
     GameObject sprObj;
     public bool debug;
     public string overrideState = ""; // TODO: remove? only for debugging
@@ -170,7 +173,7 @@ public class MonsterController : MonoBehaviour {
     StateController stateController;
     
     //TODO: SOUNDS
-    public void OnCreate(List<Texture2D> sprites, THINGS thing)
+    public void OnCreate(List<PICTURES> sprites, THINGS thing)
     {
         player = GameObject.Find("FPSController");
         this.thing = thing;
@@ -179,20 +182,20 @@ public class MonsterController : MonoBehaviour {
         CapsuleCollider collider = gameObject.AddComponent<CapsuleCollider>();
 
         health = actor.Health; //sets the health of the actor
-        transform.rotation = Quaternion.Euler(0, 315-thing.angle, 0);
+        transform.rotation = Quaternion.Euler(0, thing.angle, 0);
 
         collider.radius = actor.Radius;
         collider.height = actor.Height;
-        collider.center = new Vector3(0, actor.Height / 2, 0);
-
+        collider.center = new Vector3(0, actor.Height / 2f, 0);
+        
         sprObj = new GameObject("sprite");
         sprObj.transform.parent = transform;
         sprObj.transform.position = transform.position;
-        Mesh mesh = createPlane();
+        this.mesh = createPlane();
         MeshFilter mf = sprObj.AddComponent<MeshFilter>();
         mr = sprObj.AddComponent<MeshRenderer>();
         mr.material = new Material(Shader.Find("Custom/DoomShader"));
-        mf.mesh = mesh;
+        mf.mesh = this.mesh;
 
         stateController = new StateController(actor, sprites);
         stateController.UpdateMaterial(mr.material, 1);
@@ -204,18 +207,30 @@ public class MonsterController : MonoBehaviour {
         //the sprite will always face the player
         Quaternion sprLookRot = Quaternion.LookRotation(transform.position - player.transform.position, Vector3.up);
         Vector3 rot = sprLookRot.eulerAngles;
-        rot = new Vector3(0, rot.y + 225, 0);
+        rot = new Vector3(0, rot.y, 0);
         sprObj.transform.rotation = Quaternion.Euler(rot);
 
         // Use the state controller to set our texture according to angle from player
-        Quaternion lookRot = Quaternion.LookRotation(player.transform.position - transform.position, Vector3.up);
+        Quaternion lookRot = Quaternion.LookRotation(transform.position - player.transform.position, Vector3.up);
         int angleTexIndex = pickSide(lookRot.eulerAngles.y);
         stateController.OverrideState(ref overrideState);
         stateController.Update();
-        stateController.UpdateMaterial(mr.material, angleTexIndex);
+        PICTURES texture = stateController.UpdateMaterial(mr.material, angleTexIndex);
         if (stateController.stopped)
         {
             Destroy(gameObject);
+        }
+        else
+        {
+            float tWidth = mr.material.mainTexture.width;
+            float tHeight = mr.material.mainTexture.height;
+            sprObj.transform.localScale = new Vector3(tWidth / 2f, tHeight, 1);
+            if (texture != null)
+            {
+                Vector3 xOffset = sprObj.transform.rotation * Vector3.forward * (texture.LeftOffset - texture.Width / 2f);
+                Vector3 yOffset = new Vector3(0, Math.Max(texture.TopOffset - texture.Height, 0), 0); // TODO: investigate why I have to use Math.Max here
+                sprObj.transform.localPosition = xOffset + yOffset;
+            }
         }
     }
 
@@ -226,13 +241,13 @@ public class MonsterController : MonoBehaviour {
 
         // offset angle by half of the angle between frames
         // this is so we change frames at angle 22.5 instead of angle 0
-        float ang2 = ang + (360f / sideFrames) / 2f;
+        float ang2 = ang - (360f / sideFrames) / 2f;
 
         // offset angle by -90 degrees, to make north actually north
-        ang2 -= 90;
+        ang2 += 90;
 
         // wrap the angle by 360 so we don't have any negative degrees
-        ang2 = (thing.angle + ang2 + 360f) % 360;
+        ang2 = (360f * 2f - thing.angle - ang2) % 360;
 
         // figure out the actual side
         return 1 + (int)(ang2 * sideFrames / 360f);
@@ -250,10 +265,10 @@ public class MonsterController : MonoBehaviour {
         mesh.uv = new Vector2[4];
         
         // create the vertices
-        tmpVerts.Add(new Vector3(-(actor.Radius/1.5f), 0, -(actor.Radius / 1.5f)));
-        tmpVerts.Add(new Vector3(-(actor.Radius / 1.5f), actor.Height, -(actor.Radius / 1.5f)));
-        tmpVerts.Add(new Vector3(actor.Radius / 1.5f, actor.Height, actor.Radius / 1.5f));
-        tmpVerts.Add(new Vector3(actor.Radius / 1.5f, 0, actor.Radius / 1.5f));
+        tmpVerts.Add(new Vector3(-1, 0, 0));
+        tmpVerts.Add(new Vector3(-1, 1, 0));
+        tmpVerts.Add(new Vector3(1, 1, 0));
+        tmpVerts.Add(new Vector3(1, 0, 0));
 
 
         tmpUv.Add(new Vector2(0, 0));
@@ -265,7 +280,7 @@ public class MonsterController : MonoBehaviour {
         mesh.uv = tmpUv.ToArray();
         mesh.vertices = tmpVerts.ToArray();
 
-        mesh.triangles = new int[6] { 2, 1, 0, 0, 3, 2 };
+        mesh.triangles = new int[6] { 0, 1, 2, 2, 3, 0 };
         mesh.normals = new Vector3[4] { transform.forward, transform.forward, transform.forward, transform.forward };
         mesh.RecalculateBounds();
         return mesh;
