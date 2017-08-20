@@ -63,7 +63,6 @@ public class Actor : MonoBehaviour
     List<int> VisibleAngles = new List<int>();
     List<int> VisiblePitch = new List<int>();
 
-
     // Functions
     bool CheckClass(Thing checkclass, int ptr_select, bool match_superclass)
     {
