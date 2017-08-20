@@ -290,7 +290,16 @@ namespace DoomTriangulator
                 endHeight = fSector.ceilingHeight;
 
                 if (fSector.isDoor)
+                {
                     endHeight = fSector.LowestNeighborCeiling();
+
+                    // ugly hack to fix DOOM2 MAP05 SECTOR 153
+                    if(Math.Abs(endHeight - startHeight) < 0.001f)
+                    {
+                        startHeight = fSector.floorHeight;
+                        endHeight = fSector.ceilingHeight;
+                    }
+                }
 
                 if (fSector.isMovingFloor)
                 {
@@ -325,7 +334,20 @@ namespace DoomTriangulator
 
                 walls.Add(CreateWall(line.getBackSector(), line, texture, startHeight, endHeight, true, WallType.Middle));
             }
-            
+
+            // generate skybox hole textures
+            if (line.getFrontSector() == sector && line.side1 != null && !wad.textures.ContainsKey(line.side1.midTex) && sector.ceilingFlat.StartsWith("F_SKY"))
+            {
+                SECTORS bSector = line.getBackSector();
+                if (bSector == null || (bSector.floorHeight == bSector.ceilingHeight && !bSector.isDoor && !bSector.isMovingFloor))
+                {
+                    Material texture = wad.flats[sector.ceilingFlat];
+                    startHeight = line.getFrontSector().floorHeight;
+                    endHeight = line.getFrontSector().ceilingHeight;
+                    walls.Add(CreateWall(line.getFrontSector(), line, texture, startHeight, endHeight, false, WallType.Middle));
+                }
+            }
+
             return walls;
         }
 
@@ -367,6 +389,16 @@ namespace DoomTriangulator
 
             if (line.getFrontSector() == sector && line.side2 != null && wad.textures.ContainsKey(line.side2.upTex) && !backSectorDoor)
                 walls.Add(CreateWall(line.getBackSector(), line, wad.textures[line.side2.upTex], startHeight, endHeight, true, WallType.Upper));
+
+            // generate skybox hole textures
+            if (line.getFrontSector() == sector && line.side1 != null && !wad.textures.ContainsKey(line.side1.upTex))
+            {
+                if (line.getFrontSector().ceilingFlat.StartsWith("F_SKY") && line.getBackSector().ceilingFlat.StartsWith("F_SKY"))
+                {
+                    Material texture = wad.flats[sector.ceilingFlat];
+                    walls.Add(CreateWall(line.getFrontSector(), line, texture, startHeight, endHeight, false, WallType.Upper));
+                }
+            }
 
             return walls;
         }

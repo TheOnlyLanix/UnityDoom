@@ -22,8 +22,6 @@ public class wadReader : MonoBehaviour
 
     FileStream wadOpener;
 
-    List<RenderTexture> mapRts = new List<RenderTexture>();
-
     //End of UI Elements
 
     void Awake()
@@ -228,7 +226,7 @@ public class wadReader : MonoBehaviour
 
                         newSec.floorFlat = newSec.floorFlat.Replace("\0", "");
                         newSec.ceilingFlat = newSec.ceilingFlat.Replace("\0", "");
-
+                        
                         newMap.sectors.Add(newSec);
                     }
                 }
@@ -370,7 +368,6 @@ public class wadReader : MonoBehaviour
 
             for (int q = 0; q < texColors.Length; q++)
             {
-                // texColors[q] = playPal.colors[newFlat.pixels[q]];
                 texColors[q] = playPal.colors[spriteBytes[q]];
             }
 
@@ -378,10 +375,16 @@ public class wadReader : MonoBehaviour
             newTex.Apply();
             newTex.name = flat.name;
             newTex.filterMode = FilterMode.Point;
-            Material newMat;
 
-            newMat = new Material(DoomShader);
+            Material newMat = new Material(DoomShader);
             newMat.mainTexture = newTex;
+
+            if (flat.name.StartsWith("F_SKY"))
+            {
+                newMat = (Material)Resources.Load("SkyboxHoleMaterial", typeof(Material));
+                newMat.mainTexture = newTex;
+            }
+
             newWad.flats.Add(flat.name, newMat);
         }
 

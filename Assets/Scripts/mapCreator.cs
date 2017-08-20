@@ -68,7 +68,7 @@ public class mapCreator : MonoBehaviour
         yield return (new WaitForEndOfFrame());
 
         //use this if you want to select one map in particular
-        //if (mapSelected == 1) { mapSelected = 14; }
+        if (mapSelected == 1) { mapSelected = 9; }
 
         openedMap = reader.newWad.maps[mapSelected - 1];
 
@@ -203,17 +203,13 @@ public class mapCreator : MonoBehaviour
         sectorMeshes.Add(floor);
 
         //create ceiling
-        if (!(reader.newWad.flats[sector.ceilingFlat].mainTexture.name == "F_SKY1"))//skip the sky texture
-        {
-            sectorMeshes.Add(Triangulator.CreateCeiling(floor, sector, reader.newWad.flats[sector.ceilingFlat], generating));
-        }
-        else
+        sectorMeshes.Add(Triangulator.CreateCeiling(floor, sector, reader.newWad.flats[sector.ceilingFlat], generating));
+
+        //set the skybox's texture
+        if (reader.newWad.flats[sector.ceilingFlat].mainTexture.name.StartsWith("F_SKY"))
         {
             sky = (Texture2D)reader.newWad.textures["SKY1"].mainTexture;
         }
-
-        //sectorMeshes.Add(Triangulator.CreateCeiling(floor, sector, ceilingMat, generating));
-
 
         //create walls
         sectorMeshes.AddRange(Triangulator.CreateWalls(sector, reader.newWad, generating));
@@ -248,15 +244,6 @@ public class mapCreator : MonoBehaviour
         go.GetComponent<MeshFilter>().mesh = mesh;
         go.AddComponent<MeshCollider>();
         return go;
-    }
-
-    private Material SetupRenderTextures()
-    {
-        Material mat = new Material(Shader.Find("Custom/SkyShader"));
-        RenderTexture rt = new RenderTexture(64, 64, 16);
-        rt.Create();
-        mat.mainTexture = rt;
-        return mat;
     }
 
     void drawVert(Vector3 pos)
