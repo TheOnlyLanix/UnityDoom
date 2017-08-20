@@ -17,7 +17,6 @@ public class wadReader : MonoBehaviour
     PLAYPAL playPal;
 
     public Shader DoomShader;
-    public Shader SkyShader;
     enum type { Sprite, Flat, Patch };
 
     FileStream wadOpener;
