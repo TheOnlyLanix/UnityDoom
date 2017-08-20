@@ -370,7 +370,6 @@ public class Thing
 
 public class State
 {
-    public string type;
     public List<StateInfo> info = new List<StateInfo>();
 }
 
