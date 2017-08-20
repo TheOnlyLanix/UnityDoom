@@ -324,12 +324,18 @@ public class wadReader : MonoBehaviour
                                           //J signifies which pixel (from TOP TO BOTTOM) we are on
                                 label = (postSize) + " " + p;
                                 yPos = (newPicture.Height - (columnBytes[p] + j)) - 1;
-                                newTex.SetPixel(i, yPos, playPal.colors[columnBytes[p + j + 3]]);
+
+                                //set the borders of the sprite to be clear..removes garbage pixels
+                                if ((i <= 1) || (i >= newTex.width-1) || (yPos <= 1) || (yPos>=newTex.height-1))
+                                    newTex.SetPixel(i, yPos, Color.clear);
+                                else
+                                    newTex.SetPixel(i, yPos, playPal.colors[columnBytes[p + j + 3]]);
                             }
                             postSize = columnBytes[p + 1] + 4;
                         }
                     }
                 }
+
             }
             // newTex.SetPixel(i, j, new Color(columnBytes[i], columnBytes[i], columnBytes[i]));
             newTex.Apply();
@@ -362,7 +368,7 @@ public class wadReader : MonoBehaviour
 
 
             //new texture
-            Texture2D newTex = new Texture2D((int)Mathf.Sqrt(flat.size), (int)Mathf.Sqrt(flat.size));
+            Texture2D newTex = new Texture2D((int)Mathf.Sqrt(flat.size), (int)Mathf.Sqrt(flat.size), TextureFormat.RGBA32, false);
 
             Color[] texColors = new Color[(int)Mathf.Sqrt(flat.size) * (int)Mathf.Sqrt(flat.size)];
 
