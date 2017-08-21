@@ -290,16 +290,7 @@ namespace DoomTriangulator
                 endHeight = fSector.ceilingHeight;
 
                 if (fSector.isMovingCeiling)
-                {
-                    endHeight = fSector.LowestNeighborCeiling();
-
-                    // ugly hack to fix DOOM2 MAP05 SECTOR 153
-                    if(Math.Abs(endHeight - startHeight) < 0.1f)
-                    {
-                        startHeight = fSector.floorHeight;
-                        endHeight = fSector.ceilingHeight;
-                    }
-                }
+                    endHeight = fSector.ceilingBounds[1];
 
                 if (fSector.isMovingFloor)
                 {

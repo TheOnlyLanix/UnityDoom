@@ -296,7 +296,6 @@ public static class LineDefTypes
         }
     }
 
-
     public class LineDefCeilingType : LineDefType
     {
         public Trigger trigger;
@@ -393,7 +392,40 @@ public static class LineDefTypes
         }
     }
 
-    public enum Category { Door, Floor, Lift, Ceiling };
+    public class LineDefCrusherType : LineDefType
+    {
+        public Trigger trigger;
+        public Repeatable repeatable;
+        public Speed speed;
+        public MonsterActivate monsterActivate;
+        public Silent silent;
+        public CrusherAction action;
+        
+        public LineDefCrusherType(Trigger trigger, Repeatable repeatable, Speed speed, MonsterActivate monsterActivate, Silent silent, CrusherAction action) : base(Category.Crusher)
+        {
+            this.trigger = trigger;
+            this.repeatable = repeatable;
+            this.speed = speed;
+            this.monsterActivate = monsterActivate;
+            this.silent = silent;
+            this.action = action;
+        }
+
+        public override int[] GetCeilingMovementBound(WAD wad, SECTORS sector)
+        {
+            int[] bound = new int[2];
+            bound[0] = sector.floorHeight + 8;
+            bound[1] = sector.ceilingHeight;
+            if(bound[1] < bound[0])
+            {
+                bound[0] = bound[1];
+                bound[1] = sector.floorHeight + 8;
+            }
+            return bound;
+        }
+    }
+
+    public enum Category { Door, Floor, Lift, Ceiling, Crusher };
 
     public enum Trigger { Push, Switch, Walk, Gun };
     public enum Repeatable { Multiple, Once };
@@ -408,6 +440,10 @@ public static class LineDefTypes
     public enum Model { Trigger, Numeric, None };
 
     public enum Crush { Yes, No };
+
+    public enum Silent { Yes, No };
+    public enum CrusherAction { Start, Stop };
+
     public enum FloorTarget
     {
         LowestNeighborFloor, NextNeighborFloor,
@@ -599,5 +635,23 @@ public static class LineDefTypes
         { 204,  new LineDefCeilingType(Trigger.Switch, Repeatable.Once,     Direction.Down, Speed.Slow, TextureChange.None, Model.None, MonsterActivate.No, Crush.No,  CeilingTarget.HighestNeighborFloor) },
         { 205,  new LineDefCeilingType(Trigger.Switch, Repeatable.Multiple, Direction.Down, Speed.Slow, TextureChange.None, Model.None, MonsterActivate.No, Crush.No,  CeilingTarget.LowestNeighborCeiling) },
         { 206,  new LineDefCeilingType(Trigger.Switch, Repeatable.Multiple, Direction.Down, Speed.Slow, TextureChange.None, Model.None, MonsterActivate.No, Crush.No,  CeilingTarget.HighestNeighborFloor) },
+
+        /* CRUSHERS */
+        { 6,   new LineDefCrusherType(Trigger.Walk,   Repeatable.Once,     Speed.Fast, MonsterActivate.No, Silent.No,  CrusherAction.Start) },
+        { 25,  new LineDefCrusherType(Trigger.Walk,   Repeatable.Once,     Speed.Slow, MonsterActivate.No, Silent.No,  CrusherAction.Start) },
+        { 49,  new LineDefCrusherType(Trigger.Switch, Repeatable.Once,     Speed.Slow, MonsterActivate.No, Silent.No,  CrusherAction.Start) },
+        { 57,  new LineDefCrusherType(Trigger.Walk,   Repeatable.Once,     Speed.None, MonsterActivate.No, Silent.Yes, CrusherAction.Stop) },
+        { 73,  new LineDefCrusherType(Trigger.Walk,   Repeatable.Multiple, Speed.Slow, MonsterActivate.No, Silent.No,  CrusherAction.Start) },
+        { 74,  new LineDefCrusherType(Trigger.Walk,   Repeatable.Multiple, Speed.None, MonsterActivate.No, Silent.Yes, CrusherAction.Stop) },
+        { 77,  new LineDefCrusherType(Trigger.Walk,   Repeatable.Multiple, Speed.Fast, MonsterActivate.No, Silent.No,  CrusherAction.Start) },
+        { 141, new LineDefCrusherType(Trigger.Walk,   Repeatable.Once,     Speed.Slow, MonsterActivate.No, Silent.Yes, CrusherAction.Start) },
+        { 150, new LineDefCrusherType(Trigger.Walk,   Repeatable.Multiple, Speed.Slow, MonsterActivate.No, Silent.Yes, CrusherAction.Start) },
+        { 164, new LineDefCrusherType(Trigger.Switch, Repeatable.Once,     Speed.Fast, MonsterActivate.No, Silent.No,  CrusherAction.Start) },
+        { 165, new LineDefCrusherType(Trigger.Switch, Repeatable.Once,     Speed.Slow, MonsterActivate.No, Silent.Yes, CrusherAction.Start) },
+        { 168, new LineDefCrusherType(Trigger.Switch, Repeatable.Once,     Speed.None, MonsterActivate.No, Silent.Yes, CrusherAction.Stop) },
+        { 183, new LineDefCrusherType(Trigger.Switch, Repeatable.Multiple, Speed.Fast, MonsterActivate.No, Silent.No,  CrusherAction.Start) },
+        { 184, new LineDefCrusherType(Trigger.Switch, Repeatable.Multiple, Speed.Slow, MonsterActivate.No, Silent.No,  CrusherAction.Start) },
+        { 185, new LineDefCrusherType(Trigger.Switch, Repeatable.Multiple, Speed.Slow, MonsterActivate.No, Silent.Yes, CrusherAction.Start) },
+        { 188, new LineDefCrusherType(Trigger.Switch, Repeatable.Multiple, Speed.None, MonsterActivate.No, Silent.Yes, CrusherAction.Stop) },
     };
 }
