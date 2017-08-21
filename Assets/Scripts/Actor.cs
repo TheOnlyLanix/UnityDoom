@@ -35,6 +35,14 @@ public class Actor : MonoBehaviour
     public string Name = "Actor";
     public string sprite = "TNT1";
 
+    public string SeeSound = "grunt/sight";
+    public string AttackSound = "grunt/attack";
+    public string PainSound = "grunt/pain";
+    public string DeathSound = "grunt/death";
+    public string ActiveSound = "grunt/active";
+    public string Obituary = "$OB_ZOMBIE";
+    public string HitObituary = "$OB_CACOHIT";
+    public string DropItem = "";
 
     public string Paintype = "Normal";
     public string DeathType = "Normal";
@@ -45,6 +53,10 @@ public class Actor : MonoBehaviour
     public int RipLevelMin = 0;
     public int RipLevelMax = 0;
     public int DefThreshold = 100;
+
+    public int MaxTargetRange = 0;
+    public int MiniMissileChance = 0;
+    public int MeleeThreshold = 0;
 
     public enum BloodType
     {
@@ -1586,13 +1598,7 @@ public class ShotgunGuy : Monster
     //Monster
     //+FLOORCLIP
 
-    public string SeeSound = "shotguy/sight";
-    public string AttackSound = "shotguy/attack";
-    public string PainSound = "shotguy/pain";
-    public string DeathSound = "shotguy/death";
-    public string ActiveSound = "shotguy/active";
-    public string Obituary = "$OB_SHOTGUY";
-    public string DropItem = "Shotgun";
+
 
 
     public void Awake()
@@ -1605,6 +1611,14 @@ public class ShotgunGuy : Monster
         PainChance = 170;
         sprite = "SPOS";
         Name = "Shotgun Guy";
+
+        SeeSound = "shotguy/sight";
+        AttackSound = "shotguy/attack";
+        PainSound = "shotguy/pain";
+        DeathSound = "shotguy/death";
+        ActiveSound = "shotguy/active";
+        Obituary = "$OB_SHOTGUY";
+        DropItem = "Shotgun";
 
         actorStates = new Dictionary<string, State>
         {
@@ -1695,15 +1709,6 @@ public class ChaingunGuy : Monster
     //Monster
     //+FLOORCLIP
 
-    public string SeeSound = "chainguy/sight";
-    public string AttackSound = "chainguy/attack";
-    public string PainSound = "chainguy/pain";
-    public string DeathSound = "chainguy/death";
-    public string ActiveSound = "chainguy/active";
-    public string Obituary = "$OB_CHAINGUY";
-    public string DropItem = "Chaingun";
-
-
     public void Awake()
     {
         Health = 70;
@@ -1714,6 +1719,17 @@ public class ChaingunGuy : Monster
         PainChance = 170;
         sprite = "CPOS";
         Name = "Chaingun Guy";
+
+
+        SeeSound = "chainguy/sight";
+        AttackSound = "chainguy/attack";
+        PainSound = "chainguy/pain";
+        DeathSound = "chainguy/death";
+        ActiveSound = "chainguy/active";
+        Obituary = "$OB_CHAINGUY";
+        DropItem = "Chaingun";
+
+
 
         actorStates = new Dictionary<string, State>
        {
@@ -1804,12 +1820,7 @@ public class BaronOfHell : Monster
     //+FLOORCLIP
     //+BOSSDEATH
 
-    public string SeeSound = "baron/sight";
-    public string PainSound = "baron/pain";
-    public string DeathSound = "baron/death";
-    public string ActiveSound = "baron/active";
-    public string Obituary = "$OB_BARON";
-    public string HitObituary = "$OB_BARONHIT";
+
 
     public virtual void Awake()
     {
@@ -1826,6 +1837,13 @@ public class BaronOfHell : Monster
         PainChance = 50;
         sprite = "BOSS";
         Name = "Baron of Hell";
+
+        SeeSound = "baron/sight";
+        PainSound = "baron/pain";
+        DeathSound = "baron/death";
+        ActiveSound = "baron/active";
+        Obituary = "$OB_BARON";
+        HitObituary = "$OB_BARONHIT";
 
         actorStates = new Dictionary<string, State>
         {
@@ -1911,16 +1929,20 @@ public class ZombieMan : Monster
     //Monster
     //+FLOORCLIP
 
-    public string SeeSound = "grunt/sight";
-    public string AttackSound = "grunt/attack";
-    public string PainSound = "grunt/pain";
-    public string DeathSound = "grunt/death";
-    public string ActiveSound = "grunt/active";
-    public string Obituary = "$OB_ZOMBIE";
-    public string DropItem = "Clip";
+
 
     public void Awake()
     {
+
+        SeeSound = "grunt/sight";
+        AttackSound = "grunt/attack";
+        PainSound = "grunt/pain";
+        DeathSound = "grunt/death";
+        ActiveSound = "grunt/active";
+        Obituary = "$OB_ZOMBIE";
+        DropItem = "Clip";
+
+
         Health = 20;
         Radius = 20;
         Height = 56;
@@ -2015,13 +2037,6 @@ public class DoomImp : Monster
     //Monster
     //+FLOORCLIP
 
-    public string SeeSound = "imp/sight";
-    public string AttackSound = "imp/attack";
-    public string PainSound = "imp/pain";
-    public string DeathSound = "imp/death";
-    public string ActiveSound = "imp/active";
-    public string Obituary = "$OB_IMP";
-    public string HitObituary = "$OB_IMPHIT";
 
     public void Awake()
     {
@@ -2033,6 +2048,14 @@ public class DoomImp : Monster
         PainChance = 200;
         sprite = "TROO";
         Name = "Imp";
+
+        SeeSound = "imp/sight";
+        AttackSound = "imp/attack";
+        PainSound = "imp/pain";
+        DeathSound = "imp/death";
+        ActiveSound = "imp/active";
+        Obituary = "$OB_IMP";
+        HitObituary = "$OB_IMPHIT";
 
         actorStates = new Dictionary<string, State>
         {
@@ -2134,12 +2157,7 @@ public class Arachnotron : Monster
     //+FLOORCLIP
     //+BOSSDEATH
 
-    public string SeeSound = "baby/sight";
-    public string AttackSound = "baby/attack";
-    public string PainSound = "baby/pain";
-    public string DeathSound = "baby/death";
-    public string ActiveSound = "baby/active";
-    public string Obituary = "$OB_BABY";
+
 
     public void Awake()
     {
@@ -2151,6 +2169,13 @@ public class Arachnotron : Monster
         PainChance = 128;
         sprite = "BSPI";
         Name = "Arachnotron";
+
+        SeeSound = "baby/sight";
+        AttackSound = "baby/attack";
+        PainSound = "baby/pain";
+        DeathSound = "baby/death";
+        ActiveSound = "baby/active";
+        Obituary = "$OB_BABY";
 
         actorStates = new Dictionary<string, State>
         {
@@ -2229,7 +2254,6 @@ public class Arachnotron : Monster
 public class SpiderMastermind : Monster
 {
     //Monster
-    new int MinMissileChance = 160;
     //+BOSS
     //+MISSILEMORE
     //+FLOORCLIP
@@ -2237,12 +2261,7 @@ public class SpiderMastermind : Monster
     //+DONTMORPH
     //+BOSSDEATH
 
-    public string SeeSound = "spider/sight";
-    public string AttackSound = "spider/attack";
-    public string PainSound = "spider/pain";
-    public string DeathSound = "spider/death";
-    public string ActiveSound = "spider/active";
-    public string Obituary = "$OB_SPIDER";
+
 
     public void Awake()
     {
@@ -2254,6 +2273,14 @@ public class SpiderMastermind : Monster
         PainChance = 40;
         sprite = "SPID";
         Name = "Spider Mastermind";
+
+        MinMissileChance = 160;
+        SeeSound = "spider/sight";
+        AttackSound = "spider/attack";
+        PainSound = "spider/pain";
+        DeathSound = "spider/death";
+        ActiveSound = "spider/active";
+        Obituary = "$OB_SPIDER";
 
         actorStates = new Dictionary<string, State>
         {
@@ -2326,12 +2353,6 @@ public class Demon : Monster
 
     //+FLOORCLIP
 
-    public string SeeSound = "demon/sight";
-    public string AttackSound = "demon/attack";
-    public string PainSound = "demon/pain";
-    public string DeathSound = "demon/death";
-    public string ActiveSound = "demon/active";
-    public string Obituary = "$OB_DEMONHIT";
 
     public virtual void Awake()
     {
@@ -2348,6 +2369,13 @@ public class Demon : Monster
         PainChance = 180;
         sprite = "SARG";
         Name = "Demon";
+
+        SeeSound = "demon/sight";
+        AttackSound = "demon/attack";
+        PainSound = "demon/pain";
+        DeathSound = "demon/death";
+        ActiveSound = "demon/active";
+        Obituary = "$OB_DEMONHIT";
 
         actorStates = new Dictionary<string, State>
         {
@@ -2449,13 +2477,7 @@ public class Archvile : Monster
     //+FLOORCLIP
     //+NOTARGET
 
-    public string SeeSound = "vile/sight";
-    public string AttackSound = "vile/attack";
-    public string PainSound = "vile/pain";
-    public string DeathSound = "vile/death";
-    public string ActiveSound = "vile/active";
-    public string Obituary = "$OB_VILE";
-    public int MaxTargetRange = 896;
+
 
     public void Awake()
     {
@@ -2468,7 +2490,15 @@ public class Archvile : Monster
         sprite = "VILE";
         Name = "Archvile";
 
-        actorStates = new Dictionary<string, State>
+        SeeSound = "vile/sight";
+        AttackSound = "vile/attack";
+        PainSound = "vile/pain";
+        DeathSound = "vile/death";
+        ActiveSound = "vile/active";
+        Obituary = "$OB_VILE";
+        MaxTargetRange = 896;
+
+    actorStates = new Dictionary<string, State>
         {
             { "Spawn", new State
                 {
@@ -2640,7 +2670,7 @@ public class HellKnight : BaronOfHell
 public class CyberDemon : Monster
 {
     //Monster
-    public int MiniMissileChance = 160;
+
     //+BOSS
     //+MISSILEMORE
     //+FLOORCLIP
@@ -2648,12 +2678,7 @@ public class CyberDemon : Monster
     //+DONTMORPH
     //+BOSSDEATH
 
-    public string SeeSound = "cyber/sight";
-    public string AttackSound = "cyber/attack";
-    public string PainSound = "cyber/pain";
-    public string DeathSound = "cyber/death";
-    public string ActiveSound = "cyber/active";
-    public string Obituary = "$OB_CYBORG";
+
 
     public void Awake()
     {
@@ -2665,6 +2690,15 @@ public class CyberDemon : Monster
         PainChance = 20;
         sprite = "CYBR";
         Name = "Cyberdemon";
+
+        MiniMissileChance = 160;
+
+        SeeSound = "cyber/sight";
+        AttackSound = "cyber/attack";
+        PainSound = "cyber/pain";
+        DeathSound = "cyber/death";
+        ActiveSound = "cyber/active";
+        Obituary = "$OB_CYBORG";
 
         actorStates = new Dictionary<string, State>
         {
@@ -2740,12 +2774,6 @@ public class Fatso : Monster
     //+FLOORCLIP
     //+BOSSDEATH
 
-    public string SeeSound = "fatso/sight";
-    public string AttackSound = "fatso/attack";
-    public string PainSound = "fatso/pain";
-    public string DeathSound = "fatso/death";
-    public string ActiveSound = "fatso/active";
-    public string Obituary = "$OB_FATSO";
 
 
     public void Awake()
@@ -2758,6 +2786,13 @@ public class Fatso : Monster
         PainChance = 80;
         sprite = "FATT";
         Name = "Mancubus";
+
+        SeeSound = "fatso/sight";
+        AttackSound = "fatso/attack";
+        PainSound = "fatso/pain";
+        DeathSound = "fatso/death";
+        ActiveSound = "fatso/active";
+        Obituary = "$OB_FATSO";
 
         actorStates = new Dictionary<string, State>
         {
@@ -2841,13 +2876,8 @@ public class LostSoul : Monster
     //+DONTFALL
     //+NOTICEDEATH
 
-    public string SeeSound = "skull/sight";
-    public string AttackSound = "skull/attack";
-    public string PainSound = "skull/pain";
-    public string DeathSound = "skull/death";
-    public string ActiveSound = "skull/active";
+
     //RenderStyle = SoulTrans;
-    public string Obituary = "$OB_SKULL";
 
     public void Awake()
     {
@@ -2860,6 +2890,13 @@ public class LostSoul : Monster
         PainChance = 256;
         sprite = "SKUL";
         Name = "Lost Soul";
+
+        SeeSound = "skull/sight";
+        AttackSound = "skull/attack";
+        PainSound = "skull/pain";
+        DeathSound = "skull/death";
+        ActiveSound = "skull/active";
+        Obituary = "$OB_SKULL";
 
         actorStates = new Dictionary<string, State>
         {
@@ -2928,12 +2965,6 @@ public class PainElemental : Monster
     //+FLOAT
     //+NOGRAVITY
 
-    public string SeeSound = "pain/sight";
-    public string AttackSound = "pain/attack";
-    public string PainSound = "pain/pain";
-    public string DeathSound = "pain/death";
-    public string ActiveSound = "pain/active";
-
     public void Awake()
     {
         Health = 400;
@@ -2944,6 +2975,12 @@ public class PainElemental : Monster
         PainChance = 128;
         sprite = "PAIN";
         Name = "Pain Elemental";
+
+        SeeSound = "pain/sight";
+        AttackSound = "pain/attack";
+        PainSound = "pain/pain";
+        DeathSound = "pain/death";
+        ActiveSound = "pain/active";
 
         actorStates = new Dictionary<string, State>
         {
@@ -3019,17 +3056,10 @@ public class Revenant : Monster
 {
 
     //Monster
-    public int MeleeThreshold = 196;
+
     //+MISSILEMORE
     //+FLOORCLIP
 
-    public string SeeSound = "skeleton/sight";
-    public string AttackSound = "skeleton/attack";
-    public string PainSound = "skeleton/pain";
-    public string DeathSound = "skeleton/death";
-    public string ActiveSound = "skeleton/active";
-    public string HitObituary = "$OB_UNDEADHIT"; // "%o was punched by a revenant."
-    public string Obituary = "$OB_UNDEAD"; // "%o couldn't evade a revenant's fireball."
 
     public void Awake()
     {
@@ -3041,6 +3071,16 @@ public class Revenant : Monster
         PainChance = 100;
         sprite = "SKEL";
         Name = "Revenant";
+
+        MeleeThreshold = 196;
+
+        SeeSound = "skeleton/sight";
+        AttackSound = "skeleton/attack";
+        PainSound = "skeleton/pain";
+        DeathSound = "skeleton/death";
+        ActiveSound = "skeleton/active";
+        HitObituary = "$OB_UNDEADHIT"; // "%o was punched by a revenant."
+        Obituary = "$OB_UNDEAD"; // "%o couldn't evade a revenant's fireball."
 
         actorStates = new Dictionary<string, State>
         {
@@ -3129,13 +3169,7 @@ public class WolfensteinSS : Monster
     //Monster
     //+FLOORCLIP
 
-    public string SeeSound = "wolfss/sight";
-    public string AttackSound = "wolfss/attack";
-    public string PainSound = "wolfss/pain";
-    public string DeathSound = "wolfss/death";
-    public string ActiveSound = "wolfss/active";
-    public string Obituary = "$OB_WOLFSS"; // "%o couldn't evade a revenant's fireball."
-    public string Dropitem = "Clip";
+
 
     public void Awake()
     {
@@ -3146,6 +3180,14 @@ public class WolfensteinSS : Monster
         PainChance = 170;
         sprite = "SSWV";
         Name = "WolfensteinSS";
+
+        SeeSound = "wolfss/sight";
+        AttackSound = "wolfss/attack";
+        PainSound = "wolfss/pain";
+        DeathSound = "wolfss/death";
+        ActiveSound = "wolfss/active";
+        Obituary = "$OB_WOLFSS"; // "%o couldn't evade a revenant's fireball."
+        DropItem = "Clip";
 
         actorStates = new Dictionary<string, State>
         {
@@ -3238,13 +3280,6 @@ public class Cacodemon : Monster
     //Monster
     //+FLOORCLIP
 
-    public string SeeSound = "caco/sight";
-    public string AttackSound = "caco/attack";
-    public string PainSound = "caco/pain";
-    public string DeathSound = "caco/death";
-    public string ActiveSound = "caco/active";
-    public string Obituary = "$OB_CACO";
-    public string HitObituary = "$OB_CACOHIT";
 
     public void Awake()
     {
@@ -3255,6 +3290,14 @@ public class Cacodemon : Monster
         PainChance = 128;
         sprite = "HEAD";
         Name = "Cacodemon";
+
+        SeeSound = "caco/sight";
+        AttackSound = "caco/attack";
+        PainSound = "caco/pain";
+        DeathSound = "caco/death";
+        ActiveSound = "caco/active";
+        Obituary = "$OB_CACO";
+        HitObituary = "$OB_CACOHIT";
 
         actorStates = new Dictionary<string, State>
         {

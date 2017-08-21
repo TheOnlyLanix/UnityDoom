@@ -30,7 +30,7 @@ public class WAD
     public List<Color32[,]> patches = new List<Color32[,]>(); //store the patches as textures
     public List<MUS> music = new List<MUS>();
     public List<Thing> thingdefs = new List<Thing>();
-    public List<AudioClip> sounds = new List<AudioClip>();
+    public Dictionary<string, AudioClip> sounds = new Dictionary<string, AudioClip>();
     //more to come
 
 }

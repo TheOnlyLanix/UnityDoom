@@ -12,11 +12,13 @@ public class StateController
     int infoIndex = 0;
     int sprIndex = 0;
     public bool stopped = false;
+    AudioSource audioSource;
 
     public StateController(Actor actor, List<PICTURES> allSprites)
     {
         state = actor.actorStates["Spawn"];
         this.actor = actor;
+        audioSource.GetComponent<AudioSource>();
 
         // get a list of every sprite name possible in states
         HashSet<string> stateSprites = new HashSet<string>();
@@ -169,7 +171,7 @@ public class MonsterController : MonoBehaviour {
     GameObject sprObj;
     public bool debug;
     public string overrideState = ""; // TODO: remove? only for debugging
-
+    AudioSource audioSource;
     StateController stateController;
     
     //TODO: SOUNDS
@@ -178,7 +180,8 @@ public class MonsterController : MonoBehaviour {
         player = GameObject.FindGameObjectWithTag("Player");
         this.thing = thing;
         actor = GetComponent<Actor>();
-        
+        audioSource = gameObject.AddComponent<AudioSource>();
+
         CapsuleCollider collider = gameObject.AddComponent<CapsuleCollider>();
 
         health = actor.Health; //sets the health of the actor

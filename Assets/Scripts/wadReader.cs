@@ -924,7 +924,7 @@ public class wadReader : MonoBehaviour
 
             AudioClip newSound = AudioClip.Create(entry.name, sampleCount, 1, sampleRate, false);//new sound
             newSound.SetData(sampleData, 0);
-            newWad.sounds.Add(newSound);//save the new sound to our newWad 
+            newWad.sounds.Add(entry.name, newSound);//save the new sound to our newWad 
         }
 
     }
