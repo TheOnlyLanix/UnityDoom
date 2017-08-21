@@ -252,8 +252,8 @@ public class wadReader : MonoBehaviour
             wadOpener.Read(spriteBytes, 0, spriteBytes.Length);
 
             //read the picture header (first 8 bytes of the picture resource) [0-7]
-            newPicture.Width = BitConverter.ToInt16(spriteBytes, 0);
-            newPicture.Height = BitConverter.ToInt16(spriteBytes, 2);
+            newPicture.Width = BitConverter.ToInt16(spriteBytes, 0) + 2;
+            newPicture.Height = BitConverter.ToInt16(spriteBytes, 2) + 2;
             newPicture.LeftOffset = BitConverter.ToInt16(spriteBytes, 4);
             newPicture.TopOffset = BitConverter.ToInt16(spriteBytes, 6);
 
@@ -288,7 +288,7 @@ public class wadReader : MonoBehaviour
                 FF byte = end of column 
             */
 
-            for (int i = 0; i < newPicture.Width; i++) // (for each column)
+            for (int i = 0; i < newPicture.Width - 2; i++) // (for each column)
             {
 
                 int colPos = pointers[i]; //Position from start of picture to column position
@@ -323,13 +323,8 @@ public class wadReader : MonoBehaviour
                                 int yPos; //the position of the pixel from the bottom of the image. (extrapolated from the top. and whatnot..)
                                           //J signifies which pixel (from TOP TO BOTTOM) we are on
                                 label = (postSize) + " " + p;
-                                yPos = (newPicture.Height - (columnBytes[p] + j)) - 1;
-
-                                //set the borders of the sprite to be clear..removes garbage pixels
-                                if ((i <= 1) || (i >= newTex.width-1) || (yPos <= 1) || (yPos>=newTex.height-1))
-                                    newTex.SetPixel(i, yPos, Color.clear);
-                                else
-                                    newTex.SetPixel(i, yPos, playPal.colors[columnBytes[p + j + 3]]);
+                                yPos = ((newPicture.Height - 2) - (columnBytes[p] + j)) - 1;
+                                newTex.SetPixel(i + 1, yPos + 1, playPal.colors[columnBytes[p + j + 3]]);
                             }
                             postSize = columnBytes[p + 1] + 4;
                         }

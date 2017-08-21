@@ -69,7 +69,7 @@ public class mapCreator : MonoBehaviour
         yield return (new WaitForEndOfFrame());
 
         //use this if you want to select one map in particular
-        //if (mapSelected == 1) { mapSelected = 9; }
+        //if (mapSelected == 1) { mapSelected = 21; }
 
         openedMap = reader.newWad.maps[mapSelected - 1];
 
