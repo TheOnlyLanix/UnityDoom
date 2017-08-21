@@ -174,14 +174,21 @@ public class MonsterController : MonoBehaviour {
     StateController stateController;
     
     //TODO: SOUNDS
-    public void OnCreate(List<PICTURES> sprites, THINGS thing)
+    public void OnCreate(List<PICTURES> sprites, THINGS thing, Dictionary<string, AudioClip> sounds)
     {
         player = GameObject.FindGameObjectWithTag("Player");
         this.thing = thing;
         actor = GetComponent<Actor>();
         audioSource = gameObject.AddComponent<AudioSource>();
-
         CapsuleCollider collider = gameObject.AddComponent<CapsuleCollider>();
+
+        /*Uncomment if you want to hear sounds..
+        AudioClip seeSound = sounds[SoundInfo.soundInfo[actor.SeeSound].ToUpper()];
+        audioSource.clip = seeSound;
+        audioSource.loop = false;
+        audioSource.spatialBlend = 1;
+        audioSource.Play();
+        */
 
         health = actor.Health; //sets the health of the actor
         transform.rotation = Quaternion.Euler(0, thing.angle, 0);

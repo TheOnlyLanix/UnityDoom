@@ -6,9 +6,9 @@ using UnityEngine;
 //and modified for use with UnityDoom
 
 
-public class SoundInfo : MonoBehaviour
+public static class SoundInfo
 {
-    public Dictionary<string, string> soundInfo = new Dictionary<string, string>
+    public static Dictionary<string, string> soundInfo = new Dictionary<string, string>
     {
 
         {"misc/unused", "dsskldth" },
@@ -65,8 +65,8 @@ public class SoundInfo : MonoBehaviour
 
         // Zombie man
 
-        {"grunt/sight", "grunt/sight1 grunt/sight2 grunt/sight3" },
-        {"grunt/death", "grunt/death1 grunt/death2 grunt/death3" },
+        {"grunt/sight", "dsposit1" },
+        {"grunt/death", "dspodth1" },
         {"grunt/sight1", "dsposit1" },
         {"grunt/sight2", "dsposit2" },
         {"grunt/sight3", "dsposit3" },
@@ -79,8 +79,8 @@ public class SoundInfo : MonoBehaviour
 
         // Shotgun guy
 
-        {"shotguy/sight", "shotguy/sight1 shotguy/sight2 shotguy/sight3" },
-        {"shotguy/death", "shotguy/death1 shotguy/death2 shotguy/death3" },
+        {"shotguy/sight", "dsposit1" },
+        {"shotguy/death", "dspodth1" },
         {"shotguy/sight1", "dsposit1" },
         {"shotguy/sight2", "dsposit2" },
         {"shotguy/sight3", "dsposit3" },
@@ -126,8 +126,8 @@ public class SoundInfo : MonoBehaviour
 
         // Chainguy
 
-        {"chainguy/sight", "chainguy/sight1 chainguy/sight2 chainguy/sight3" },
-        {"chainguy/death", "chainguy/death1 chainguy/death2 chainguy/death3" },
+        {"chainguy/sight", "dsposit1" },
+        {"chainguy/death", "dspodth1" },
         {"chainguy/sight1", "dsposit1" },
         {"chainguy/sight2", "dsposit2" },
         {"chainguy/sight3", "dsposit3" },
@@ -140,8 +140,8 @@ public class SoundInfo : MonoBehaviour
 
         // Imp
 
-        {"imp/sight", "imp/sight1 imp/sight2" },
-        {"imp/death", "imp/death1 imp/death2" },
+        {"imp/sight", "dsbgsit1" },
+        {"imp/death", "dsbgdth1" },
         {"imp/sight1", "dsbgsit1" },
         {"imp/sight2", "dsbgsit2" },
         {"imp/active", "dsbgact" },

@@ -182,7 +182,7 @@ public class mapCreator : MonoBehaviour
             {
                 newThing.AddComponent(MonsterType[thing.thingType]);
                 MonsterController controller = newThing.AddComponent<MonsterController>();
-                controller.OnCreate(reader.newWad.sprites, thing);
+                controller.OnCreate(reader.newWad.sprites, thing, reader.newWad.sounds);
             }
                 
             if (thing.thingType == 1)
