@@ -71,7 +71,7 @@ namespace DoomTriangulator
                 foreach (Vertex vertex in triangle.vertices)
                 {
                     double theta = Math.Atan2(my - vertex.y, mx - vertex.x);
-                    //while (sorted.ContainsKey(theta)) { theta += 0.0001; } // maybe needed?
+                    //while (sorted.ContainsKey(theta)) { theta += 0.1; } // maybe needed?
                     sorted.Add(theta, vertex);
                 }
                 triangleIndices.Add(vertexPool.vertices.IndexOf(sorted.Values[2]));
@@ -294,7 +294,7 @@ namespace DoomTriangulator
                     endHeight = fSector.LowestNeighborCeiling();
 
                     // ugly hack to fix DOOM2 MAP05 SECTOR 153
-                    if(Math.Abs(endHeight - startHeight) < 0.001f)
+                    if(Math.Abs(endHeight - startHeight) < 0.1f)
                     {
                         startHeight = fSector.floorHeight;
                         endHeight = fSector.ceilingHeight;
@@ -494,19 +494,23 @@ namespace DoomTriangulator
 
                 // select a triangle for debugging
                 bool debugTriangle = false;
-                //debugTriangle = triangle.Identical(new Vertex[] { new Vertex(1280, 3456), new Vertex(1344, 3520), new Vertex(1472, 3648) });
-                
+                debugTriangle = triangle.Similar(new Vertex[] { new Vertex(2240, 3520), new Vertex(2304, 3200), new Vertex(2688, 3264) });
+                if (debugTriangle)
+                {
+                    triangle = triangle;
+                }
+
                 // validate that it has an area
                 if (!triangle.ValidArea())
                 {
-                    if (debugTriangle) { Debug.Log("InvalidArea"); }
+                    if (debugTriangle) { Debug.Log("InvalidArea " + triangle.DebugPrint()); }
                     goto continueSearch;
                 }
 
                 // validate normals
                 if (!triangle.ValidNormals())
                 {
-                    if (debugTriangle) { Debug.Log("InvalidNormals"); }
+                    if (debugTriangle) { Debug.Log("InvalidNormals " + triangle.DebugPrint()); }
                     goto continueSearch;
                 }
 
@@ -515,7 +519,7 @@ namespace DoomTriangulator
                 {
                     if (triangle.Identical(triangle2))
                     {
-                        if (debugTriangle) { Debug.Log("IsntUnique"); }
+                        if (debugTriangle) { Debug.Log("IsntUnique " + triangle.DebugPrint()); }
                         goto continueSearch;
                     }
                 }
@@ -533,7 +537,7 @@ namespace DoomTriangulator
                     {
                         if (debugTriangle)
                         {
-                            Debug.Log("TrianglesCross");
+                            Debug.Log("TrianglesCross " + triangle.DebugPrint());
                         }
                         goto continueSearch;
                     }
@@ -543,14 +547,14 @@ namespace DoomTriangulator
                 foreach (Vertex vertex2 in vertices)
                 {
                     if (triangle.vertices.Contains(vertex2)) { continue; }
-                    for (double tx = vertex2.x - 0.001; tx <= vertex2.x + 0.001; tx += 0.001)
+                    for (double tx = vertex2.x - 0.1; tx <= vertex2.x + 0.1; tx += 0.1)
                     {
-                        for (double ty = vertex2.y - 0.001; ty <= vertex2.y + 0.001; ty += 0.001)
+                        for (double ty = vertex2.y - 0.1; ty <= vertex2.y + 1; ty += 0.1)
                         {
                             Vertex tmp = new Vertex(tx, ty);
                             if (triangle.Inside(tmp))
                             {
-                                if (debugTriangle) { Debug.Log("ContainsVert"); }
+                                if (debugTriangle) { Debug.Log("ContainsVert " + triangle.DebugPrint()); }
                                 goto continueSearch;
                             }
                         }
@@ -561,7 +565,7 @@ namespace DoomTriangulator
                 // keep track of new lines
                 if (!lines.Contains(l2)) { lines.Add(l2); unmarked.Add(l2); }
                 if (!lines.Contains(l3)) { lines.Add(l3); unmarked.Add(l3); }
-                if (debugTriangle) { Debug.Log("Added"); }
+                if (debugTriangle) { Debug.Log("Added " + triangle.DebugPrint()); }
                 triangles.Add(triangle);
                 return;
 
@@ -575,7 +579,7 @@ namespace DoomTriangulator
         // the vertex pool saves every vertex we've created
         // it is used to eliminate duplicates on conversion
 
-        public static double MinTolerance = 0.001;
+        public static double MinTolerance = 0.1;
 
         public List<Vertex> vertices = new List<Vertex>();
         public Vertex Get(double x, double y)
@@ -622,7 +626,7 @@ namespace DoomTriangulator
 
     public class Triangle2D
     {
-        public static double MinTolerance = 0.001;
+        public static double MinTolerance = 0.1;
 
         public Line[] lines = new Line[3];
         public Vertex[] vertices = new Vertex[3];
@@ -670,7 +674,7 @@ namespace DoomTriangulator
             }
 
             // make sure that this triangle isn't actually a line
-            return this.Area() > 0.001;
+            return this.Area() > 0.1;
         }
 
         public double Area()
@@ -756,20 +760,21 @@ namespace DoomTriangulator
 
         public bool Similar(Vertex[] otherVertices)
         {
+            List<Vertex> check = new List<Vertex>(otherVertices);
             foreach (Line bLine in lines)
             {
                 foreach (Vertex vertex1 in bLine.vertices)
                 {
-                    foreach (Vertex vertex2 in otherVertices)
+                    foreach (Vertex vertex2 in check)
                     {
-                        if (vertex1.DistanceTo(vertex2) < 0.001)
+                        if (vertex1.DistanceTo(vertex2) < 0.1)
                         {
+                            check.Remove(vertex2);
                             goto continueSimilarSearch;
                         }
                     }
                 }
                 return false;
-                break;
                 continueSimilarSearch:;
             }
 
@@ -787,6 +792,13 @@ namespace DoomTriangulator
             }
 
             return true;
+        }
+
+        public string DebugPrint()
+        {
+            return "(" + vertices[0].x + ", " + vertices[0].y + ")"
+                + "(" + vertices[1].x + ", " + vertices[1].y + ")"
+                + "(" + vertices[2].x + ", " + vertices[2].y + ")";
         }
     }
 
@@ -910,7 +922,7 @@ namespace DoomTriangulator
             {
                 foreach (Vertex vertex2 in linedef.vertices)
                 {
-                    if (vertex.DistanceTo(vertex2) < 0.001f)
+                    if (vertex.DistanceTo(vertex2) < 0.1f)
                     {
                         return true;
                     }
