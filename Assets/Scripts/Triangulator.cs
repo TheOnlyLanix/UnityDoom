@@ -10,13 +10,13 @@ namespace DoomTriangulator
     public class Triangulator : MonoBehaviour
     {
         public enum WallType { Upper, Middle, Lower };
-        public enum GeneratingGo { Sector, Door, Floor };
+        public enum GeneratingGo { Sector, Ceiling, Floor };
 
         // This class is the actual triangulator, you feed it a list of linedefs and it spits out triangles
         
         public static SubMesh CreateFloor(SECTORS sector, Material mat, GeneratingGo generating)
         {
-            if (sector.isDoor && generating == GeneratingGo.Door)
+            if (sector.isMovingCeiling && generating == GeneratingGo.Ceiling)
                 return null;
 
             if (sector.isMovingFloor && generating != GeneratingGo.Floor)
@@ -102,10 +102,10 @@ namespace DoomTriangulator
             if (sector.isMovingFloor && generating != GeneratingGo.Floor)
                 floor = CreateFloor(sector, mat, GeneratingGo.Floor);
 
-            if (sector.isDoor && generating != GeneratingGo.Door)
+            if (sector.isMovingCeiling && generating != GeneratingGo.Ceiling)
                 return null;
 
-            if (sector.isDoor && generating == GeneratingGo.Door)
+            if (sector.isMovingCeiling && generating == GeneratingGo.Ceiling)
                 floor = CreateFloor(sector, mat, sector.isMovingFloor ? GeneratingGo.Floor : GeneratingGo.Sector);
 
             //reverse
@@ -170,10 +170,10 @@ namespace DoomTriangulator
 
                 if(hasBothSectors)
                 {
-                    if (sector.isDoor)
+                    if (sector.isMovingCeiling)
                     {
-                        genLowerWalls = genLowerWalls ? (generating != GeneratingGo.Door) : false;
-                        genUpperWalls = genUpperWalls ? (generating == GeneratingGo.Door) : false;
+                        genLowerWalls = genLowerWalls ? (generating != GeneratingGo.Ceiling) : false;
+                        genUpperWalls = genUpperWalls ? (generating == GeneratingGo.Ceiling) : false;
                     }
 
                     if (sector.isMovingFloor)
@@ -289,7 +289,7 @@ namespace DoomTriangulator
                 startHeight = fSector.floorHeight;
                 endHeight = fSector.ceilingHeight;
 
-                if (fSector.isDoor)
+                if (fSector.isMovingCeiling)
                 {
                     endHeight = fSector.LowestNeighborCeiling();
 
@@ -303,8 +303,8 @@ namespace DoomTriangulator
 
                 if (fSector.isMovingFloor)
                 {
-                    startHeight = Math.Min(startHeight, fSector.movementBounds[0]);
-                    endHeight = Math.Max(endHeight, fSector.movementBounds[1]);
+                    startHeight = Math.Min(startHeight, fSector.floorBounds[0]);
+                    endHeight = Math.Max(endHeight, fSector.floorBounds[1]);
                 }
             }
             else if (line.getFrontSector() == null && line.getBackSector() != null)
@@ -339,7 +339,7 @@ namespace DoomTriangulator
             if (line.getFrontSector() == sector && line.side1 != null && !wad.textures.ContainsKey(line.side1.midTex) && sector.ceilingFlat.StartsWith("F_SKY"))
             {
                 SECTORS bSector = line.getBackSector();
-                if (bSector == null || (bSector.floorHeight == bSector.ceilingHeight && !bSector.isDoor && !bSector.isMovingFloor))
+                if (bSector == null || (bSector.floorHeight == bSector.ceilingHeight && !bSector.isMovingCeiling && !bSector.isMovingFloor))
                 {
                     Material texture = wad.flats[sector.ceilingFlat];
                     startHeight = line.getFrontSector().floorHeight;
@@ -357,7 +357,7 @@ namespace DoomTriangulator
 
             // figure out start and end heights
             SECTORS otherSector = (sector == line.getFrontSector()) ? line.getBackSector() : line.getFrontSector();
-            float startHeight = Math.Min(sector.floorHeight + sector.movementBounds[0] - sector.movementBounds[1], otherSector.floorHeight + otherSector.movementBounds[0] - otherSector.movementBounds[1]);
+            float startHeight = Math.Min(sector.floorHeight + sector.floorBounds[0] - sector.floorBounds[1], otherSector.floorHeight + otherSector.floorBounds[0] - otherSector.floorBounds[1]);
             float endHeight = sector.floorHeight;
 
             // generate a wall for each textured side
@@ -373,15 +373,20 @@ namespace DoomTriangulator
         public static List<SubMesh> CreateUpperWalls(SECTORS sector, LINEDEFS line, WAD wad)            // uppertex
         {
             List<SubMesh> walls = new List<SubMesh>();
-            float startHeight = 0;
-            float endHeight = 0;
+
+            SECTORS otherSector = (sector == line.getFrontSector()) ? line.getBackSector() : line.getFrontSector();
+
+            // figure out how much extra height we have to add to a moving ceiling
+            float[] addMovementHeight = new float[2];
+            addMovementHeight[0] = Math.Min(Math.Min(sector.ceilingHeight, otherSector.ceilingHeight), sector.ceilingBounds[0]);
+            addMovementHeight[1] = Math.Max(Math.Max(sector.ceilingHeight, otherSector.ceilingHeight), sector.ceilingBounds[1]);
 
             // figure out start and end heights
-            startHeight = Math.Min(line.getFrontSector().ceilingHeight, line.getBackSector().ceilingHeight);
-            endHeight = Math.Max(line.getFrontSector().ceilingHeight, line.getBackSector().ceilingHeight);
+            float startHeight = sector.ceilingHeight;
+            float endHeight = Math.Max(otherSector.ceilingHeight, sector.ceilingHeight + (addMovementHeight[1] - addMovementHeight[0]));
 
             // this is an ugly hack in order to get DOOM2 MAP31 to have correct doors:
-            bool backSectorDoor = line.getBackSector() != null && line.getBackSector().isDoor;
+            bool backSectorDoor = line.getBackSector() != null && line.getBackSector().isMovingCeiling;
 
             // generate a wall for each textured side
             if (line.getBackSector() == sector && line.side1 != null && wad.textures.ContainsKey(line.side1.upTex))

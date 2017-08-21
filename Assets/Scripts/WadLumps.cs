@@ -208,10 +208,12 @@ public class SECTORS
     public List<LINEDEFS> otherLines = new List<LINEDEFS>(); //lines internal to the sector (not borders)
 
     // filled info
+    public int sectorIndex;
     public List<SECTORS> neighbors = new List<SECTORS>(); //neighboring sectors
-    public bool isDoor = false;
+    public bool isMovingCeiling = false;
     public bool isMovingFloor = false;
-    public int[] movementBounds;
+    public int[] floorBounds;
+    public int[] ceilingBounds;
 
     public int LowestNeighborFloor()
     {

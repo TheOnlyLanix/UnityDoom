@@ -18,6 +18,11 @@ public static class LineDefTypes
         {
             return new int[2] { sector.floorHeight, sector.floorHeight };
         }
+
+        public virtual int[] GetCeilingMovementBound(WAD wad, SECTORS sector)
+        {
+            return new int[2] { sector.ceilingHeight, sector.ceilingHeight };
+        }
     }
 
     public class LineDefDoorType : LineDefType
@@ -44,6 +49,16 @@ public static class LineDefTypes
         public bool isLocal()
         {
             return (trigger == Trigger.Gun || trigger == Trigger.Push);
+        }
+
+        public override int[] GetCeilingMovementBound(WAD wad, SECTORS sector)
+        {
+            int lowestNeighborCeiling = int.MaxValue;
+            sector.neighbors.ForEach(n => lowestNeighborCeiling = Math.Min(lowestNeighborCeiling, n.ceilingHeight));
+            if (lowestNeighborCeiling == int.MaxValue || (lowestNeighborCeiling - 4) < sector.floorHeight)
+                return new int[2] { sector.floorHeight, sector.ceilingHeight };
+            else
+                return new int[2] { sector.floorHeight, lowestNeighborCeiling - 4 };
         }
     }
 
@@ -281,7 +296,104 @@ public static class LineDefTypes
         }
     }
 
-    public enum Category { Door, Floor, Lift };
+
+    public class LineDefCeilingType : LineDefType
+    {
+        public Trigger trigger;
+        public Repeatable repeatable;
+        public Direction direction;
+        public Speed speed;
+        public TextureChange textureChange;
+        public Model model;
+        public MonsterActivate monsterActivate;
+        public Crush crush;
+        public CeilingTarget target;
+
+        public LineDefCeilingType(Trigger trigger, Repeatable repeatable, Direction direction, Speed speed, TextureChange textureChange, Model model, MonsterActivate monsterActivate, Crush crush, CeilingTarget target) : base(Category.Ceiling)
+        {
+            this.trigger = trigger;
+            this.repeatable = repeatable;
+            this.direction = direction;
+            this.speed = speed;
+            this.textureChange = textureChange;
+            this.model = model;
+            this.monsterActivate = monsterActivate;
+            this.crush = crush;
+            this.target = target;
+        }
+
+        public override int[] GetCeilingMovementBound(WAD wad, SECTORS sector)
+        {
+            int[] bound = new int[2];
+            switch (target)
+            {
+                case CeilingTarget.HighestNeighborCeiling:
+                    if (direction == Direction.Down) { throw new Exception("Unexpected LineDefCeilingType direction!"); }
+                    bound[0] = sector.ceilingHeight;
+                    bound[1] = -32000;
+                    sector.neighbors.ForEach(n => bound[1] = Math.Max(bound[1], n.ceilingHeight));
+                    if (bound[1] < bound[0])
+                    {
+                        bound[0] = bound[1];
+                        bound[1] = sector.ceilingHeight;
+                    }
+                    break;
+
+                case CeilingTarget.LowestNeighborCeiling:
+                    if (direction == Direction.Up) { throw new Exception("Unexpected LineDefCeilingType direction!"); }
+                    bound[0] = 32000;
+                    bound[1] = sector.ceilingHeight;
+                    sector.neighbors.ForEach(n => bound[0] = Math.Min(bound[0], n.ceilingHeight));
+                    if (bound[1] < bound[0])
+                    {
+                        bound[1] = bound[0];
+                        bound[0] = sector.ceilingHeight;
+                    }
+                    break;
+
+                case CeilingTarget.HighestNeighborFloor:
+                    if (direction == Direction.Up) { throw new Exception("Unexpected LineDefCeilingType direction!"); }
+                    bound[0] = Math.Max(sector.floorHeight, -32000);
+                    sector.neighbors.ForEach(n => bound[0] = Math.Max(bound[0], n.floorHeight));
+                    bound[1] = sector.ceilingHeight;
+                    if (bound[1] < bound[0])
+                    {
+                        bound[1] = bound[0];
+                        bound[0] = sector.ceilingHeight;
+                    }
+                    break;
+
+                case CeilingTarget.Floor:
+                    if (direction == Direction.Up) { throw new Exception("Unexpected LineDefCeilingType direction!"); }
+                    bound[0] = sector.floorHeight;
+                    bound[1] = sector.ceilingHeight;
+                    if (bound[1] < bound[0])
+                    {
+                        bound[1] = bound[0];
+                        bound[0] = sector.ceilingHeight;
+                    }
+                    break;
+
+                case CeilingTarget.FloorPlus8:
+                    if (direction == Direction.Up) { throw new Exception("Unexpected LineDefCeilingType direction!"); }
+                    bound[0] = sector.floorHeight + 8;
+                    bound[1] = sector.ceilingHeight;
+                    if (bound[1] < bound[0])
+                    {
+                        bound[1] = bound[0];
+                        bound[0] = sector.ceilingHeight;
+                    }
+                    break;
+
+                default:
+                    throw new Exception("Unexpected LineDefCeilingType target!");
+            }
+
+            return bound;
+        }
+    }
+
+    public enum Category { Door, Floor, Lift, Ceiling };
 
     public enum Trigger { Push, Switch, Walk, Gun };
     public enum Repeatable { Multiple, Once };
@@ -312,6 +424,12 @@ public static class LineDefTypes
         LowestNeighborFloor, LowestAndHighestFloor,
         RaiseNextFloor, Raise24, Raise32,
         Ceiling, Stop
+    }
+
+    public enum CeilingTarget
+    {
+        HighestNeighborCeiling, LowestNeighborCeiling,
+        HighestNeighborFloor, Floor, FloorPlus8
     }
 
     public static Dictionary<int, LineDefType> types = new Dictionary<int, LineDefType>
@@ -459,5 +577,27 @@ public static class LineDefTypes
         { 182, new LineDefLiftType(Trigger.Switch, Repeatable.Multiple, 0, Speed.None,    TextureChange.None, Model.None,    MonsterActivate.No, LiftTarget.Stop) },
         { 211, new LineDefLiftType(Trigger.Switch, Repeatable.Multiple, 0, Speed.Instant, TextureChange.None, Model.None,    MonsterActivate.No, LiftTarget.Ceiling) },
         { 212, new LineDefLiftType(Trigger.Walk,   Repeatable.Multiple, 0, Speed.Instant, TextureChange.None, Model.None,    MonsterActivate.No, LiftTarget.Ceiling) },
+
+        /* CEILINGS */
+        { 40,   new LineDefCeilingType(Trigger.Walk,   Repeatable.Once,     Direction.Up,   Speed.Slow, TextureChange.None, Model.None, MonsterActivate.No, Crush.No,  CeilingTarget.HighestNeighborCeiling) },
+        { 41,   new LineDefCeilingType(Trigger.Switch, Repeatable.Once,     Direction.Down, Speed.Fast, TextureChange.None, Model.None, MonsterActivate.No, Crush.No,  CeilingTarget.Floor) },
+        { 43,   new LineDefCeilingType(Trigger.Switch, Repeatable.Multiple, Direction.Down, Speed.Fast, TextureChange.None, Model.None, MonsterActivate.No, Crush.No,  CeilingTarget.Floor) },
+        { 44,   new LineDefCeilingType(Trigger.Walk,   Repeatable.Once,     Direction.Down, Speed.Slow, TextureChange.None, Model.None, MonsterActivate.No, Crush.No,  CeilingTarget.FloorPlus8) },
+        { 72,   new LineDefCeilingType(Trigger.Walk,   Repeatable.Multiple, Direction.Down, Speed.Slow, TextureChange.None, Model.None, MonsterActivate.No, Crush.No,  CeilingTarget.FloorPlus8) },
+        { 145,  new LineDefCeilingType(Trigger.Walk,   Repeatable.Once,     Direction.Down, Speed.Fast, TextureChange.None, Model.None, MonsterActivate.No, Crush.No,  CeilingTarget.Floor) },
+        { 151,  new LineDefCeilingType(Trigger.Walk,   Repeatable.Multiple, Direction.Up,   Speed.Slow, TextureChange.None, Model.None, MonsterActivate.No, Crush.No,  CeilingTarget.HighestNeighborCeiling) },
+        { 152,  new LineDefCeilingType(Trigger.Walk,   Repeatable.Multiple, Direction.Down, Speed.Fast, TextureChange.None, Model.None, MonsterActivate.No, Crush.No,  CeilingTarget.Floor) },
+        { 166,  new LineDefCeilingType(Trigger.Switch, Repeatable.Once,     Direction.Up,   Speed.Slow, TextureChange.None, Model.None, MonsterActivate.No, Crush.No,  CeilingTarget.HighestNeighborCeiling) },
+        { 167,  new LineDefCeilingType(Trigger.Switch, Repeatable.Once,     Direction.Down, Speed.Slow, TextureChange.None, Model.None, MonsterActivate.No, Crush.No,  CeilingTarget.FloorPlus8) },
+        { 186,  new LineDefCeilingType(Trigger.Switch, Repeatable.Multiple, Direction.Up,   Speed.Slow, TextureChange.None, Model.None, MonsterActivate.No, Crush.No,  CeilingTarget.HighestNeighborCeiling) },
+        { 187,  new LineDefCeilingType(Trigger.Switch, Repeatable.Multiple, Direction.Down, Speed.Slow, TextureChange.None, Model.None, MonsterActivate.No, Crush.No,  CeilingTarget.FloorPlus8) },
+        { 199,  new LineDefCeilingType(Trigger.Walk,   Repeatable.Once,     Direction.Down, Speed.Slow, TextureChange.None, Model.None, MonsterActivate.No, Crush.No,  CeilingTarget.LowestNeighborCeiling) },
+        { 200,  new LineDefCeilingType(Trigger.Walk,   Repeatable.Once,     Direction.Down, Speed.Slow, TextureChange.None, Model.None, MonsterActivate.No, Crush.No,  CeilingTarget.HighestNeighborFloor) },
+        { 201,  new LineDefCeilingType(Trigger.Walk,   Repeatable.Multiple, Direction.Down, Speed.Slow, TextureChange.None, Model.None, MonsterActivate.No, Crush.No,  CeilingTarget.LowestNeighborCeiling) },
+        { 202,  new LineDefCeilingType(Trigger.Walk,   Repeatable.Multiple, Direction.Down, Speed.Slow, TextureChange.None, Model.None, MonsterActivate.No, Crush.No,  CeilingTarget.HighestNeighborFloor) },
+        { 203,  new LineDefCeilingType(Trigger.Switch, Repeatable.Once,     Direction.Down, Speed.Slow, TextureChange.None, Model.None, MonsterActivate.No, Crush.No,  CeilingTarget.LowestNeighborCeiling) },
+        { 204,  new LineDefCeilingType(Trigger.Switch, Repeatable.Once,     Direction.Down, Speed.Slow, TextureChange.None, Model.None, MonsterActivate.No, Crush.No,  CeilingTarget.HighestNeighborFloor) },
+        { 205,  new LineDefCeilingType(Trigger.Switch, Repeatable.Multiple, Direction.Down, Speed.Slow, TextureChange.None, Model.None, MonsterActivate.No, Crush.No,  CeilingTarget.LowestNeighborCeiling) },
+        { 206,  new LineDefCeilingType(Trigger.Switch, Repeatable.Multiple, Direction.Down, Speed.Slow, TextureChange.None, Model.None, MonsterActivate.No, Crush.No,  CeilingTarget.HighestNeighborFloor) },
     };
 }
