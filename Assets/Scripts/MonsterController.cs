@@ -18,7 +18,6 @@ public class StateController
     {
         state = actor.actorStates["Spawn"];
         this.actor = actor;
-        audioSource.GetComponent<AudioSource>();
 
         // get a list of every sprite name possible in states
         HashSet<string> stateSprites = new HashSet<string>();
