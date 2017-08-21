@@ -210,6 +210,7 @@ public class SECTORS
     // filled info
     public int sectorIndex;
     public List<SECTORS> neighbors = new List<SECTORS>(); //neighboring sectors
+    public bool isDoor = false; // TODO: remove, temporary
     public bool isMovingCeiling = false;
     public bool isMovingFloor = false;
     public int[] floorBounds;

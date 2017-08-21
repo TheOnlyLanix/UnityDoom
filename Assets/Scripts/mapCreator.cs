@@ -24,7 +24,6 @@ public class mapCreator : MonoBehaviour
     public Button Map_Prev;
     public Texture2D sky;
     public Skybox skyboxScript;
-    private List<GameObject> doors = new List<GameObject>(); // TODO: temporary
     private bool hasOpenedAllDoors = false; // TODO: temporary
 
     mus2mid musmid;
@@ -69,7 +68,7 @@ public class mapCreator : MonoBehaviour
         yield return (new WaitForEndOfFrame());
 
         //use this if you want to select one map in particular
-        //if (mapSelected == 1) { mapSelected = 21; }
+        //if (mapSelected == 1) { mapSelected = 13; }
 
         openedMap = reader.newWad.maps[mapSelected - 1];
 
@@ -121,12 +120,18 @@ public class mapCreator : MonoBehaviour
 
     public void buttonMapOpenDoorsClicked()
     {
-        if (hasOpenedAllDoors) { return; }
-        foreach(GameObject go in doors)
+        if (!hasOpenedAllDoors)
         {
-            go.transform.Translate(new Vector3(0, 64f, 0));
+            GameObject[] gameObjects = FindObjectsOfType(typeof(GameObject)) as GameObject[];
+            foreach (GameObject go in gameObjects)
+            {
+                if (go.name.Contains("_Door"))
+                {
+                    go.transform.Translate(new Vector3(0, 64f, 0));
+                }
+            }
+            hasOpenedAllDoors = true;
         }
-        hasOpenedAllDoors = true;
     }
 
     void AddSectors()
@@ -134,16 +139,14 @@ public class mapCreator : MonoBehaviour
         sectorParent = new GameObject("sectorParent").transform;
         sectorParent.parent = mapParent;
 
-        doors = new List<GameObject>();
-
         for (int i = 0; i < openedMap.sectors.Count(); i++)    //start with a loop for each sector
         {
-            //if(i != 157) { continue; }
+            //if(i != 37) { continue; }
             SECTORS sector = openedMap.sectors[i];
             CreateMapObject(sector, "Sector_" + i, Triangulator.GeneratingGo.Sector);
 
             if (sector.isMovingCeiling)
-                doors.Add(CreateMapObject(sector, "Sector_" + i + "_MovingCeiling", Triangulator.GeneratingGo.Ceiling));
+                CreateMapObject(sector, sector.isDoor ? ("Sector_" + i + "_Door") : ("Sector_" + i + "_MovingCeiling"), Triangulator.GeneratingGo.Ceiling);
 
             if (sector.isMovingFloor)
                 CreateMapObject(sector, "Sector_" + i + "_MovingFloor", Triangulator.GeneratingGo.Floor);
@@ -340,16 +343,22 @@ public class mapCreator : MonoBehaviour
             // tag dynamic sectors
             if (LineDefTypes.types.ContainsKey(line.types))
             {
-                switch(LineDefTypes.types[line.types].category)
+                switch (LineDefTypes.types[line.types].category)
                 {
                     case LineDefTypes.Category.Door:
                         LineDefTypes.LineDefDoorType doorType = (LineDefTypes.types[line.types] as LineDefTypes.LineDefDoorType);
-                        
+
                         // tag door sectors
                         if (doorType.isLocal() && back != null)
+                        {
                             back.isMovingCeiling = true;
+                            back.isDoor = true;
+                        }
                         else if (!doorType.isLocal() && map.sectorsByTag.ContainsKey(line.tag))
+                        {
                             map.sectorsByTag[line.tag].ForEach(x => x.isMovingCeiling = true);
+                            map.sectorsByTag[line.tag].ForEach(x => x.isDoor = true);
+                        }
 
                         break;
 
@@ -366,6 +375,12 @@ public class mapCreator : MonoBehaviour
                     case LineDefTypes.Category.Ceiling:
                         // tag ceiling sectors
                         map.sectorsByTag[line.tag].ForEach(x => x.isMovingCeiling = true);
+                        break;
+
+                    case LineDefTypes.Category.Crusher:
+                        // tag crusher  sectors
+                        map.sectorsByTag[line.tag].ForEach(x => x.isMovingCeiling = true);
+                        map.sectorsByTag[line.tag].ForEach(x => Debug.Log("CRUSHER: " + x.sectorIndex));
                         break;
                 }
             }
@@ -410,34 +425,37 @@ public class mapCreator : MonoBehaviour
         //set sector's movement bounds
         foreach (LINEDEFS line in map.linedefs)
         {
-            SECTORS back = line.getBackSector();
-            if (line.tag != 0 && LineDefTypes.types.ContainsKey(line.types))
+            if (!LineDefTypes.types.ContainsKey(line.types)) { continue; }
+
+            if (LineDefTypes.types[line.types].category == LineDefTypes.Category.Door)
             {
-                if (map.sectorsByTag.ContainsKey(line.tag))
+                LineDefTypes.LineDefDoorType doorType = LineDefTypes.types[line.types] as LineDefTypes.LineDefDoorType;
+                if (doorType.isLocal())
                 {
-                    foreach (SECTORS sector in map.sectorsByTag[line.tag])
-                    {
-                        int[] floorBounds = LineDefTypes.types[line.types].GetFloorMovementBound(reader.newWad, sector);
-                        sector.floorBounds[0] = Math.Min(sector.floorBounds[0], floorBounds[0]);
-                        sector.floorBounds[1] = Math.Max(sector.floorBounds[1], floorBounds[1]);
-
-                        int[] ceilingBounds = LineDefTypes.types[line.types].GetCeilingMovementBound(reader.newWad, sector);
-                        sector.ceilingBounds[0] = Math.Min(sector.ceilingBounds[0], ceilingBounds[0]);
-                        sector.ceilingBounds[1] = Math.Max(sector.ceilingBounds[1], ceilingBounds[1]);
-                    }
+                    UpdateSectorBounds(line.getBackSector(), line);
+                    continue;
                 }
-                else if (back != null)
-                {
-                    int[] floorBounds = LineDefTypes.types[line.types].GetFloorMovementBound(reader.newWad, back);
-                    back.floorBounds[0] = Math.Min(back.floorBounds[0], floorBounds[0]);
-                    back.floorBounds[1] = Math.Max(back.floorBounds[1], floorBounds[1]);
+            }
 
-                    int[] ceilingBounds = LineDefTypes.types[line.types].GetCeilingMovementBound(reader.newWad, back);
-                    back.ceilingBounds[0] = Math.Min(back.ceilingBounds[0], ceilingBounds[0]);
-                    back.ceilingBounds[1] = Math.Max(back.ceilingBounds[1], ceilingBounds[1]);
+            if (line.tag != 0 && map.sectorsByTag.ContainsKey(line.tag))
+            {
+                foreach (SECTORS sector in map.sectorsByTag[line.tag])
+                {
+                    UpdateSectorBounds(sector, line);
                 }
             }
         }
+    }
+
+    void UpdateSectorBounds(SECTORS sector, LINEDEFS line)
+    {
+        int[] floorBounds = LineDefTypes.types[line.types].GetFloorMovementBound(reader.newWad, sector);
+        sector.floorBounds[0] = Math.Min(sector.floorBounds[0], floorBounds[0]);
+        sector.floorBounds[1] = Math.Max(sector.floorBounds[1], floorBounds[1]);
+
+        int[] ceilingBounds = LineDefTypes.types[line.types].GetCeilingMovementBound(reader.newWad, sector);
+        sector.ceilingBounds[0] = Math.Min(sector.ceilingBounds[0], ceilingBounds[0]);
+        sector.ceilingBounds[1] = Math.Max(sector.ceilingBounds[1], ceilingBounds[1]);
     }
 }
 
