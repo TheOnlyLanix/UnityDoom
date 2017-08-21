@@ -175,7 +175,7 @@ public class MonsterController : MonoBehaviour {
     //TODO: SOUNDS
     public void OnCreate(List<PICTURES> sprites, THINGS thing)
     {
-        player = GameObject.Find("FPSController");
+        player = GameObject.FindGameObjectWithTag("Player");
         this.thing = thing;
         actor = GetComponent<Actor>();
         
@@ -183,7 +183,7 @@ public class MonsterController : MonoBehaviour {
 
         health = actor.Health; //sets the health of the actor
         transform.rotation = Quaternion.Euler(0, thing.angle, 0);
-
+        gameObject.name = actor.Name;
         collider.radius = actor.Radius;
         collider.height = actor.Height;
         collider.center = new Vector3(0, actor.Height / 2f, 0);

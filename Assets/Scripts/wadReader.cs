@@ -13,7 +13,7 @@ public class wadReader : MonoBehaviour
     public WAD newWad;
 
     public string label;
-
+    public AudioSource audSrc;
     PLAYPAL playPal;
 
     public Shader DoomShader;
@@ -44,7 +44,7 @@ public class wadReader : MonoBehaviour
         ReadWADFlats();
         ReadWADSprites();
         ReadMAPEntries();
-
+        ReadWADSounds();
     }
 
 
@@ -882,8 +882,52 @@ public class wadReader : MonoBehaviour
         //newWad.music.Add(newMUS);
     }
 
+    void ReadWADSounds()//reads the doom sounds 
+    {
+        List<DrctEntry> soundList = new List<DrctEntry>();
 
+        foreach(DrctEntry entry in newWad.directory)
+        {
+            if(entry.name.StartsWith("DS"))//its a doom sound
+            {
+                soundList.Add(entry);
+            }
+        }
 
+        /*
+        0x00	unsigned 16-bit LE int	Format number (must be 3)
+        0x02	unsigned 16-bit LE int	Sample rate (usually, but not necessarily, 11025)
+        0x04	Unsigned 32-bit LE int	Number of samples + 32 pad bytes
+        0x08	Unsigned 8-bit array	16 pad bytes
+        0x18	Unsigned 8-bit array	Samples
+        0x??	Unsigned 8-bit array	16 pad bytes, immediately following samples
+        */
+
+        foreach(DrctEntry entry in soundList)
+        {
+
+            //List<float> sampleData = new List<float>();
+
+            byte[] soundBytes = new byte[entry.size];
+
+            wadOpener.Position = entry.filepos;
+            wadOpener.Read(soundBytes, 0, soundBytes.Length);
+
+            int sampleRate = BitConverter.ToInt16(soundBytes, 2);//read the sample rate
+            int sampleCount = BitConverter.ToInt32(soundBytes, 4);//read the sample count
+
+            float[] sampleData = new float[sampleCount];
+            for (int i = 8; i < soundBytes.Length; i++)//each sample byte *hopes*
+            {
+                sampleData[i-8] = (soundBytes[i] -128f)/128f;//set the samples to the float array
+            }
+
+            AudioClip newSound = AudioClip.Create(entry.name, sampleCount, 1, sampleRate, false);//new sound
+            newSound.SetData(sampleData, 0);
+            newWad.sounds.Add(newSound);//save the new sound to our newWad 
+        }
+
+    }
 
     PLAYPAL ReadColorPalette(string filePath, string name)
     {
