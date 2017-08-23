@@ -248,6 +248,27 @@ public class SECTORS
     }
 
 }
+/// BLOCKMAP 
+public class BLOCKMAP
+{
+
+    //Header
+    public int xcoord;
+    public int ycoord;
+    public int numColumns;
+    public int numRows;
+
+    //There are N blocks, which is equal to columns × rows (from the header).
+
+    public List<int> Offsets = new List<int>();
+    public List<List<int>> blocks = new List<List<int>>();
+
+    /*
+    The blocklist always begins with 0 and ends with -1. 
+    In between is a listing of all linedefs which have any portion within the block. 
+    Any linedef on the border of two blocks will be placed in only the block on the right side of the line for vertical lines and the block on the top of the line for horizontal lines.
+    */
+}
 
 /////--------------------/////End Map Lump Definitions/////--------------------/////
 

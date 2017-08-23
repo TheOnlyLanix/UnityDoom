@@ -14,7 +14,7 @@ public class StateController
     public bool stopped = false;
     AudioSource audioSource;
 
-    public StateController(Actor actor, List<PICTURES> allSprites)
+    public StateController(Actor actor, List<PICTURES> allSprites, AudioSource audioSource)
     {
         state = actor.actorStates["Spawn"];
         this.actor = actor;
@@ -68,7 +68,6 @@ public class StateController
         if (time >= state.info[infoIndex].time / ticksPerSecond)
         {
             if (state.info[infoIndex].time < 0) { return; } // if time is -1, never advance from here
-
             time -= state.info[infoIndex].time / ticksPerSecond;
             sprIndex++;
 
@@ -120,6 +119,14 @@ public class StateController
                 }
             }
         }
+
+        //functions?
+        string funct = state.info[infoIndex].function;
+        if ((funct != "" || funct != null) && funct == "A_Look")
+        {
+            actor.Invoke(funct, 0);
+        }
+
     }
 
     public PICTURES UpdateMaterial(Material mat, int side)
@@ -172,7 +179,8 @@ public class MonsterController : MonoBehaviour {
     public string overrideState = ""; // TODO: remove? only for debugging
     AudioSource audioSource;
     StateController stateController;
-    
+    Dictionary<string, AudioClip> usedSounds = new Dictionary<string, AudioClip>();
+
     //TODO: SOUNDS
     public void OnCreate(List<PICTURES> sprites, THINGS thing, Dictionary<string, AudioClip> sounds)
     {
@@ -196,7 +204,7 @@ public class MonsterController : MonoBehaviour {
         collider.radius = actor.Radius;
         collider.height = actor.Height;
         collider.center = new Vector3(0, actor.Height / 2f, 0);
-        
+
         sprObj = new GameObject("sprite");
         sprObj.transform.parent = transform;
         sprObj.transform.position = transform.position;
@@ -206,9 +214,35 @@ public class MonsterController : MonoBehaviour {
         mr.material = new Material(Shader.Find("Custom/DoomShader"));
         mf.mesh = this.mesh;
 
-        stateController = new StateController(actor, sprites);
+        foreach (AudioClip clip in sounds.Values)//trim down the list of sounds for efficiency?
+        {
+            if(SoundInfo.soundInfo[actor.SeeSound] == clip.name)
+            {
+                usedSounds.Add(actor.SeeSound, clip);
+            }
+            else if (SoundInfo.soundInfo[actor.AttackSound] == clip.name)
+            {
+                usedSounds.Add(actor.AttackSound, clip);
+            }
+            else if (SoundInfo.soundInfo[actor.PainSound] == clip.name)
+            {
+                usedSounds.Add(actor.PainSound, clip);
+            }
+            else if (SoundInfo.soundInfo[actor.DeathSound] == clip.name)
+            {
+                usedSounds.Add(actor.DeathSound, clip);
+            }
+            else if (SoundInfo.soundInfo[actor.ActiveSound] == clip.name)
+            {
+                usedSounds.Add(actor.ActiveSound, clip);
+            }
+        }
+
+        stateController = new StateController(actor, sprites, audioSource);
         stateController.UpdateMaterial(mr.material, 1);
+
     }
+
 
     // Update is called once per frame
     void Update ()

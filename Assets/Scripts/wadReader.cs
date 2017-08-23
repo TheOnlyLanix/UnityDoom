@@ -230,7 +230,51 @@ public class wadReader : MonoBehaviour
                     }
                 }
 
-                newWad.maps.Add(newMap); //Store the map in newWad
+                //BLOCKMAPS lump
+
+                if (newWad.directory[i + 10].name.Contains("BLOCKMAP"))
+                {
+                    byte[] blockBytes = new byte[newWad.directory[i + 10].size];
+
+                    wadOpener.Position = newWad.directory[i + 10].filepos;
+                    wadOpener.Read(blockBytes, 0, blockBytes.Length);
+
+                    BLOCKMAP newBlockmap = new BLOCKMAP();
+
+                    newBlockmap.xcoord = BitConverter.ToInt16(blockBytes, 0);
+                    newBlockmap.ycoord = BitConverter.ToInt16(blockBytes, 2);
+                    newBlockmap.numColumns = BitConverter.ToInt16(blockBytes, 4);
+                    newBlockmap.numRows = BitConverter.ToInt16(blockBytes, 6);
+
+                    int N = newBlockmap.numColumns * newBlockmap.numRows;
+                    //Offsets
+                    for (int j = 8; j < (8 + (2 * (N - 1))); j += 2) // (8 + (2 * (N - 1))) IS DEFINITELY RIGHT
+                    {
+                        newBlockmap.Offsets.Add(BitConverter.ToUInt16(blockBytes, j)*2);//multiply this times 2 so its right
+                    }
+
+                    foreach (int offset in newBlockmap.Offsets)
+                    {
+                        int line = 0;
+                        int blockOffset = offset;
+                        List<int> newBlock = new List<int>();
+
+                        do
+                        {
+                            line = BitConverter.ToUInt16(blockBytes, blockOffset);
+                            newBlock.Add(line);
+
+                            blockOffset += 2;
+
+                        } while (line != 0xFFFF);
+
+                        newBlockmap.blocks.Add(newBlock);
+                    }
+
+
+                }
+
+                    newWad.maps.Add(newMap); //Store the map in newWad
 
             }
         }
