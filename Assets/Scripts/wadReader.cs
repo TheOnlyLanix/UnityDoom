@@ -137,7 +137,6 @@ public class wadReader : MonoBehaviour
 
                     wadOpener.Position = newWad.directory[i + 2].filepos;
                     wadOpener.Read(lineDefBytes, 0, lineDefBytes.Length);
-                    int index = 0;
                     for (int j = 0; j < newWad.directory[i + 2].size; j += 14)
                     {
                         LINEDEFS newLineDef = new LINEDEFS();
@@ -150,8 +149,7 @@ public class wadReader : MonoBehaviour
                         newLineDef.side1Index = BitConverter.ToInt16(lineDefBytes, j + 10);
                         newLineDef.side2Index = BitConverter.ToInt16(lineDefBytes, j + 12);
 
-                        newMap.linedefs.Add(index, newLineDef);
-                        index++;
+                        newMap.linedefs.Add(newLineDef);
                     }
                 }
 

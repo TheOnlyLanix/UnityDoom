@@ -57,7 +57,7 @@ public class DoomMap
 
 
     public List<THINGS> things = new List<THINGS>();
-    public Dictionary<int, LINEDEFS> linedefs = new Dictionary<int, LINEDEFS>();
+    public List<LINEDEFS> linedefs = new List<LINEDEFS>();
     public List<SIDEDEFS> sidedefs = new List<SIDEDEFS>();
     public List<Vector3> vertexes = new List<Vector3>();
     public List<SECTORS> sectors = new List<SECTORS>();
