@@ -98,6 +98,7 @@ public class mapCreator : MonoBehaviour
         SetSkyboxTexture();
         AddMonsters();
         skyboxScript.ChangeSky();
+
     }
 
     void SetSkyboxTexture()
@@ -110,6 +111,7 @@ public class mapCreator : MonoBehaviour
     {
         mapSelected++;
         StartCoroutine(CreateMap());
+
     }
 
     public void buttonMapPrevCLicked()

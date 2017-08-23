@@ -276,6 +276,8 @@ public class wadReader : MonoBehaviour
                         newBlockmap.blocks.Add(blk);
                     }
 
+                    newMap.blockmap = newBlockmap;
+
 
                 }
 
