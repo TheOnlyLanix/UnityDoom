@@ -331,7 +331,7 @@ public class mapCreator : MonoBehaviour
             sector.ceilingBounds = new int[2] { sector.ceilingHeight, sector.ceilingHeight };
         }
 
-        foreach (LINEDEFS line in map.linedefs)
+        foreach (LINEDEFS line in map.linedefs.Values)
         {
             line.map = map;
             line.getVerts(); //store the vertex information inside the linedef
@@ -423,7 +423,7 @@ public class mapCreator : MonoBehaviour
         }
 
         //set sector's movement bounds
-        foreach (LINEDEFS line in map.linedefs)
+        foreach (LINEDEFS line in map.linedefs.Values)
         {
             if (!LineDefTypes.types.ContainsKey(line.types)) { continue; }
 

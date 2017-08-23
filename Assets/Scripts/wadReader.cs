@@ -137,7 +137,7 @@ public class wadReader : MonoBehaviour
 
                     wadOpener.Position = newWad.directory[i + 2].filepos;
                     wadOpener.Read(lineDefBytes, 0, lineDefBytes.Length);
-
+                    int index = 0;
                     for (int j = 0; j < newWad.directory[i + 2].size; j += 14)
                     {
                         LINEDEFS newLineDef = new LINEDEFS();
@@ -150,7 +150,8 @@ public class wadReader : MonoBehaviour
                         newLineDef.side1Index = BitConverter.ToInt16(lineDefBytes, j + 10);
                         newLineDef.side2Index = BitConverter.ToInt16(lineDefBytes, j + 12);
 
-                        newMap.linedefs.Add(newLineDef);
+                        newMap.linedefs.Add(index, newLineDef);
+                        index++;
                     }
                 }
 
@@ -257,18 +258,24 @@ public class wadReader : MonoBehaviour
                     {
                         int line = 0;
                         int blockOffset = offset;
-                        List<int> newBlock = new List<int>();
-
+                       // List<int> newBlock = new List<int>();
+                        Block blk = new Block();
                         do
                         {
-                            line = BitConverter.ToUInt16(blockBytes, blockOffset);
-                            newBlock.Add(line);
+
+                            line = BitConverter.ToUInt16(blockBytes, blockOffset + 2);
+                            //newBlock.Add(line);
+
+                            if (line == 0xFFFF)
+                                continue;
+
+                            blk.lines.Add(newMap.linedefs[line]);
 
                             blockOffset += 2;
 
                         } while (line != 0xFFFF);
 
-                        newBlockmap.blocks.Add(newBlock);
+                        newBlockmap.blocks.Add(blk);
                     }
 
 

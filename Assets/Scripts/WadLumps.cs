@@ -57,7 +57,7 @@ public class DoomMap
 
 
     public List<THINGS> things = new List<THINGS>();
-    public List<LINEDEFS> linedefs = new List<LINEDEFS>();
+    public Dictionary<int, LINEDEFS> linedefs = new Dictionary<int, LINEDEFS>();
     public List<SIDEDEFS> sidedefs = new List<SIDEDEFS>();
     public List<Vector3> vertexes = new List<Vector3>();
     public List<SECTORS> sectors = new List<SECTORS>();
@@ -261,7 +261,19 @@ public class BLOCKMAP
     //There are N blocks, which is equal to columns × rows (from the header).
 
     public List<int> Offsets = new List<int>();
-    public List<List<int>> blocks = new List<List<int>>();
+    public List<Block> blocks = new List<Block>();
+
+
+    public Block GetBlock(int x, int y)
+    {
+        int i = (x - xcoord) / 128;
+        int j = (y - ycoord) / 128;
+
+        int index = i + j * numColumns;
+
+        return blocks[index];
+    }
+
 
     /*
     The blocklist always begins with 0 and ends with -1. 
@@ -269,6 +281,13 @@ public class BLOCKMAP
     Any linedef on the border of two blocks will be placed in only the block on the right side of the line for vertical lines and the block on the top of the line for horizontal lines.
     */
 }
+
+public class Block
+{
+    public List<LINEDEFS> lines = new List<LINEDEFS>();
+    //List<THINGS> things = new List<THINGS>();
+}
+
 
 /////--------------------/////End Map Lump Definitions/////--------------------/////
 
