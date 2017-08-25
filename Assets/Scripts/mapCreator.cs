@@ -68,13 +68,16 @@ public class mapCreator : MonoBehaviour
         yield return (new WaitForEndOfFrame());
 
         //use this if you want to select one map in particular
-        //if (mapSelected == 1) { mapSelected = 13; }
+        if (mapSelected == 1) { mapSelected = 23; }
 
         openedMap = reader.newWad.maps[mapSelected - 1];
 
         //use this if you want to pick a selection of maps to choose from instead of going through the whole list
-        //int[] mapMapper = { 15, 17, 28 };
+        //int[] mapMapper = { 2, 14, 19, 21, 22, 26 };
         //openedMap = reader.newWad.maps[mapMapper[(mapSelected - 1) % mapMapper.Length] - 1];
+
+        //display map
+        Debug.Log("MAP: " + mapSelected);
 
         //read and play music
         MUS mus = reader.ReadMusEntry(mapSelected - 1);
@@ -366,23 +369,26 @@ public class mapCreator : MonoBehaviour
 
                     case LineDefTypes.Category.Floor:
                         // tag floor sectors
-                        map.sectorsByTag[line.tag].ForEach(x => x.isMovingFloor = true);
+                        if (map.sectorsByTag.ContainsKey(line.tag))
+                            map.sectorsByTag[line.tag].ForEach(x => x.isMovingFloor = true);
                         break;
 
                     case LineDefTypes.Category.Lift:
                         // tag lift sectors
-                        map.sectorsByTag[line.tag].ForEach(x => x.isMovingFloor = true);
+                        if (map.sectorsByTag.ContainsKey(line.tag))
+                            map.sectorsByTag[line.tag].ForEach(x => x.isMovingFloor = true);
                         break;
 
                     case LineDefTypes.Category.Ceiling:
                         // tag ceiling sectors
-                        map.sectorsByTag[line.tag].ForEach(x => x.isMovingCeiling = true);
+                        if (map.sectorsByTag.ContainsKey(line.tag))
+                            map.sectorsByTag[line.tag].ForEach(x => x.isMovingCeiling = true);
                         break;
 
                     case LineDefTypes.Category.Crusher:
                         // tag crusher  sectors
-                        map.sectorsByTag[line.tag].ForEach(x => x.isMovingCeiling = true);
-                        map.sectorsByTag[line.tag].ForEach(x => Debug.Log("CRUSHER: " + x.sectorIndex));
+                        if (map.sectorsByTag.ContainsKey(line.tag))
+                            map.sectorsByTag[line.tag].ForEach(x => x.isMovingCeiling = true);
                         break;
                 }
             }
@@ -451,6 +457,7 @@ public class mapCreator : MonoBehaviour
 
     void UpdateSectorBounds(SECTORS sector, LINEDEFS line)
     {
+        if (sector == null) { return; }
         int[] floorBounds = LineDefTypes.types[line.types].GetFloorMovementBound(reader.newWad, sector);
         sector.floorBounds[0] = Math.Min(sector.floorBounds[0], floorBounds[0]);
         sector.floorBounds[1] = Math.Max(sector.floorBounds[1], floorBounds[1]);
