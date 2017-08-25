@@ -1844,6 +1844,7 @@ public class BaronOfHell : Monster
         ActiveSound = "baron/active";
         Obituary = "$OB_BARON";
         HitObituary = "$OB_BARONHIT";
+        AttackSound = "baron/attack";
 
         actorStates = new Dictionary<string, State>
         {
@@ -2371,7 +2372,7 @@ public class Demon : Monster
         Name = "Demon";
 
         SeeSound = "demon/sight";
-        AttackSound = "demon/attack";
+        AttackSound = "demon/melee";
         PainSound = "demon/pain";
         DeathSound = "demon/death";
         ActiveSound = "demon/active";
@@ -2459,7 +2460,7 @@ public class Spectre : Demon
 
         OnAwake();
         SeeSound = "spectre/sight";
-        AttackSound = "spectre/attack";
+        AttackSound = "spectre/melee";
         PainSound = "spectre/pain";
         DeathSound = "spectre/death";
         ActiveSound = "spectre/active";
@@ -2491,7 +2492,6 @@ public class Archvile : Monster
         Name = "Archvile";
 
         SeeSound = "vile/sight";
-        AttackSound = "vile/attack";
         PainSound = "vile/pain";
         DeathSound = "vile/death";
         ActiveSound = "vile/active";
@@ -2694,7 +2694,6 @@ public class CyberDemon : Monster
         MiniMissileChance = 160;
 
         SeeSound = "cyber/sight";
-        AttackSound = "cyber/attack";
         PainSound = "cyber/pain";
         DeathSound = "cyber/death";
         ActiveSound = "cyber/active";
@@ -2891,8 +2890,8 @@ public class LostSoul : Monster
         sprite = "SKUL";
         Name = "Lost Soul";
 
-        SeeSound = "skull/sight";
-        AttackSound = "skull/attack";
+
+        AttackSound = "skull/melee";
         PainSound = "skull/pain";
         DeathSound = "skull/death";
         ActiveSound = "skull/active";
@@ -2977,7 +2976,6 @@ public class PainElemental : Monster
         Name = "Pain Elemental";
 
         SeeSound = "pain/sight";
-        AttackSound = "pain/attack";
         PainSound = "pain/pain";
         DeathSound = "pain/death";
         ActiveSound = "pain/active";
