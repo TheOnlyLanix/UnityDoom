@@ -68,7 +68,7 @@ public class mapCreator : MonoBehaviour
         yield return (new WaitForEndOfFrame());
 
         //use this if you want to select one map in particular
-        if (mapSelected == 1) { mapSelected = 23; }
+        //if (mapSelected == 1) { mapSelected = 23; }
 
         openedMap = reader.newWad.maps[mapSelected - 1];
 
@@ -146,6 +146,9 @@ public class mapCreator : MonoBehaviour
 
         for (int i = 0; i < openedMap.sectors.Count(); i++)    //start with a loop for each sector
         {
+            if (openedMap.sectors[i].lines.Count < 3)
+                continue;//this sector is invalid, dont create it
+
             //if(i != 37) { continue; }
             SECTORS sector = openedMap.sectors[i];
             CreateMapObject(sector, "Sector_" + i, Triangulator.GeneratingGo.Sector);
