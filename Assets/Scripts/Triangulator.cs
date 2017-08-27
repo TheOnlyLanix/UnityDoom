@@ -27,7 +27,7 @@ namespace DoomTriangulator
             List<Triangle2D> triangles = new List<Triangle2D>();
             List<Line> lines = new List<Line>();
 
-
+            // convert linedefs to lines
             foreach (LINEDEFS linedef in sector.lines)
             {
                 Vertex v1 = vertexPool.Get(linedef.firstVert.x, linedef.firstVert.z);
@@ -40,9 +40,24 @@ namespace DoomTriangulator
 
             }
 
+            // walk lines to make sure the sector isn't broken
+            RepairSector(sector, lines);
+            
             // go through every line and attach it to every other vertex.
             // reject the triangle if it isn't valid
             List<Line> unmarked = new List<Line>(lines);
+
+            // ignore all initial lines that do not come from a linedef
+            for (int i = 0; i < unmarked.Count; i++)
+            {
+                Line line = unmarked[i];
+                if (!line.fromLinedef)
+                {
+                    unmarked.RemoveAt(i);
+                    i--;
+                }
+            }
+
             while (unmarked.Count > 0)
             {
                 Line line = unmarked.Last();
@@ -92,6 +107,193 @@ namespace DoomTriangulator
 
             return newSubMesh;
 
+        }
+
+        static void RepairSector(SECTORS sector, List<Line> lines)
+        {
+            if (lines.Count < 2)
+            {
+                // sector with a single line, don't repair
+                return;
+            }
+
+            // generate a list of all vertices
+            List<Vertex> vertices = new List<Vertex>();
+            foreach(Line line in lines)
+            {
+                if (!vertices.Contains(line.vertices[0]))
+                    vertices.Add(line.vertices[0]);
+
+                if (!vertices.Contains(line.vertices[1]))
+                    vertices.Add(line.vertices[1]);
+            }
+
+            // find all vertices that only have one line
+            List<Vertex> loneVertices = new List<Vertex>();
+            foreach(Vertex vertex in vertices)
+            {
+                int count = 0;
+
+                foreach (Line line in lines)
+                {
+                    if (line.vertices.Contains(vertex))
+                        count++;
+                }
+
+                if (count < 2)
+                    loneVertices.Add(vertex);
+            }
+
+            if (loneVertices.Count == 0)
+            {
+                // nothing wrong here
+                return;
+            }
+
+            Debug.Log("BAD SECTOR: " + sector.sectorIndex);
+
+            // find lines that intersect
+            foreach (Line line1 in lines)
+            {
+                foreach (Line line2 in lines)
+                {
+                    if (line1 == line2)
+                        continue;
+
+                    Vertex intersect = line1.Intersection(line2);
+                    if (intersect == null)
+                        continue;
+
+                    Debug.Log("REPAIRING: intersection, SECTOR: " + sector.sectorIndex);
+
+                    // find closest vertex to intersection point
+                    Vertex closestVertex = line1.vertices[0];
+                    foreach (Vertex vertex in line1.vertices)
+                    {
+                        if (vertex.DistanceTo(intersect) < closestVertex.DistanceTo(intersect))
+                            closestVertex = vertex;
+                    }
+                    foreach (Vertex vertex in line2.vertices)
+                    {
+                        if (vertex.DistanceTo(intersect) < closestVertex.DistanceTo(intersect))
+                            closestVertex = vertex;
+                    }
+
+                    // move closest to intersection point
+                    closestVertex.x = intersect.x;
+                    closestVertex.y = intersect.y;
+
+                    // replace closest line1 vertex with closest vertex
+                    if (line1.vertices[0].DistanceTo(intersect) < line1.vertices[1].DistanceTo(intersect))
+                    {
+                        line1.vertices[0] = closestVertex;
+                        loneVertices.Remove(line1.vertices[0]);
+                    }
+                    else
+                    {
+                        line1.vertices[1] = closestVertex;
+                        loneVertices.Remove(line1.vertices[1]);
+                    }
+
+                    // replace closest line2 vertex with closest vertex
+                    if (line2.vertices[0].DistanceTo(intersect) < line2.vertices[1].DistanceTo(intersect))
+                    {
+                        line2.vertices[0] = closestVertex;
+                        loneVertices.Remove(line2.vertices[0]);
+                    }
+                    else
+                    {
+                        line2.vertices[1] = closestVertex;
+                        loneVertices.Remove(line2.vertices[1]);
+                    }
+                }
+            }
+
+            if (loneVertices.Count == 0)
+            {
+                // sector was repaired
+                return;
+            }
+            
+            // generate every combination of vertices in pairs
+            SortedList<double, VertexPair> pairs = new SortedList<double, VertexPair>();
+            foreach(Vertex v1 in loneVertices)
+            {
+                foreach (Vertex v2 in loneVertices)
+                {
+                    if (v1 == v2)
+                        continue;
+
+                    // make sure pair is unique
+                    foreach(VertexPair pair in pairs.Values)
+                    {
+                        if (pair.vertices.Contains(v1) && pair.vertices.Contains(v2))
+                        {
+                            goto nextPair;
+                        }
+                    }
+
+                    VertexPair vertexPair = new VertexPair(v1, v2);
+                    double dist = vertexPair.Distance();
+                    while (pairs.ContainsKey(dist)) { dist += 0.001; }
+                    pairs.Add(dist, vertexPair);
+
+                    nextPair:;
+                }
+            }
+
+            // generate a line for every pair, sorted by distance
+            while (pairs.Count > 0)
+            {
+                // grab a pair with the least distance between them
+                VertexPair pair = pairs.Values.First();
+                pairs.RemoveAt(0);
+
+                // generate the line between the two vertices
+                Line line = new Line(pair.vertices[0], pair.vertices[1], false, false);
+
+                // check for collision
+                foreach (Line line2 in lines)
+                {
+                    if (line.Intersects(line2))
+                    {
+                        goto nextPair;
+                    }
+                }
+
+                // add the line to the list
+                lines.Add(line);
+                Debug.Log("REPAIRING: missing line, SECTOR: " + sector.sectorIndex);
+                Debug.DrawLine(new Vector3((float)pair.vertices[0].x, 0, (float)pair.vertices[0].y), new Vector3((float)pair.vertices[1].x, 0, (float)pair.vertices[1].y), Color.red, 10000);
+
+                // remove any pairs that contain a shared vertex to this one
+                for (int i = 0; i < pairs.Count; i++)
+                {
+                    if (pairs.Values[i].vertices.Contains(pair.vertices[0]) || pairs.Values[i].vertices.Contains(pair.vertices[1]))
+                    {
+                        pairs.RemoveAt(i);
+                        i--;
+                        continue;
+                    }
+                }
+
+                nextPair:;
+            }
+        }
+
+        class VertexPair
+        {
+            public Vertex[] vertices = new Vertex[2];
+            public VertexPair(Vertex a, Vertex b)
+            {
+                vertices[0] = a;
+                vertices[1] = b;
+            }
+
+            public double Distance()
+            {
+                return vertices[0].DistanceTo(vertices[1]);
+            }
         }
 
         public static SubMesh CreateCeiling(SubMesh floor, SECTORS sector, Material mat, GeneratingGo generating)
@@ -834,7 +1036,7 @@ namespace DoomTriangulator
             return false;
         }
         
-        public bool Intersects(Line line)
+        public Vertex Intersection(Line line)
         {
             /* RIPPED FROM SLADE (Doom Editor) */
             Vertex intersect = new Vertex(0, 0);
@@ -842,7 +1044,7 @@ namespace DoomTriangulator
             // First, simple check for two parallel horizontal or vertical lines
             if ((vertices[0].x == vertices[1].x && line.vertices[0].x == line.vertices[1].x) || (vertices[0].y == vertices[1].y && line.vertices[0].y == line.vertices[1].y))
             {
-                return false;
+                return null;
             }
 
             // Second, check if the lines share any endpoints
@@ -851,7 +1053,7 @@ namespace DoomTriangulator
                     (vertices[0].x == line.vertices[1].x && vertices[0].y == line.vertices[1].y) ||
                     (vertices[1].x == line.vertices[0].x && vertices[1].y == line.vertices[0].y))
             {
-                return false;
+                return null;
             }
 
             // Third, check bounding boxes
@@ -860,7 +1062,7 @@ namespace DoomTriangulator
                     Math.Max(vertices[0].y, vertices[1].y) < Math.Min(line.vertices[0].y, line.vertices[1].y) ||
                     Math.Max(line.vertices[0].y, line.vertices[1].y) < Math.Min(vertices[0].y, vertices[1].y))
             {
-                return false;
+                return null;
             }
 
             // Fourth, check for two perpendicular horizontal or vertical lines
@@ -868,13 +1070,13 @@ namespace DoomTriangulator
             {
                 intersect.x = vertices[0].x;
                 intersect.y = line.vertices[0].y;
-                return true;
+                return intersect;
             }
             if (vertices[0].y == vertices[1].y && line.vertices[0].x == line.vertices[1].x)
             {
                 intersect.x = line.vertices[0].x;
                 intersect.y = vertices[0].y;
-                return true;
+                return intersect;
             }
 
             // Not a simple case, do full intersection calculation
@@ -890,7 +1092,7 @@ namespace DoomTriangulator
 
             // Check for no intersection
             if (det == 0)
-                return false;
+                return null;
 
             // Calculate intersection point
             intersect.x = (double)((b2 * c1 - b1 * c2) / det);
@@ -905,10 +1107,15 @@ namespace DoomTriangulator
                 Math.Min(vertices[0].y, vertices[1].y) <= intersect.y && intersect.y <= Math.Max(vertices[0].y, vertices[1].y) &&
                 Math.Min(line.vertices[0].x, line.vertices[1].x) <= intersect.x && intersect.x <= Math.Max(line.vertices[0].x, line.vertices[1].x) &&
                 Math.Min(line.vertices[0].y, line.vertices[1].y) <= intersect.y && intersect.y <= Math.Max(line.vertices[0].y, line.vertices[1].y))
-                return true;
+                return intersect;
 
             // Intersection point does not lie on both lines
-            return false;
+            return null;
+        }
+
+        public bool Intersects(Line line)
+        {
+            return (Intersection(line) != null);
         }
 
 

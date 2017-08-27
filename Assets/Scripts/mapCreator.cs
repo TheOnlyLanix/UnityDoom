@@ -73,7 +73,7 @@ public class mapCreator : MonoBehaviour
         openedMap = reader.newWad.maps[mapSelected - 1];
 
         //use this if you want to pick a selection of maps to choose from instead of going through the whole list
-        //int[] mapMapper = { 2, 14, 19, 21, 22, 26 };
+        //int[] mapMapper = { 3, 20, 26, 28, 30, 35 };
         //openedMap = reader.newWad.maps[mapMapper[(mapSelected - 1) % mapMapper.Length] - 1];
 
         //display map
@@ -146,10 +146,8 @@ public class mapCreator : MonoBehaviour
 
         for (int i = 0; i < openedMap.sectors.Count(); i++)    //start with a loop for each sector
         {
-            if (openedMap.sectors[i].lines.Count < 3)
-                continue;//this sector is invalid, dont create it
+            //if(i != 7) { continue; }
 
-            //if(i != 37) { continue; }
             SECTORS sector = openedMap.sectors[i];
             CreateMapObject(sector, "Sector_" + i, Triangulator.GeneratingGo.Sector);
 
@@ -324,7 +322,10 @@ public class mapCreator : MonoBehaviour
         for (int i = 0; i < map.sectors.Count; i++)
         {
             SECTORS sector = map.sectors[i];
+            sector.lines.Clear();
+            sector.otherLines.Clear();
             sector.sectorIndex = i;
+            map.sectorsByTag.Clear();
             if (sector.sectorTag == 0) { continue; }
             if (!map.sectorsByTag.ContainsKey(sector.sectorTag))
                 map.sectorsByTag.Add(sector.sectorTag, new List<SECTORS> { sector });

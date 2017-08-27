@@ -25,7 +25,7 @@ public class wadReader : MonoBehaviour
 
     void Awake()
     {
-        wadFilePath = Application.dataPath + "/DOOM2.wad";
+        wadFilePath = Application.dataPath + "/DOOM.wad";
 
         wadOpener = new FileStream(wadFilePath, FileMode.Open, FileAccess.Read);
 

@@ -43,7 +43,7 @@ public class MonsterController : MonoBehaviour {
         mr.material = new Material(Shader.Find("Custom/DoomShader"));
         mf.mesh = this.mesh;
 
-        foreach (AudioClip clip in sounds.Values)//trim down the list of sounds for efficiency?
+        /*foreach (AudioClip clip in sounds.Values)//trim down the list of sounds for efficiency?
         {
             if(SoundInfo.soundInfo[actor.SeeSound] == clip.name)
             {
@@ -65,7 +65,7 @@ public class MonsterController : MonoBehaviour {
             {
                 usedSounds.Add(actor.ActiveSound, clip);
             }
-        }
+        }*/
 
         stateController = new StateController(actor, sprites, audioSource);
         stateController.UpdateMaterial(mr.material, 1);
