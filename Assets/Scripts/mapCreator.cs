@@ -11,7 +11,7 @@ public class mapCreator : MonoBehaviour
 {
 
     public DoomMap openedMap;
-    public Transform monsterParent;
+    public Transform thingParent;
     public Transform sectorParent;
     public Transform mapParent;
     public GameObject player;
@@ -57,6 +57,71 @@ public class mapCreator : MonoBehaviour
         {3005, typeof(Cacodemon)        }
     };
 
+    static Dictionary<int, Type> DecorationType = new Dictionary<int, Type>
+    {
+        {70,   typeof(BurningBarrel)        },
+        {73,   typeof(HangNoGuts)           },
+        {74,   typeof(HangBNoBrain)         },
+        {75,   typeof(HangTLookingDown)     },
+        {76,   typeof(HangTSkull)           },
+        {77,   typeof(HangTLookingUp)       },
+        {78,   typeof(HangTNoBrain)         },
+        {79,   typeof(ColonGibs)            },
+        {80,   typeof(SmallBloodPool)       },
+        {81,   typeof(BrainStem)            },
+        {85,   typeof(TechLamp)             },
+        {86,   typeof(TechLamp2)            },
+        {10,   typeof(GibbedMarine)         },
+        {12,   typeof(GibbedMarine)         },
+        {15,   typeof(DeadMarine)           },
+        {18,   typeof(DeadZombieMan)        },
+        {19,   typeof(DeadShotgunGuy)       },
+        {20,   typeof(DeadDoomImp)          },
+        {21,   typeof(DeadDemon)            },
+        {22,   typeof(DeadCacodemon)        },
+        {23,   typeof(DeadLostSoul)         },
+        {24,   typeof(RealGibs)             },//Gibs
+        {25,   typeof(DeadStick)            },
+        {26,   typeof(LiveStick)            },
+        {27,   typeof(HeadOnAStick)         },
+        {28,   typeof(HeadsOnAStick)        },
+        {29,   typeof(HeadCandles)          },
+        {30,   typeof(TallGreenColumn)      },
+        {31,   typeof(ShortGreenColumn)     },
+        {32,   typeof(TallRedColumn)        },
+        {33,   typeof(ShortRedColumn)       },
+        {34,   typeof(Candlestick)          },
+        {35,   typeof(Candelabra)           },
+        {36,   typeof(HeartColumn)          },
+        {37,   typeof(SkullColumn)          },
+        {41,   typeof(EvilEye)              },
+        {42,   typeof(FloatingSkull)        },
+        {43,   typeof(TorchTree)            },
+        {44,   typeof(BlueTorch)            },
+        {45,   typeof(GreenTorch)           },
+        {46,   typeof(RedTorch)             },
+        {47,   typeof(Stalagtite)           },
+        {48,   typeof(TechPillar)           },
+        {49,   typeof(BloodyTwitch)         },
+        {50,   typeof(Meat2)                },
+        {51,   typeof(Meat3)                },
+        {52,   typeof(Meat4)                },
+        {53,   typeof(Meat5)                },
+        {54,   typeof(BigTree)              },
+        {55,   typeof(ShortBlueTorch)       },
+        {56,   typeof(ShortGreenTorch)      },
+        {57,   typeof(ShortRedTorch)        },
+        {59,   typeof(NonsolidMeat2)        },
+        {60,   typeof(NonsolidMeat3)        },
+        {61,   typeof(NonsolidMeat4)        },
+        {62,   typeof(NonsolidMeat5)        },
+        {63,   typeof(NonsolidTwitch)       },
+        {2028, typeof(Column)               },
+        {2035, typeof(ExplosiveBarrel)      },
+        {5050, typeof(Stalagmite)           },
+
+    };
+
 
     IEnumerator CreateMap()
     {
@@ -99,7 +164,7 @@ public class mapCreator : MonoBehaviour
         //add sectors and monsters to map
         AddSectors();
         SetSkyboxTexture();
-        AddMonsters();
+        AddThings();
         skyboxScript.ChangeSky();
 
     }
@@ -163,10 +228,10 @@ public class mapCreator : MonoBehaviour
         hasOpenedAllDoors = false;
     }
 
-    void AddMonsters()
+    void AddThings()
     {
-        monsterParent = new GameObject("monsterParent").transform;
-        monsterParent.parent = mapParent;
+        thingParent = new GameObject("thingParent").transform;
+        thingParent.parent = mapParent;
 
         foreach(THINGS thing in openedMap.things)
         {
@@ -181,17 +246,24 @@ public class mapCreator : MonoBehaviour
             Vector3 pos = new Vector3(thing.xPos, Zpos, thing.yPos);
 
             GameObject newThing = new GameObject(thing.thingType.ToString());
-            newThing.transform.parent = monsterParent;
+            newThing.transform.parent = thingParent;
             newThing.transform.position = pos;
 
-            if(MonsterType.ContainsKey(thing.thingType))
+            if(MonsterType.ContainsKey(thing.thingType))//If its a monster
             {
                 newThing.AddComponent(MonsterType[thing.thingType]);
+                
                 MonsterController controller = newThing.AddComponent<MonsterController>();
                 controller.OnCreate(reader.newWad.sprites, thing, reader.newWad.sounds);
             }
-                
-            if (thing.thingType == 1)
+            else if (DecorationType.ContainsKey(thing.thingType))//if its a Decoration
+            {
+                newThing.AddComponent(DecorationType[thing.thingType]);
+
+                MonsterController controller = newThing.AddComponent<MonsterController>();
+                controller.OnCreate(reader.newWad.sprites, thing, reader.newWad.sounds);
+            }
+            else if (thing.thingType == 1)//player 1
             {
                 player.transform.position = pos;
             }

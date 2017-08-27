@@ -39,21 +39,21 @@ public class Actor : MonoBehaviour
 
 
     public string Name = "Actor";
-    public string sprite = "TNT1";
+    public string sprite = "";
 
-    public string SeeSound = "grunt/sight";
-    public string AttackSound = "grunt/attack";
-    public string PainSound = "grunt/pain";
-    public string DeathSound = "grunt/death";
-    public string ActiveSound = "grunt/active";
-    public string Obituary = "$OB_ZOMBIE";
-    public string HitObituary = "$OB_CACOHIT";
+    public string SeeSound = "";
+    public string AttackSound = "";
+    public string PainSound = "";
+    public string DeathSound = "";
+    public string ActiveSound = "";
+    public string Obituary = "";
+    public string HitObituary = "";
     public string DropItem = "";
 
-    public string Paintype = "Normal";
-    public string DeathType = "Normal";
-    public string TeleFogSourceType = "TeleportFog";
-    public string TeleFogDestType = "TeleportFog";
+    public string Paintype = "";
+    public string DeathType = "";
+    public string TeleFogSourceType = "";
+    public string TeleFogDestType = "";
 
     //Flags (physics)
     public bool SOLID = false;

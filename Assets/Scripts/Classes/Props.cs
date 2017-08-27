@@ -8,7 +8,6 @@ public class Props : Actor
 
 }
 
-
 public class Column : Props
 {
 
@@ -678,6 +677,56 @@ public class Stalagtite : Props
                    info = new List<StateInfo>
                    {
                         new StateInfo{spr = "SMIT", sprInd = "A", time = -1},
+                        new StateInfo{function = "Stop" }
+                   }
+               }
+            }
+        };
+    }
+}
+
+public class Stalagmite : Props
+{
+
+    public void Awake()
+    {
+        SOLID = true;
+
+        Radius = 16;
+        Height = 48;
+
+        actorStates = new Dictionary<string, State>
+        {
+            { "Spawn", new State
+                {
+                   info = new List<StateInfo>
+                   {
+                        new StateInfo{spr = "SMT2", sprInd = "A", time = -1},
+                        new StateInfo{function = "Stop" }
+                   }
+               }
+            }
+        };
+    }
+}
+
+public class RealGibs : Props
+{
+
+    public void Awake()
+    {
+        DROPOFF = true;
+        CORPSE = true;
+        NOTELEPORT = true;
+        DONTGIB = true;
+
+        actorStates = new Dictionary<string, State>
+        {
+            { "Spawn", new State
+                {
+                   info = new List<StateInfo>
+                   {
+                        new StateInfo{spr = "POL5", sprInd = "A", time = -1},
                         new StateInfo{function = "Stop" }
                    }
                }

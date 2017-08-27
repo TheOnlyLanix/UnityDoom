@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class Monster : Actor
 {
     public int RipperLevel = 0;
@@ -13,7 +14,7 @@ public class Monster : Actor
     public int MiniMissileChance = 0;
     public int MeleeThreshold = 0;
 
-    public virtual void Awake()
+    public void SetFlags()
     {
         //These flags are set by default on every monster
         SHOOTABLE = true;
@@ -193,9 +194,10 @@ public class ShotgunGuy : Monster
 
 
 
-    public override void Awake()
+    public virtual void Awake()
     {
         FLOORCLIP = true;
+        SetFlags();
 
         Health = 30;
         Radius = 20;
@@ -301,7 +303,7 @@ public class ChaingunGuy : Monster
 {
 
 
-    public override void Awake()
+    public virtual void Awake()
     {
 
         FLOORCLIP = true;
@@ -314,7 +316,7 @@ public class ChaingunGuy : Monster
         PainChance = 170;
         sprite = "CPOS";
         Name = "Chaingun Guy";
-
+        SetFlags();
 
         SeeSound = "chainguy/sight";
         AttackSound = "chainguy/attack";
@@ -413,7 +415,7 @@ public class BaronOfHell : Monster
 {
 
 
-    public override void Awake()
+    public virtual void Awake()
     {
         FLOORCLIP = true;
         BOSSDEATH = true;
@@ -430,7 +432,7 @@ public class BaronOfHell : Monster
         PainChance = 50;
         sprite = "BOSS";
         Name = "Baron of Hell";
-
+        SetFlags();
         SeeSound = "baron/sight";
         PainSound = "baron/pain";
         DeathSound = "baron/death";
@@ -521,7 +523,7 @@ public class BaronOfHell : Monster
 public class ZombieMan : Monster
 {
 
-    public override void Awake()
+    public virtual void Awake()
     {
         FLOORCLIP = true;
 
@@ -532,7 +534,7 @@ public class ZombieMan : Monster
         ActiveSound = "grunt/active";
         Obituary = "$OB_ZOMBIE";
         DropItem = "Clip";
-
+        SetFlags();
 
         Health = 20;
         Radius = 20;
@@ -626,7 +628,7 @@ public class ZombieMan : Monster
 public class DoomImp : Monster
 {
 
-    public override void Awake()
+    public virtual void Awake()
     {
         FLOORCLIP = true;
 
@@ -638,7 +640,7 @@ public class DoomImp : Monster
         PainChance = 200;
         sprite = "TROO";
         Name = "Imp";
-
+        SetFlags();
         SeeSound = "imp/sight";
         AttackSound = "imp/attack";
         PainSound = "imp/pain";
@@ -742,7 +744,7 @@ public class DoomImp : Monster
 
 public class Arachnotron : Monster
 {
-    public override void Awake()
+    public virtual void Awake()
     {
         FLOORCLIP = true;
         BOSSDEATH = true;
@@ -755,7 +757,7 @@ public class Arachnotron : Monster
         PainChance = 128;
         sprite = "BSPI";
         Name = "Arachnotron";
-
+        SetFlags();
         SeeSound = "baby/sight";
         AttackSound = "baby/attack";
         PainSound = "baby/pain";
@@ -840,7 +842,7 @@ public class Arachnotron : Monster
 public class SpiderMastermind : Monster
 {
 
-    public override void Awake()
+    public virtual void Awake()
     {
         BOSS = true;
         MISSILEMORE = true;
@@ -848,7 +850,7 @@ public class SpiderMastermind : Monster
         NORADIUSDMG = true;
         DONTMORPH = true;
         BOSSDEATH = true;
-
+        SetFlags();
 
         Health = 3000;
         Radius = 128;
@@ -858,7 +860,7 @@ public class SpiderMastermind : Monster
         PainChance = 40;
         sprite = "SPID";
         Name = "Spider Mastermind";
-
+                SetFlags();
         MinMissileChance = 160;
         SeeSound = "spider/sight";
         AttackSound = "spider/attack";
@@ -938,7 +940,7 @@ public class Demon : Monster
 
 
 
-    public override void Awake()
+    public virtual void Awake()
     {
         FLOORCLIP = true;
 
@@ -955,7 +957,7 @@ public class Demon : Monster
         PainChance = 180;
         sprite = "SARG";
         Name = "Demon";
-
+        SetFlags();
         SeeSound = "demon/sight";
         AttackSound = "demon/melee";
         PainSound = "demon/pain";
@@ -1040,7 +1042,7 @@ public class Spectre : Demon
         SHADOW = true;
         //RenderStyle = OptFuzzy
         Alpha = 0.5f;
-
+        SetFlags();
 
         Name = "Spectre";
 
@@ -1063,12 +1065,12 @@ public class Archvile : Monster
 
 
 
-    public override void Awake()
+    public virtual void Awake()
     {
         QUICKTORETALIATE = true;
         FLOORCLIP = true;
         NOTARGET = true;
-
+        SetFlags();
         Health = 700;
         Radius = 20;
         Height = 56;
@@ -1173,7 +1175,7 @@ public class HellKnight : BaronOfHell
         Health = 500;
 
         BOSSDEATH = false;
-
+        SetFlags();
         SeeSound = "knight/sight";
         PainSound = "knight/pain";
         DeathSound = "knight/death";
@@ -1266,7 +1268,7 @@ public class HellKnight : BaronOfHell
 public class CyberDemon : Monster
 {
 
-    public override void Awake()
+    public virtual void Awake()
     {
         BOSS = true;
         MISSILEMORE = true;
@@ -1274,7 +1276,7 @@ public class CyberDemon : Monster
         NORADIUSDMG = true;
         DONTMORPH = true;
         BOSSDEATH = true;
-
+        SetFlags();
 
         Health = 4000;
         Radius = 40;
@@ -1364,11 +1366,11 @@ public class Fatso : Monster
 {
 
 
-    public override void Awake()
+    public virtual void Awake()
     {
         FLOORCLIP = true;
         BOSSDEATH = true;
-
+        SetFlags();
         Health = 600;
         Radius = 48;
         Height = 64;
@@ -1462,13 +1464,13 @@ public class LostSoul : Monster
 {
     //RenderStyle = SoulTrans;
 
-    public override void Awake()
+    public virtual void Awake()
     {
         FLOAT = true;
         NOGRAVITY = true;
         MISSILEMORE = true;
         DONTFALL = true;
-
+        SetFlags();
 
         Health = 100;
         Radius = 16;
@@ -1551,11 +1553,11 @@ public class LostSoul : Monster
 public class PainElemental : Monster
 {
 
-    public override void Awake()
+    public virtual void Awake()
     {
         FLOAT = true;
         NOGRAVITY = true;
-
+        SetFlags();
 
         Health = 400;
         Radius = 31;
@@ -1644,12 +1646,12 @@ public class PainElemental : Monster
 public class Revenant : Monster
 {
 
-    public override void Awake()
+    public virtual void Awake()
     {
 
         MISSILEMORE = true;
         FLOORCLIP = true;
-
+        SetFlags();
 
         Health = 300;
         Radius = 20;
@@ -1755,10 +1757,10 @@ public class Revenant : Monster
 public class WolfensteinSS : Monster
 {
 
-    public override void Awake()
+    public virtual void Awake()
     {
         FLOORCLIP = true;
-
+        SetFlags();
 
         Health = 50;
         Radius = 20;
@@ -1864,11 +1866,11 @@ public class WolfensteinSS : Monster
 public class Cacodemon : Monster
 {
 
-    public override void Awake()
+    public virtual void Awake()
     {
         FLOAT = true;
         NOGRAVITY = true;
-
+        SetFlags();
         Health = 400;
         Radius = 31;
         Height = 56;

@@ -124,7 +124,7 @@ public class StateController
         string funct = state.info[infoIndex].function;
         if ((funct != "" || funct != null) && funct == "A_Look")
         {
-            actor.Invoke(funct, 0);
+           // actor.Invoke(funct, 0);
         }
 
     }

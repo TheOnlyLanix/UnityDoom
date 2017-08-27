@@ -25,14 +25,20 @@ public class MonsterController : MonoBehaviour {
         this.thing = thing;
         actor = GetComponent<Actor>();
         audioSource = gameObject.AddComponent<AudioSource>();
-        CapsuleCollider collider = gameObject.AddComponent<CapsuleCollider>();
+
 
         health = actor.Health; //sets the health of the actor
         transform.rotation = Quaternion.Euler(0, thing.angle, 0);
         gameObject.name = actor.Name;
-        collider.radius = actor.Radius;
-        collider.height = actor.Height;
-        collider.center = new Vector3(0, actor.Height / 2f, 0);
+
+        if(actor.SOLID)
+        {
+            CapsuleCollider collider = gameObject.AddComponent<CapsuleCollider>();
+            collider.radius = actor.Radius;
+            collider.height = actor.Height;
+            collider.center = new Vector3(0, actor.Height / 2f, 0);
+
+        }
 
         sprObj = new GameObject("sprite");
         sprObj.transform.parent = transform;
