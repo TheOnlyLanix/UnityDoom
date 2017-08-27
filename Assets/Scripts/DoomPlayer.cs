@@ -41,6 +41,9 @@ public class DoomPlayer : MonoBehaviour
 
     Vector3 curMoveDir;
 
+    float vertical;
+    float horizontal;
+
     void Start ()
     {
         cam = transform.GetChild(0);//camera transform
@@ -67,8 +70,8 @@ public class DoomPlayer : MonoBehaviour
         transform.rotation = Quaternion.AngleAxis(mouseInputX, Vector3.up);//look left and right with the player
 
         //Movement
-        float horizontal = Input.GetAxis("Horizontal");
-        float vertical = Input.GetAxis("Vertical");
+        horizontal = Input.GetAxis("Horizontal");
+        vertical = Input.GetAxis("Vertical");
 
         if (cc.isGrounded)
         {
@@ -90,6 +93,12 @@ public class DoomPlayer : MonoBehaviour
 
         cc.Move(curMoveDir * Time.deltaTime);
 
+
+
+    }
+
+    void FixedUpdate()
+    {
 
         //taken from http://wiki.unity3d.com/index.php?title=Headbobber and modified for use with Unity Doom
         //Headbobbing
@@ -119,11 +128,5 @@ public class DoomPlayer : MonoBehaviour
         {
             cam.localPosition = new Vector3(cam.localPosition.x, midpoint + Height - 2, cam.localPosition.x);
         }
-
-    }
-
-    void FixedUpdate()
-    {
-
     }
 }
