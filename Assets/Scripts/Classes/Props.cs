@@ -14,7 +14,7 @@ public class Column : Props
     public void Awake()
     {
         SOLID = true;
-
+        Name = "Column";
         Radius = 16;
         Height = 48;
         ProjectilePassHeight = -16;
@@ -44,7 +44,7 @@ public class BurningBarrel : Props
         Radius = 16;
         Height = 32;
         ProjectilePassHeight = -16;
-
+        Name = "Burning Barrel";
         actorStates = new Dictionary<string, State>
         {
             { "Spawn", new State
@@ -72,12 +72,16 @@ public class ExplosiveBarrel : Props
         ACTIVATEMCROSS = true;
         DONTGIB = true;
         OLDRADIUSDMG = true;
-
+        Name = "Explosive Barrel";
         Health = 20;
         Radius = 10;
         Height = 42;
 
-        DeathSound = "world/barrelx";
+        Sounds = new Dictionary<string, string>
+        {
+            { "DeathSound", "world/barrelx" }
+        };
+
         Obituary = "$OB_BARREL"; // "%o went boom."
 
         actorStates = new Dictionary<string, State>
@@ -120,6 +124,7 @@ public class TechLamp : Props
         Radius = 16;
         Height = 80;
         ProjectilePassHeight = -16;
+        Name = "Tech Lamp";
 
         actorStates = new Dictionary<string, State>
         {
@@ -143,7 +148,7 @@ public class TechLamp2 : Props
     public void Awake()
     {
         SOLID = true;
-
+        Name = "Tech Lamp 2";
         Radius = 16;
         Height = 60;
         ProjectilePassHeight = -16;
@@ -169,7 +174,7 @@ public class TechPillar : Props
     public void Awake()
     {
         SOLID = true;
-
+        Name = "Tech Pillar";
         Radius = 16;
         Height = 128;
         ProjectilePassHeight = -16;
@@ -196,6 +201,7 @@ public class BigTree : Props
     public void Awake()
     {
         SOLID = true;
+        Name = "Big Tree";
 
         Radius = 32;
         Height = 108;
@@ -222,6 +228,7 @@ public class BlueTorch : Props
     public void Awake()
     {
         SOLID = true;
+        Name = "Blue Torch";
 
         Radius = 16;
         Height = 68;
@@ -248,6 +255,7 @@ public class Candelabra : Props
     public void Awake()
     {
         SOLID = true;
+        Name = "Candelabra";
 
         Radius = 16;
         Height = 60;
@@ -273,6 +281,7 @@ public class Candlestick : Props
 
     public void Awake()
     {
+        Name = "Candlestick";
 
         Radius = 20;
         Height = 14;
@@ -299,6 +308,7 @@ public class EvilEye : Props
     public void Awake()
     {
         SOLID = true;
+        Name = "Evil Eye";
 
         Radius = 16;
         Height = 54;
@@ -325,6 +335,7 @@ public class FloatingSkull : Props
     public void Awake()
     {
         SOLID = true;
+        Name = "Floating Skull";
 
         Radius = 16;
         Height = 26;
@@ -351,6 +362,7 @@ public class GreenTorch : Props
     public void Awake()
     {
         SOLID = true;
+        Name = "Green Torch";
 
         Radius = 16;
         Height = 68;
@@ -377,6 +389,7 @@ public class HeadCandles : Props
     public void Awake()
     {
         SOLID = true;
+        Name = "Head Candles";
 
         Radius = 16;
         Height = 42;
@@ -403,6 +416,7 @@ public class HeadOnAStick : Props
     public void Awake()
     {
         SOLID = true;
+        Name = "Head On A Stick";
 
         Radius = 16;
         Height = 56;
@@ -430,6 +444,7 @@ public class HeadsOnAStick : Props
     public void Awake()
     {
         SOLID = true;
+        Name = "Heads On A Stick";
 
         Radius = 16;
         Height = 64;
@@ -457,6 +472,7 @@ public class HeartColumn : Props
     public void Awake()
     {
         SOLID = true;
+        Name = "Heart Column";
 
         Radius = 16;
         Height = 40;
@@ -483,6 +499,7 @@ public class RedTorch : Props
     public void Awake()
     {
         SOLID = true;
+        Name = "Red Torch";
 
         Radius = 16;
         Height = 68;
@@ -509,6 +526,7 @@ public class ShortBlueTorch : Props
     public void Awake()
     {
         SOLID = true;
+        Name = "Short Blue Torch";
 
         Radius = 16;
         Height = 37;
@@ -535,6 +553,7 @@ public class ShortGreenColumn : Props
     public void Awake()
     {
         SOLID = true;
+        Name = "Short Green Column";
 
         Radius = 16;
         Height = 40;
@@ -561,6 +580,7 @@ public class ShortGreenTorch : Props
     public void Awake()
     {
         SOLID = true;
+        Name = "Short Green Torch";
 
         Radius = 16;
         Height = 37;
@@ -587,6 +607,7 @@ public class ShortRedColumn : Props
     public void Awake()
     {
         SOLID = true;
+        Name = "Short Red Column";
 
         Radius = 16;
         Height = 40;
@@ -613,6 +634,7 @@ public class ShortRedTorch : Props
     public void Awake()
     {
         SOLID = true;
+        Name = "Short Red Torch";
 
         Radius = 16;
         Height = 37;
@@ -639,6 +661,7 @@ public class SkullColumn : Props
     public void Awake()
     {
         SOLID = true;
+        Name = "Skull Column";
 
         Radius = 16;
         Height = 40;
@@ -665,6 +688,7 @@ public class Stalagtite : Props
     public void Awake()
     {
         SOLID = true;
+        Name = "Stalagtite";
 
         Radius = 16;
         Height = 40;
@@ -691,6 +715,7 @@ public class Stalagmite : Props
     public void Awake()
     {
         SOLID = true;
+        Name = "Stalagmite";
 
         Radius = 16;
         Height = 48;
@@ -715,6 +740,8 @@ public class RealGibs : Props
 
     public void Awake()
     {
+        Name = "Real Gibs";
+
         DROPOFF = true;
         CORPSE = true;
         NOTELEPORT = true;
@@ -741,6 +768,7 @@ public class TallGreenColumn : Props
     public void Awake()
     {
         SOLID = true;
+        Name = "Tall Green Column";
 
         Radius = 16;
         Height = 52;
@@ -767,6 +795,7 @@ public class TallRedColumn : Props
     public void Awake()
     {
         SOLID = true;
+        Name = "Tall Red Column";
 
         Radius = 16;
         Height = 52;
@@ -793,6 +822,7 @@ public class TorchTree : Props
     public void Awake()
     {
         SOLID = true;
+        Name = "Torch Tree";
 
         Radius = 16;
         Height = 52;
@@ -818,6 +848,8 @@ public class DeadCacodemon : Cacodemon
 
     public override void Awake()
     {
+        Name = "Dead Cacodemon";
+
         actorStates = new Dictionary<string, State>
         {
             { "Spawn", new State
@@ -837,6 +869,8 @@ public class DeadDemon : Demon
 
     public override void Awake()
     {
+        Name = "Dead Demon";
+
         actorStates = new Dictionary<string, State>
         {
             { "Spawn", new State
@@ -856,6 +890,8 @@ public class DeadDoomImp : DoomImp
 
     public override void Awake()
     {
+        Name = "Dead Doom Imp";
+
         actorStates = new Dictionary<string, State>
         {
             { "Spawn", new State
@@ -875,6 +911,8 @@ public class DeadLostSoul : LostSoul
 
     public override void Awake()
     {
+        Name = "Dead Lost Soul";
+
         actorStates = new Dictionary<string, State>
         {
             { "Spawn", new State
@@ -894,6 +932,8 @@ public class DeadMarine : Props
 
     public void Awake()
     {
+        Name = "Dead Marine";
+
         actorStates = new Dictionary<string, State>
         {
             { "Spawn", new State
@@ -914,6 +954,8 @@ public class DeadShotgunGuy : ShotgunGuy
 
     public override void Awake()
     {
+        Name = "Dead Shotgun Guy";
+
         actorStates = new Dictionary<string, State>
         {
             { "Spawn", new State
@@ -933,6 +975,8 @@ public class DeadZombieMan : ZombieMan
 
     public override void Awake()
     {
+        Name = "Dead Zombie Man";
+
         actorStates = new Dictionary<string, State>
         {
             { "Spawn", new State
@@ -952,6 +996,8 @@ public class GibbedMarine : Props
 
     public void Awake()
     {
+        Name = "Gibbed Marine";
+
         actorStates = new Dictionary<string, State>
         {
             { "Spawn", new State
@@ -975,6 +1021,7 @@ public class BloodyTwitch : Props
         SOLID = true;
         NOGRAVITY = true;
         SPAWNCEILING = true;
+        Name = "Bloody Twitch";
 
         Radius = 16;
         Height = 68;
@@ -1004,6 +1051,7 @@ public class BrainStem : Props
     {
         NOBLOCKMAP = true;
         MOVEWITHSECTOR = true;
+        Name = "Brain Stem";
 
         Radius = 20;
         Height = 4;
@@ -1030,6 +1078,7 @@ public class ColonGibs : Props
     {
         NOBLOCKMAP = true;
         MOVEWITHSECTOR = true;
+        Name = "Colon Gibs";
 
         Radius = 20;
         Height = 4;
@@ -1055,6 +1104,7 @@ public class DeadStick : Props
     public void Awake()
     {
         SOLID = true;
+        Name = "Dead Stick";
 
         Radius = 16;
         Height = 64;
@@ -1083,6 +1133,7 @@ public class HangBNoBrain : Props
         SOLID = true;
         NOGRAVITY = true;
         SPAWNCEILING = true;
+        Name = "HangB No Brain";
 
         Radius = 16;
         Height = 88;
@@ -1110,6 +1161,7 @@ public class HangNoGuts : Props
         SOLID = true;
         NOGRAVITY = true;
         SPAWNCEILING = true;
+        Name = "Hang No Guts";
 
         Radius = 16;
         Height = 88;
@@ -1137,6 +1189,7 @@ public class HangTLookingDown : Props
         SOLID = true;
         NOGRAVITY = true;
         SPAWNCEILING = true;
+        Name = "HangT Looking Down";
 
         Radius = 16;
         Height = 64;
@@ -1164,6 +1217,7 @@ public class HangTLookingUp : Props
         SOLID = true;
         NOGRAVITY = true;
         SPAWNCEILING = true;
+        Name = "HangT Looking Up";
 
         Radius = 16;
         Height = 64;
@@ -1191,6 +1245,7 @@ public class HangTNoBrain : Props
         SOLID = true;
         NOGRAVITY = true;
         SPAWNCEILING = true;
+        Name = "HangT No Brain";
 
         Radius = 16;
         Height = 64;
@@ -1218,6 +1273,7 @@ public class HangTSkull : Props
         SOLID = true;
         NOGRAVITY = true;
         SPAWNCEILING = true;
+        Name = "HangT Skull";
 
         Radius = 16;
         Height = 64;
@@ -1243,6 +1299,7 @@ public class LiveStick : Props
     public void Awake()
     {
         SOLID = true;
+        Name = "Live Stick";
 
         Radius = 16;
         Height = 64;
@@ -1273,6 +1330,7 @@ public class Meat2 : Props
         SOLID = true;
         NOGRAVITY = true;
         SPAWNCEILING = true;
+        Name = "Meat 2";
 
         Radius = 16;
         Height = 84;
@@ -1301,6 +1359,7 @@ public class Meat3 : Props
         SOLID = true;
         NOGRAVITY = true;
         SPAWNCEILING = true;
+        Name = "Meat 3";
 
         Radius = 16;
         Height = 84;
@@ -1328,6 +1387,7 @@ public class Meat4 : Props
         SOLID = true;
         NOGRAVITY = true;
         SPAWNCEILING = true;
+        Name = "Meat 4";
 
         Radius = 16;
         Height = 68;
@@ -1355,6 +1415,7 @@ public class Meat5 : Props
         SOLID = true;
         NOGRAVITY = true;
         SPAWNCEILING = true;
+        Name = "Meat 5";
 
         Radius = 16;
         Height = 52;
@@ -1379,6 +1440,8 @@ public class NonsolidMeat2 : Meat2
 
     public override void Awake()
     {
+        Name = "Nonsolid Meat 2";
+
         SOLID = false;
         Radius = 20;
 
@@ -1390,6 +1453,8 @@ public class NonsolidMeat3 : Meat3
 
     public override void Awake()
     {
+        Name = "Nonsolid Meat 3";
+
         SOLID = false;
         Radius = 20;
 
@@ -1401,6 +1466,8 @@ public class NonsolidMeat4 : Meat4
 
     public override void Awake()
     {
+        Name = "Nonsolid Meat 4";
+
         SOLID = false;
         Radius = 20;
 
@@ -1412,6 +1479,8 @@ public class NonsolidMeat5 : Meat5
 
     public override void Awake()
     {
+        Name = "Nonsolid Meat 5";
+
         SOLID = false;
         Radius = 20;
 
@@ -1423,6 +1492,8 @@ public class NonsolidTwitch : BloodyTwitch
 
     public override void Awake()
     {
+        Name = "Nonsolid Twitch";
+
         SOLID = false;
         Radius = 20;
 
@@ -1436,6 +1507,7 @@ public class SmallBloodPool : Props
     {
         NOBLOCKMAP = true;
         MOVEWITHSECTOR = true;
+        Name = "Small Blood Pool";
 
         Radius = 20;
         Height = 1;

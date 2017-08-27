@@ -16,8 +16,7 @@ public class BossBrain : Actor
         SOLID = true;
         SHOOTABLE = true;
         OLDRADIUSDMG = true;
-
-
+        Name = "BossBrain";
 
         Health = 250;
         Mass = 10000000;
@@ -25,8 +24,11 @@ public class BossBrain : Actor
         Height = 56;
         PainChance = 255;
 
-        PainSound = "brain/pain";
-        DeathSound = "brain/death";
+        Sounds = new Dictionary<string, string>
+        {
+            { "PainSound", "brain/pain" },
+            { "DeathSound", "brain/death" }
+        };
 
         actorStates = new Dictionary<string, State>
         {
@@ -79,6 +81,8 @@ public class BossRocket : Rocket
 
     public override void Awake()
     {
+        Name = "BossRocket";
+
         actorStates = new Dictionary<string, State>
         {
            { "Spawn", new State
@@ -103,6 +107,7 @@ public class BossEye : Actor
         Height = 32;
         NOBLOCKMAP = true;
         NOSECTOR = true;
+        Name = "BossEye";
 
         actorStates = new Dictionary<string, State>
         {
@@ -136,6 +141,8 @@ public class BossTarget : SpecialSpot
 
     public void Awake()
     {
+        Name = "BossTarget";
+
         Height = 32;
         NOBLOCKMAP = true;
         NOSECTOR = true;
@@ -151,8 +158,10 @@ public class SpecialSpot : Actor
 public class SpawnShot : Projectile
 {
 
-    public override void Awake()
+    public void Awake()
     {
+        Name = "SpawnShot";
+        SetFlags();
         Height = 32;
         Radius = 6;
         Speed = 10;
@@ -162,9 +171,11 @@ public class SpawnShot : Projectile
         ACTIVATEPCROSS = false;
         RANDOMIZE = true;
 
-        SeeSound = "brain/spit";
-        DeathSound = "brain/cubeboom";
-
+        Sounds = new Dictionary<string, string>
+        {
+            { "SeeSound", "brain/spit" },
+            { "DeathSound", "brain/cubeboom" }
+        };
 
         actorStates = new Dictionary<string, State>
         {
@@ -187,6 +198,8 @@ public class SpawnFire : Actor
 
     public void Awake()
     {
+        Name = "SpawnFire";
+
         Height = 78;
         NOBLOCKMAP = true;
         NOGRAVITY = true;
@@ -211,6 +224,7 @@ public class CommanderKeen : Actor
 
     public void Awake()
     {
+        Name = "CommanderKeen";
 
         Health = 100;
         Mass = 10000000;
@@ -225,8 +239,11 @@ public class CommanderKeen : Actor
         COUNTKILL = true;
         ISMONSTER = true;
 
-        PainSound = "keen/pain";
-        DeathSound = "keen/death";
+        Sounds = new Dictionary<string, string>
+        {
+            { "PainSound", "keen/pain" },
+            { "DeathSound", "keen/death" }
+        };
 
         actorStates = new Dictionary<string, State>
         {

@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MonsterController : MonoBehaviour {
+public class ThingController : MonoBehaviour {
 
     public int health;
     GameObject player;
@@ -14,7 +14,7 @@ public class MonsterController : MonoBehaviour {
     GameObject sprObj;
     public bool debug;
     public string overrideState = ""; // TODO: remove? only for debugging
-    AudioSource audioSource;
+    public AudioSource audioSource;
     StateController stateController;
     Dictionary<string, AudioClip> usedSounds = new Dictionary<string, AudioClip>();
 
@@ -24,20 +24,17 @@ public class MonsterController : MonoBehaviour {
         player = GameObject.FindGameObjectWithTag("Player");
         this.thing = thing;
         actor = GetComponent<Actor>();
-        audioSource = gameObject.AddComponent<AudioSource>();
-
 
         health = actor.Health; //sets the health of the actor
         transform.rotation = Quaternion.Euler(0, thing.angle, 0);
         gameObject.name = actor.Name;
 
-        if(actor.SOLID)
+        if(actor.SOLID)//if the actor isnt solid, it shouldnt have a collider
         {
             CapsuleCollider collider = gameObject.AddComponent<CapsuleCollider>();
             collider.radius = actor.Radius;
             collider.height = actor.Height;
             collider.center = new Vector3(0, actor.Height / 2f, 0);
-
         }
 
         sprObj = new GameObject("sprite");
@@ -49,29 +46,22 @@ public class MonsterController : MonoBehaviour {
         mr.material = new Material(Shader.Find("Custom/DoomShader"));
         mf.mesh = this.mesh;
 
-        /*foreach (AudioClip clip in sounds.Values)//trim down the list of sounds for efficiency?
+        if(actor.Sounds.Count > 0)//only create the audio source if the thing has sounds defined
         {
-            if(SoundInfo.soundInfo[actor.SeeSound] == clip.name)
+            audioSource = gameObject.AddComponent<AudioSource>();
+
+            foreach(AudioClip clip in sounds.Values)//trim down the list of sounds for efficiency?
             {
-                usedSounds.Add(actor.SeeSound, clip);
+                foreach (string s in actor.Sounds.Values)
+                {
+
+                    if (SoundInfo.soundInfo[s] == clip.name)
+                    {
+                        usedSounds.Add(s, clip);
+                    }
+                }
             }
-            else if (SoundInfo.soundInfo[actor.AttackSound] == clip.name)
-            {
-                usedSounds.Add(actor.AttackSound, clip);
-            }
-            else if (SoundInfo.soundInfo[actor.PainSound] == clip.name)
-            {
-                usedSounds.Add(actor.PainSound, clip);
-            }
-            else if (SoundInfo.soundInfo[actor.DeathSound] == clip.name)
-            {
-                usedSounds.Add(actor.DeathSound, clip);
-            }
-            else if (SoundInfo.soundInfo[actor.ActiveSound] == clip.name)
-            {
-                usedSounds.Add(actor.ActiveSound, clip);
-            }
-        }*/
+        }
 
         stateController = new StateController(actor, sprites, audioSource);
         stateController.UpdateMaterial(mr.material, 1);

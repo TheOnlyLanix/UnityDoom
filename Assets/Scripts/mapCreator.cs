@@ -253,14 +253,16 @@ public class mapCreator : MonoBehaviour
             {
                 newThing.AddComponent(MonsterType[thing.thingType]);
                 
-                MonsterController controller = newThing.AddComponent<MonsterController>();
+                ThingController controller = newThing.AddComponent<ThingController>();
                 controller.OnCreate(reader.newWad.sprites, thing, reader.newWad.sounds);
+                
+
             }
             else if (DecorationType.ContainsKey(thing.thingType))//if its a Decoration
             {
                 newThing.AddComponent(DecorationType[thing.thingType]);
 
-                MonsterController controller = newThing.AddComponent<MonsterController>();
+                ThingController controller = newThing.AddComponent<ThingController>();
                 controller.OnCreate(reader.newWad.sprites, thing, reader.newWad.sounds);
             }
             else if (thing.thingType == 1)//player 1

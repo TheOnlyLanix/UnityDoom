@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 
@@ -8,7 +6,7 @@ public class Actor : MonoBehaviour
 {
     public int Scale = 1;
     public int Health = 1000;
-    
+
     public int Radius = 20;
     public int Height = 16;
     public int Mass = 100;
@@ -37,15 +35,11 @@ public class Actor : MonoBehaviour
     public float VSpeed = 0;
     public string DamageType = "";
 
+    public Dictionary<string, string> Sounds = new Dictionary<string, string>();
 
     public string Name = "Actor";
     public string sprite = "";
 
-    public string SeeSound = "";
-    public string AttackSound = "";
-    public string PainSound = "";
-    public string DeathSound = "";
-    public string ActiveSound = "";
     public string Obituary = "";
     public string HitObituary = "";
     public string DropItem = "";

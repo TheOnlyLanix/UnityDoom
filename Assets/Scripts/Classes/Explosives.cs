@@ -11,7 +11,7 @@ public class Projectile : Actor
     public int FastSpeed = 0;
     public string Decal = "";
 
-    public virtual void Awake()
+    public void SetFlags()
     {
         NOBLOCKMAP = true;
         NOGRAVITY = true;
@@ -28,18 +28,23 @@ public class ArachnotronPlasma : Projectile
 {
 
     
-    public override void Awake()
+    public void Awake()
     {
         RANDOMIZE = true;
+        SetFlags();
 
         Radius = 13;
         Height = 8;
         Speed = 25;
-
+        Name = "ArachnotronPlasma";
         //sprite = "APLS";
 
-        SeeSound = "baby/attack";
-        DeathSound = "baby/shotx";
+        Sounds = new Dictionary<string, string>
+        {
+            { "SeeSound", "baby/attack" },
+            { "DeathSound", "baby/shotx"}
+
+        };
 
         actorStates = new Dictionary<string, State>
         {
@@ -78,6 +83,7 @@ public class ArchvileFire : Actor
         NOBLOCKMAP = true;
         NOGRAVITY = true;
 
+        Name = "ArchvileFire";
         Alpha = 1;
         sprite = "FIRE";
 
@@ -106,10 +112,12 @@ public class ArchvileFire : Actor
 public class BaronBall : Projectile
 {
 
-    public override void Awake()
+    public void Awake()
     {
         RANDOMIZE = true;
         //RenderStyle Add
+        Name = "BaronBall";
+        SetFlags();
 
         Radius = 6;
         Height = 16;
@@ -117,8 +125,14 @@ public class BaronBall : Projectile
         FastSpeed = 20;
         Damage = 8;
         Alpha = 1;
-        SeeSound ="baron/attack";
-        DeathSound ="baron/shotx";
+
+        Sounds = new Dictionary<string, string>
+        {
+            { "SeeSound", "baron/attack" },
+            { "DeathSound", "baron/shotx"}
+
+        };
+
         Decal ="BaronScorch";
 
         sprite = "BAL7";
@@ -153,10 +167,12 @@ public class BaronBall : Projectile
 public class CacodemonBall : Projectile
 {
 
-    public override void Awake()
+    public void Awake()
     {
         RANDOMIZE = true;
         //RenderStyle Add
+        Name = "CacodemonBall";
+        SetFlags();
 
         Radius = 6;
         Height = 8;
@@ -164,8 +180,12 @@ public class CacodemonBall : Projectile
         FastSpeed = 20;
         Damage = 5;
         Alpha = 1;
-        SeeSound = "caco/attack";
-        DeathSound = "caco/shotx";
+
+        Sounds = new Dictionary<string, string>
+        {
+            { "SeeSound", "caco/attack" },
+            { "DeathSound", "caco/shotx"}
+        };
 
         sprite = "BAL2";
 
@@ -199,17 +219,24 @@ public class CacodemonBall : Projectile
 public class BFGBall : Projectile
 {
 
-    public override void Awake()
+    public void Awake()
     {
         RANDOMIZE = true;
-        //RenderStyle Add
+        SetFlags();
 
+        //RenderStyle Add
+        Name = "BFGBall";
         Radius = 13;
         Height = 8;
         Speed = 25;
         Damage = 100;
         Alpha = 0.75f;
-        DeathSound = "weapons/bfgx";
+
+        Sounds = new Dictionary<string, string>
+        {
+            { "DeathSound", "weapons/bfgx"}
+        };
+
         Obituary = "$OB_MPBFG_BOOM";
 
         sprite = "BFS1";
@@ -248,11 +275,10 @@ public class BFGExtra : Actor
         NOBLOCKMAP = true;
         NOGRAVITY = true;
         //RenderStlye Add
-
+        Name = "BFGExtra";
         Alpha = 0.75f;
         DamageType = "BFGSplash";
 
-        DeathSound = "weapons/bfgx";
         Obituary = "$OB_MPBFG_BOOM";
 
         sprite = "BFE2";
@@ -283,14 +309,13 @@ public class BulletPuff : Actor
         //RenderStlye Translucent
         //AllowParticles = true;
         RANDOMIZE = true;
-
+        Name = "BulletPuff";
 
         Alpha = 0.5f;
         VSpeed = 1;
         Mass = 5;
         DamageType = "BFGSplash";
 
-        DeathSound = "weapons/bfgx";
         Obituary = "$OB_MPBFG_BOOM";
 
         sprite = "PUFF";
@@ -324,19 +349,25 @@ public class BulletPuff : Actor
 public class DoomImpBall : Projectile
 {
 
-    public override void Awake()
+    public void Awake()
     {
         RANDOMIZE = true;
-        //RenderStyle Add
+        SetFlags();
 
+        //RenderStyle Add
+        Name = "DoomImpBall";
         Radius = 6;
         Height = 8;
         Speed = 10;
         Damage = 3;
         Alpha = 1;
         FastSpeed = 20;
-        SeeSound = "imp/attack";
-        DeathSound = "imp/shotx";
+
+        Sounds = new Dictionary<string, string>
+        {
+            { "SeeSound", "imp/attack" },
+            { "DeathSound", "imp/shotx"}
+        };
 
         sprite = "BAL1";
 
@@ -368,19 +399,24 @@ public class DoomImpBall : Projectile
 public class FatShot : Projectile
 {
 
-    public override void Awake()
+    public void Awake()
     {
         RANDOMIZE = true;
-        //RenderStyle Add
+        SetFlags();
 
+        //RenderStyle Add
+        Name = "FatShot";
         Radius = 6;
         Height = 8;
         Speed = 20;
         Damage = 8;
         Alpha = 1;
 
-        SeeSound = "fatso/attack";
-        DeathSound = "fatso/shotx";
+        Sounds = new Dictionary<string, string>
+        {
+            { "SeeSound", "fatso/attack" },
+            { "DeathSound", "fatso/shotx"}
+        };
 
         sprite = "MANF";
 
@@ -413,19 +449,25 @@ public class FatShot : Projectile
 public class PlasmaBall : Projectile
 {
 
-    public override void Awake()
+    public void Awake()
     {
         RANDOMIZE = true;
-        //RenderStyle Add
+        SetFlags();
 
+        //RenderStyle Add
+        Name = "PlasmaBall";
         Radius = 13;
         Height = 8;
         Speed = 25;
         Damage = 5;
         Alpha = 0.75f;
+        
+        Sounds = new Dictionary<string, string>
+        {
+            { "SeeSound", "weapons/plasmaf" },
+            { "DeathSound", "weapons/plasmax"}
+        };
 
-        SeeSound = "weapons/plasmaf";
-        DeathSound = "weapons/plasmax";
         Obituary = "$OB_MPPLASMARIFLE";
 
         sprite = "PLSS";
@@ -457,19 +499,24 @@ public class PlasmaBall : Projectile
 public class RevenantTracer : Projectile
 {
 
-    public override void Awake()
+    public void Awake()
     {
         //SeekerMissile = true;
         RANDOMIZE = true;
-        //RenderStyle Add
+        SetFlags();
 
+        //RenderStyle Add
+        Name = "RevenantTracer";
         Radius = 11;
         Height = 8;
         Speed = 10;
         Damage = 10;
 
-        SeeSound = "skeleton/attack";
-        DeathSound = "skeleton/tracex";
+        Sounds = new Dictionary<string, string>
+        {
+            { "SeeSound", "skeleton/attack" },
+            { "DeathSound", "skeleton/tracex"}
+        };
 
         sprite = "FATB";
 
@@ -510,7 +557,7 @@ public class RevenantTracerSmoke : Actor
         //RenderStyle Translucent
         Alpha = 0.5f;
         sprite = "PUFF";
-
+        Name = "RevenantTracerSmoke";
         actorStates = new Dictionary<string, State>
         {
             { "Spawn", new State
@@ -529,19 +576,26 @@ public class RevenantTracerSmoke : Actor
 public class Rocket : Projectile
 {
 
-    public override void Awake()
+    public virtual void Awake()
     {
+        SetFlags();
         RANDOMIZE = true;
         DEHEXPLOSION = true;
         ROCKETTRAIL = true;
 
+
+        Name = "Rocket";
         Radius = 11;
         Height = 8;
         Speed = 20;
         Damage = 20;
 
-        SeeSound = "weapons/rocklf";
-        DeathSound = "weapons/rocklx";
+        Sounds = new Dictionary<string, string>
+        {
+            { "SeeSound", "weapons/rocklf" },
+            { "DeathSound", "weapons/rocklx" }
+        };
+
         Obituary = "$OB_MPROCKET";
 
         sprite = "MISL";

@@ -27,8 +27,6 @@ public class Monster : Actor
         ISMONSTER = true;
     }
 
-    
-
     public void A_VileAttack(AudioClip snd, int initialdmg = 20, int blastdmg = 70, int blastradius = 70, float thrustfac = 1.0f, string damagetype = "Fire", int flags = 0) { }
 
     public void A_VileChase() { }
@@ -208,11 +206,16 @@ public class ShotgunGuy : Monster
         sprite = "SPOS";
         Name = "Shotgun Guy";
 
-        SeeSound = "shotguy/sight";
-        AttackSound = "shotguy/attack";
-        PainSound = "shotguy/pain";
-        DeathSound = "shotguy/death";
-        ActiveSound = "shotguy/active";
+        Sounds = new Dictionary<string, string>
+        {
+            { "ActiveSound", "shotguy/active"},
+            { "SeeSound", "shotguy/sight" },
+            { "AttackSound", "shotguy/attack"},
+            { "PainSound", "shotguy/pain"},
+            { "DeathSound", "shotguy/death"},
+
+        };
+
         Obituary = "$OB_SHOTGUY";
         DropItem = "Shotgun";
 
@@ -318,11 +321,16 @@ public class ChaingunGuy : Monster
         Name = "Chaingun Guy";
         SetFlags();
 
-        SeeSound = "chainguy/sight";
-        AttackSound = "chainguy/attack";
-        PainSound = "chainguy/pain";
-        DeathSound = "chainguy/death";
-        ActiveSound = "chainguy/active";
+        Sounds = new Dictionary<string, string>
+        {
+            { "ActiveSound", "chainguy/active"},
+            { "SeeSound", "chainguy/sight" },
+            { "AttackSound", "chainguy/attack"},
+            { "PainSound", "chainguy/pain"},
+            { "DeathSound", "chainguy/death"},
+
+        };
+
         Obituary = "$OB_CHAINGUY";
         DropItem = "Chaingun";
 
@@ -433,13 +441,19 @@ public class BaronOfHell : Monster
         sprite = "BOSS";
         Name = "Baron of Hell";
         SetFlags();
-        SeeSound = "baron/sight";
-        PainSound = "baron/pain";
-        DeathSound = "baron/death";
-        ActiveSound = "baron/active";
+
+        Sounds = new Dictionary<string, string>
+        {
+            { "ActiveSound", "baron/active"},
+            { "SeeSound", "baron/sight" },
+            { "AttackSound", "baron/attack"},
+            { "PainSound", "baron/pain"},
+            { "DeathSound", "baron/death"},
+
+        };
+
         Obituary = "$OB_BARON";
         HitObituary = "$OB_BARONHIT";
-        AttackSound = "baron/attack";
 
         actorStates = new Dictionary<string, State>
         {
@@ -527,11 +541,16 @@ public class ZombieMan : Monster
     {
         FLOORCLIP = true;
 
-        SeeSound = "grunt/sight";
-        AttackSound = "grunt/attack";
-        PainSound = "grunt/pain";
-        DeathSound = "grunt/death";
-        ActiveSound = "grunt/active";
+        Sounds = new Dictionary<string, string>
+        {
+            { "ActiveSound", "grunt/active"},
+            { "SeeSound", "grunt/sight" },
+            { "AttackSound", "grunt/attack"},
+            { "PainSound", "grunt/pain"},
+            { "DeathSound", "grunt/death"},
+
+        };
+
         Obituary = "$OB_ZOMBIE";
         DropItem = "Clip";
         SetFlags();
@@ -641,11 +660,17 @@ public class DoomImp : Monster
         sprite = "TROO";
         Name = "Imp";
         SetFlags();
-        SeeSound = "imp/sight";
-        AttackSound = "imp/attack";
-        PainSound = "imp/pain";
-        DeathSound = "imp/death";
-        ActiveSound = "imp/active";
+
+        Sounds = new Dictionary<string, string>
+        {
+            { "ActiveSound", "imp/active"},
+            { "SeeSound", "imp/sight" },
+            { "AttackSound", "imp/attack"},
+            { "PainSound", "imp/pain"},
+            { "DeathSound", "imp/death"},
+
+        };
+
         Obituary = "$OB_IMP";
         HitObituary = "$OB_IMPHIT";
 
@@ -758,11 +783,17 @@ public class Arachnotron : Monster
         sprite = "BSPI";
         Name = "Arachnotron";
         SetFlags();
-        SeeSound = "baby/sight";
-        AttackSound = "baby/attack";
-        PainSound = "baby/pain";
-        DeathSound = "baby/death";
-        ActiveSound = "baby/active";
+
+        Sounds = new Dictionary<string, string>
+        {
+            { "ActiveSound", "baby/active"},
+            { "SeeSound", "baby/sight" },
+            { "AttackSound", "baby/attack"},
+            { "PainSound", "baby/pain"},
+            { "DeathSound", "baby/death"},
+
+        };
+
         Obituary = "$OB_BABY";
 
         actorStates = new Dictionary<string, State>
@@ -862,11 +893,17 @@ public class SpiderMastermind : Monster
         Name = "Spider Mastermind";
                 SetFlags();
         MinMissileChance = 160;
-        SeeSound = "spider/sight";
-        AttackSound = "spider/attack";
-        PainSound = "spider/pain";
-        DeathSound = "spider/death";
-        ActiveSound = "spider/active";
+
+        Sounds = new Dictionary<string, string>
+        {
+            { "ActiveSound", "spider/active"},
+            { "SeeSound", "spider/sight" },
+            { "AttackSound", "spider/attack"},
+            { "PainSound", "spider/pain"},
+            { "DeathSound", "spider/death"},
+
+        };
+
         Obituary = "$OB_SPIDER";
 
         actorStates = new Dictionary<string, State>
@@ -958,11 +995,17 @@ public class Demon : Monster
         sprite = "SARG";
         Name = "Demon";
         SetFlags();
-        SeeSound = "demon/sight";
-        AttackSound = "demon/melee";
-        PainSound = "demon/pain";
-        DeathSound = "demon/death";
-        ActiveSound = "demon/active";
+
+        Sounds = new Dictionary<string, string>
+        {
+            { "ActiveSound", "demon/active"},
+            { "SeeSound", "demon/sight" },
+            { "AttackSound", "demon/melee"},
+            { "PainSound", "demon/pain"},
+            { "DeathSound", "demon/death"},
+
+        };
+
         Obituary = "$OB_DEMONHIT";
 
         actorStates = new Dictionary<string, State>
@@ -1047,11 +1090,17 @@ public class Spectre : Demon
         Name = "Spectre";
 
         OnAwake();
-        SeeSound = "spectre/sight";
-        AttackSound = "spectre/melee";
-        PainSound = "spectre/pain";
-        DeathSound = "spectre/death";
-        ActiveSound = "spectre/active";
+
+        Sounds = new Dictionary<string, string>
+        {
+            { "ActiveSound", "spectre/active"},
+            { "SeeSound", "spectre/sight" },
+            { "AttackSound", "spectre/melee"},
+            { "PainSound", "spectre/pain"},
+            { "DeathSound", "spectre/death"},
+
+        };
+
         Obituary = "$OB_SPECTREHIT";
     }
 
@@ -1080,18 +1129,20 @@ public class Archvile : Monster
         sprite = "VILE";
         Name = "Archvile";
 
-        SeeSound = "vile/sight";
-        PainSound = "vile/pain";
-        DeathSound = "vile/death";
-        ActiveSound = "vile/active";
+        Sounds = new Dictionary<string, string>
+        {
+            { "ActiveSound", "vile/active"},
+            { "SeeSound", "vile/sight" },
+            { "PainSound", "vile/pain"},
+            { "DeathSound", "vile/death"},
+            { "VileRaiseSound", "vile/raise" },
+            { "VileStartSound", "vile/start" },
+            { "VileStopSound", "vile/stop" },
+            { "VileFireStartSound", "vile/firestrt" },
+            { "VileFireCrackleSound", "vile/firecrkl" }
 
-        /*
-        VileRaiseSound = "vile/raise";
-        VileStartSound = "vile/start";
-        VileStopSound = "vile/stop";
-        VileFireStartSound = "vile/firestrt";
-        VileFireCrackleSound = "vile/firecrkl";
-        */
+        };
+
 
         Obituary = "$OB_VILE";
         MaxTargetRange = 896;
@@ -1176,10 +1227,17 @@ public class HellKnight : BaronOfHell
 
         BOSSDEATH = false;
         SetFlags();
-        SeeSound = "knight/sight";
-        PainSound = "knight/pain";
-        DeathSound = "knight/death";
-        ActiveSound = "knight/active";
+
+        Sounds = new Dictionary<string, string>
+        {
+            { "ActiveSound", "knight/active"},
+            { "SeeSound", "knight/sight" },
+            { "AttackSound", "baron/attack"},
+            { "PainSound", "knight/pain"},
+            { "DeathSound", "knight/death"},
+
+        };
+
         Obituary = "$OB_KNIGHT";
         HitObituary = "$OB_KNIGHTHIT";
         Name = "Hell Knight";
@@ -1289,10 +1347,15 @@ public class CyberDemon : Monster
 
         MiniMissileChance = 160;
 
-        SeeSound = "cyber/sight";
-        PainSound = "cyber/pain";
-        DeathSound = "cyber/death";
-        ActiveSound = "cyber/active";
+        Sounds = new Dictionary<string, string>
+        {
+            { "ActiveSound", "cyber/active"},
+            { "SeeSound", "cyber/sight" },
+            { "PainSound", "cyber/pain"},
+            { "DeathSound", "cyber/death"},
+
+        };
+
         Obituary = "$OB_CYBORG";
 
         actorStates = new Dictionary<string, State>
@@ -1380,11 +1443,15 @@ public class Fatso : Monster
         sprite = "FATT";
         Name = "Mancubus";
 
-        SeeSound = "fatso/sight";
-        AttackSound = "fatso/attack";
-        PainSound = "fatso/pain";
-        DeathSound = "fatso/death";
-        ActiveSound = "fatso/active";
+        Sounds = new Dictionary<string, string>
+        {
+            { "ActiveSound", "fatso/active"},
+            { "SeeSound", "fatso/sight" },
+            { "AttackSound", "fatso/attack" },
+            { "PainSound", "fatso/pain"},
+            { "DeathSound", "fatso/death"},
+        };
+
         Obituary = "$OB_FATSO";
 
         actorStates = new Dictionary<string, State>
@@ -1482,11 +1549,14 @@ public class LostSoul : Monster
         sprite = "SKUL";
         Name = "Lost Soul";
 
-
-        AttackSound = "skull/melee";
-        PainSound = "skull/pain";
-        DeathSound = "skull/death";
-        ActiveSound = "skull/active";
+        Sounds = new Dictionary<string, string>
+        {
+            { "ActiveSound", "skull/active"},
+            { "AttackSound", "skull/melee" },
+            { "PainSound", "skull/pain"},
+            { "DeathSound", "skull/death"},
+        };
+        
         Obituary = "$OB_SKULL";
 
         actorStates = new Dictionary<string, State>
@@ -1568,10 +1638,13 @@ public class PainElemental : Monster
         sprite = "PAIN";
         Name = "Pain Elemental";
 
-        SeeSound = "pain/sight";
-        PainSound = "pain/pain";
-        DeathSound = "pain/death";
-        ActiveSound = "pain/active";
+        Sounds = new Dictionary<string, string>
+        {
+            { "ActiveSound", "pain/active"},
+            { "SeeSound", "pain/sight" },
+            { "PainSound", "pain/pain"},
+            { "DeathSound", "pain/death"},
+        };
 
         actorStates = new Dictionary<string, State>
         {
@@ -1664,11 +1737,15 @@ public class Revenant : Monster
 
         MeleeThreshold = 196;
 
-        SeeSound = "skeleton/sight";
-        AttackSound = "skeleton/attack";
-        PainSound = "skeleton/pain";
-        DeathSound = "skeleton/death";
-        ActiveSound = "skeleton/active";
+        Sounds = new Dictionary<string, string>
+        {
+            { "ActiveSound", "skeleton/active"},
+            { "SeeSound", "skeleton/sight" },
+            { "AttackSound", "skeleton/attack" },
+            { "PainSound", "skeleton/pain"},
+            { "DeathSound", "skeleton/death"},
+        };
+
         HitObituary = "$OB_UNDEADHIT"; // "%o was punched by a revenant."
         Obituary = "$OB_UNDEAD"; // "%o couldn't evade a revenant's fireball."
 
@@ -1770,11 +1847,15 @@ public class WolfensteinSS : Monster
         sprite = "SSWV";
         Name = "WolfensteinSS";
 
-        SeeSound = "wolfss/sight";
-        AttackSound = "wolfss/attack";
-        PainSound = "wolfss/pain";
-        DeathSound = "wolfss/death";
-        ActiveSound = "wolfss/active";
+        Sounds = new Dictionary<string, string>
+        {
+            { "ActiveSound", "wolfss/active"},
+            { "SeeSound", "wolfss/sight" },
+            { "AttackSound", "wolfss/attack" },
+            { "PainSound", "wolfss/pain"},
+            { "DeathSound", "wolfss/death"},
+        };
+
         Obituary = "$OB_WOLFSS"; // "%o couldn't evade a revenant's fireball."
         DropItem = "Clip";
 
@@ -1879,11 +1960,15 @@ public class Cacodemon : Monster
         sprite = "HEAD";
         Name = "Cacodemon";
 
-        SeeSound = "caco/sight";
-        AttackSound = "caco/attack";
-        PainSound = "caco/pain";
-        DeathSound = "caco/death";
-        ActiveSound = "caco/active";
+        Sounds = new Dictionary<string, string>
+        {
+            { "ActiveSound", "caco/active"},
+            { "SeeSound", "caco/sight" },
+            { "AttackSound", "caco/attack" },
+            { "PainSound", "caco/pain"},
+            { "DeathSound", "caco/death"},
+        };
+
         Obituary = "$OB_CACO";
         HitObituary = "$OB_CACOHIT";
 
