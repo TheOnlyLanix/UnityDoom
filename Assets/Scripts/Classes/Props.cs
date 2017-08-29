@@ -856,7 +856,8 @@ public class DeadCacodemon : Cacodemon
                 {
                    info = new List<StateInfo>
                    {
-                        new StateInfo{function = "Death+5" }
+                         new StateInfo{spr = "HEAD", sprInd = "L", time = -1},
+                         new StateInfo{function = "Stop"}
                    }
                }
             }
@@ -877,7 +878,8 @@ public class DeadDemon : Demon
                 {
                    info = new List<StateInfo>
                    {
-                        new StateInfo{function = "Death+5" }
+                        new StateInfo{spr = "SARG", sprInd = "N", time = -1},
+                        new StateInfo{function = "Stop"}
                    }
                }
             }
@@ -898,7 +900,8 @@ public class DeadDoomImp : DoomImp
                 {
                    info = new List<StateInfo>
                    {
-                        new StateInfo{function = "Death+4" }
+                        new StateInfo{spr = "TROO", sprInd = "M", time = -1},
+                        new StateInfo{function = "Stop"}
                    }
                }
             }
@@ -919,7 +922,8 @@ public class DeadLostSoul : LostSoul
                 {
                    info = new List<StateInfo>
                    {
-                        new StateInfo{function = "Death+5" }
+                        new StateInfo{spr = "SKUL", sprInd = "K", time = 6},
+                        new StateInfo{function = "Stop"}
                    }
                }
             }
@@ -962,7 +966,8 @@ public class DeadShotgunGuy : ShotgunGuy
                 {
                    info = new List<StateInfo>
                    {
-                        new StateInfo{function = "Death+4" }
+                        new StateInfo{spr = "SPOS", sprInd = "L", time = -1},
+                        new StateInfo{function = "Stop"}
                    }
                }
             }
@@ -983,7 +988,8 @@ public class DeadZombieMan : ZombieMan
                 {
                    info = new List<StateInfo>
                    {
-                        new StateInfo{function = "Death+4" }
+                       new StateInfo{spr = "CPOS", sprInd = "L", time = -1},
+                       new StateInfo{function = "Stop"}
                    }
                }
             }
