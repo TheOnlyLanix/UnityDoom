@@ -24,10 +24,6 @@ public class DoomPlayer : MonoBehaviour
 
     float mouseInputX;
     float mouseInputY;
-    bool action = false;
-
-    bool jump = false;
-    bool isJumping = false;
 
     Vector3 moveDir;
     public float friction = 1f;
@@ -53,12 +49,25 @@ public class DoomPlayer : MonoBehaviour
 
 	void Update ()
     {        
-        action = Input.GetButtonDown("Action");
+        //action = Input.GetButtonDown("Action");
 
-        if(!isJumping)//cant already be jumping
+        if(cc.isGrounded)//cant already be jumping
         {
-            jump = Input.GetButtonDown("Jump");
+            moveDir = new Vector3(horizontal, 0, vertical);
+            moveDir = transform.TransformDirection(moveDir);
+            moveDir *= Speed;
+
+            curMoveDir = Vector3.Lerp(curMoveDir, moveDir, friction * Time.deltaTime);
+
+            if (horizontal != 0f || vertical != 0f)
+                curMoveDir = moveDir;
+
+            if (Input.GetButtonDown("Jump") && !Physics.Raycast(transform.position + new Vector3(0, Height, 0), Vector3.up, Height))//dont jump if we are in the air, or our head is blocked
+                curMoveDir.y = jumpHeight;
         }
+
+        curMoveDir.y -= downForce * Time.deltaTime;
+        cc.Move(curMoveDir * Time.deltaTime);
 
         //Mouse look
         mouseInputX += Mathf.Lerp(mouseInputX, Input.GetAxis("Mouse X") * sensitivity, smoothing);
@@ -66,39 +75,17 @@ public class DoomPlayer : MonoBehaviour
 
         mouseInputY = Mathf.Clamp(mouseInputY, -90, 90);
 
-        cam.localRotation = Quaternion.AngleAxis(mouseInputY, Vector3.right);//look up and down with the camera
-        transform.rotation = Quaternion.AngleAxis(mouseInputX, Vector3.up);//look left and right with the player
 
         //Movement
         horizontal = Input.GetAxis("Horizontal");
         vertical = Input.GetAxis("Vertical");
 
-        if (cc.isGrounded)
-        {
-            moveDir = new Vector3(horizontal, 0, vertical);
-            moveDir = transform.TransformDirection(moveDir);
-            moveDir *= Speed;
-            
-           curMoveDir = Vector3.Lerp(curMoveDir, moveDir, friction * Time.deltaTime);
-
-            if (horizontal != 0f || vertical != 0f)
-                curMoveDir = moveDir;
-
-            if (Input.GetButton("Jump") && !Physics.Raycast(transform.position + new Vector3(0, Height, 0), Vector3.up, Height))//dont jump if we are in the air, or our head is blocked
-                curMoveDir.y = jumpHeight;
-
-        }
-
-        curMoveDir.y -= downForce * Time.deltaTime;
-
-        cc.Move(curMoveDir * Time.deltaTime);
-
-
-
     }
 
     void FixedUpdate()
     {
+        cam.localRotation = Quaternion.AngleAxis(mouseInputY, Vector3.right);//look up and down with the camera
+        transform.rotation = Quaternion.AngleAxis(mouseInputX, Vector3.up);//look left and right with the player
 
         //taken from http://wiki.unity3d.com/index.php?title=Headbobber and modified for use with Unity Doom
         //Headbobbing

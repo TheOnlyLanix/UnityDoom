@@ -3,17 +3,14 @@ using System.IO;
 using System;
 using System.Collections.Generic;
 using UnityEngine.UI;
+using System.Collections;
 
 public class wadReader : MonoBehaviour
 {
-
     string wadFilePath;
-    //string wadFilePath = "D:/Users/Aaron/Documents/Unity/DoomProject/Assets/DOOM2.wad";
-
     public WAD newWad;
 
     public string label;
-    public AudioSource audSrc;
     PLAYPAL playPal;
 
     public Shader DoomShader;
@@ -21,9 +18,12 @@ public class wadReader : MonoBehaviour
 
     FileStream wadOpener;
 
-    //End of UI Elements
+    void Start()
+    {
+        StartCoroutine(ReadWad());
+    }
 
-    void Awake()
+    IEnumerator ReadWad()
     {
         wadFilePath = Application.dataPath + "/DOOM2.wad";
 
@@ -31,12 +31,7 @@ public class wadReader : MonoBehaviour
 
         ReadWADHeader();
         ReadWADDirectory();
-    }
 
-
-
-    void Start()
-    {
         playPal = ReadColorPalette(wadFilePath, "PLAYPAL");
 
         ReadWADPatches();
@@ -45,6 +40,8 @@ public class wadReader : MonoBehaviour
         ReadWADSprites();
         ReadMAPEntries();
         ReadWADSounds();
+
+        yield return new WaitForSeconds(0f);
     }
 
 
@@ -293,6 +290,16 @@ public class wadReader : MonoBehaviour
 
         sprites = FindWADEntrys(type.Sprite);
 
+
+        foreach(DrctEntry entry in newWad.directory)
+        {
+            //if its a sprite, isnt already in the list of sprites, and isnt in the list of textures
+            if(isDoomGfx(entry) && !sprites.Contains(entry) && !newWad.textures.ContainsKey(entry.name))
+            {
+                sprites.Add(entry);//add other doom gfx
+            }
+        }
+
         foreach (DrctEntry sprite in sprites)
         {
             PICTURES newPicture = new PICTURES();
@@ -303,12 +310,12 @@ public class wadReader : MonoBehaviour
             wadOpener.Read(spriteBytes, 0, spriteBytes.Length);
 
             //read the picture header (first 8 bytes of the picture resource) [0-7]
-            newPicture.Width = BitConverter.ToInt16(spriteBytes, 0) + 2;
-            newPicture.Height = BitConverter.ToInt16(spriteBytes, 2) + 2;
+            newPicture.Width = BitConverter.ToInt16(spriteBytes, 0);
+            newPicture.Height = BitConverter.ToInt16(spriteBytes, 2);
             newPicture.LeftOffset = BitConverter.ToInt16(spriteBytes, 4);
             newPicture.TopOffset = BitConverter.ToInt16(spriteBytes, 6);
 
-            int[] pointers = new int[spriteBytes.Length];
+            int[] pointers = new int[newPicture.Width];
 
 
             //Reading pointer data (4 bytes each, as many as the width skipping the header)
@@ -316,9 +323,6 @@ public class wadReader : MonoBehaviour
             {
                 pointers[(i - 8) / 4] = BitConverter.ToInt32(spriteBytes, i);
             }
-
-            Array.Resize<int>(ref pointers, pointers.Length);
-
 
             //Create a new texture fill it with CLEAR PIXELS
             Texture2D newTex = new Texture2D(newPicture.Width, newPicture.Height);
@@ -374,7 +378,7 @@ public class wadReader : MonoBehaviour
                                 int yPos; //the position of the pixel from the bottom of the image. (extrapolated from the top. and whatnot..)
                                           //J signifies which pixel (from TOP TO BOTTOM) we are on
                                 label = (postSize) + " " + p;
-                                yPos = ((newPicture.Height - 2) - (columnBytes[p] + j)) - 1;
+                                yPos = ((newPicture.Height) - (columnBytes[p] + j)) - 2;
                                 newTex.SetPixel(i + 1, yPos + 1, playPal.colors[columnBytes[p + j + 3]]);
                             }
                             postSize = columnBytes[p + 1] + 4;
@@ -387,7 +391,9 @@ public class wadReader : MonoBehaviour
             newTex.Apply();
             newTex.filterMode = FilterMode.Point;
             newTex.name = sprite.name;
+            newTex.wrapMode = TextureWrapMode.Clamp;
             newPicture.texture = newTex;
+
             newWad.sprites.Add(newPicture);
             
         }
@@ -798,6 +804,70 @@ public class wadReader : MonoBehaviour
         }
         return entryList;
     }
+
+    //function adapted from SLADE
+    bool isDoomGfx(DrctEntry sprite)
+    {
+        if (sprite.size < 10)
+            return false;
+
+        PICTURES newPicture = new PICTURES();
+
+        byte[] spriteBytes = new byte[sprite.size]; //the entire picture resource in bytes
+
+        wadOpener.Position = sprite.filepos;
+        wadOpener.Read(spriteBytes, 0, spriteBytes.Length);
+
+        //read the picture header (first 8 bytes of the picture resource) [0-7]
+        newPicture.Width = BitConverter.ToInt16(spriteBytes, 0);
+        newPicture.Height = BitConverter.ToInt16(spriteBytes, 2);
+        newPicture.LeftOffset = BitConverter.ToInt16(spriteBytes, 4);
+        newPicture.TopOffset = BitConverter.ToInt16(spriteBytes, 6);
+
+
+        if (newPicture.Width < 1 || newPicture.Width > spriteBytes.Length)
+            return false;
+
+        int[] pointers = new int[newPicture.Width];
+
+        //Reading pointer data (4 bytes each, as many as the width skipping the header)
+        for (int i = 8; i < 8 + newPicture.Width * 4; i += 4)
+        {
+            if(BitConverter.ToInt32(spriteBytes, i) > spriteBytes.Length)
+                return false;
+
+            pointers[(i - 8) / 4] = BitConverter.ToInt32(spriteBytes, i);
+        }
+
+        // Check size
+        if (sprite.size > 4)
+        {
+
+            // Check header values are 'sane'
+            if (newPicture.Width > 0 && newPicture.Height > 0)
+            {
+                // Check there is room for needed column pointers
+                if (sprite.size < 8 + (newPicture.Width * 2))
+                    return false;
+
+                // Check column pointers are within range
+                foreach (int pointer in pointers)
+                { 
+                    if (pointer > spriteBytes.Length || pointer < 8)
+                        return false;
+                }
+
+                // Passed all checks, so probably is doom gfx
+
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+
+
 
 
     public MUS ReadMusEntry(int songNumber)

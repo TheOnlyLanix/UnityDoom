@@ -31,9 +31,8 @@ public class ThingController : MonoBehaviour {
 
         if(actor.SOLID)//if the actor isnt solid, it shouldnt have a collider
         {
-            CapsuleCollider collider = gameObject.AddComponent<CapsuleCollider>();
-            collider.radius = actor.Radius;
-            collider.height = actor.Height;
+            BoxCollider collider = gameObject.AddComponent<BoxCollider>();
+            collider.size = new Vector3(actor.Radius*2, actor.Height, actor.Radius*2);
             collider.center = new Vector3(0, actor.Height / 2f, 0);
         }
 
@@ -63,7 +62,7 @@ public class ThingController : MonoBehaviour {
             }
         }
 
-        stateController = new StateController(actor, sprites, audioSource);
+        stateController = new StateController(actor, sprites, audioSource, sprObj);
         stateController.UpdateMaterial(mr.material, 1);
 
     }

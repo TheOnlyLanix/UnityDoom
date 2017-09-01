@@ -13,11 +13,19 @@ public class StateController
     int sprIndex = 0;
     public bool stopped = false;
     AudioSource audioSource;
+    GameObject go;
+    Vector2[] StartUV = new Vector2[4];
+    Vector2[] FlipUV = new Vector2[4];
 
-    public StateController(Actor actor, List<PICTURES> allSprites, AudioSource audioSource)
+    public StateController(Actor actor, List<PICTURES> allSprites, AudioSource audioSource, GameObject obj)
     {
         state = actor.actorStates["Spawn"];
         this.actor = actor;
+        go = obj;
+
+        StartUV = go.GetComponent<MeshFilter>().mesh.uv;//Original UVS
+        FlipUV = go.GetComponent<MeshFilter>().mesh.uv;//Original UVS again?
+        System.Array.Reverse(FlipUV);//Just kidding, flipped them
 
         // get a list of every sprite name possible in states
         HashSet<string> stateSprites = new HashSet<string>();
@@ -35,6 +43,9 @@ public class StateController
         // remember every sprite that matches a state sprite
         foreach (PICTURES sprite in allSprites)
         {
+            if (sprite.texture.name.Length < 4)
+                continue;
+
             if (stateSprites.Contains(sprite.texture.name.Substring(0, 4)))
             {
                 sprites.Add(sprite);
@@ -131,18 +142,23 @@ public class StateController
 
     public PICTURES UpdateMaterial(Material mat, int side)
     {
+        Mesh mesh = go.GetComponent<MeshFilter>().mesh;
+        Vector2[] uvs = mesh.uv;
+
         // find out current state's sprite according to side
         string sprAndSide = state.info[infoIndex].sprInd[sprIndex] + side.ToString();
+
         foreach (PICTURES sprite in sprites)
         {
             if (sprite.texture.name.Substring(4).Contains(sprAndSide))
             {
                 mat.mainTexture = sprite.texture;
                 if (sprite.texture.name.Substring(4, 2) == sprAndSide)
-                    mat.SetTextureScale("_MainTex", new Vector2(1, 1));
+                    uvs = StartUV;//Set the UV's to the original, unflipped UV's
                 else
-                    mat.SetTextureScale("_MainTex", new Vector2(-1, 1)); // if it was found as the second item in the list, flip it
+                    uvs = FlipUV;//Set the UV's to the flipped UV's
 
+                mesh.uv = uvs;//Apply the uv change
                 return sprite;
             }
         }
@@ -155,9 +171,11 @@ public class StateController
             {
                 mat.mainTexture = sprite.texture;
                 if (sprite.texture.name.Substring(4, 2) == sprAndSide)
-                    mat.SetTextureScale("_MainTex", new Vector2(1, 1));
+                    uvs = StartUV;//Set the UV's to the original, unflipped UV's
                 else
-                    mat.SetTextureScale("_MainTex", new Vector2(-1, 1)); // if it was found as the second item in the list, flip it
+                    uvs = FlipUV;//Set the UV's to the flipped UV's
+
+                mesh.uv = uvs;//Apply the uv change
                 return sprite;
             }
         }
