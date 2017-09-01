@@ -9,41 +9,33 @@ public class wadReader : MonoBehaviour
 {
     string wadFilePath;
     public WAD newWad;
-
     public string label;
     PLAYPAL playPal;
-
     public Shader DoomShader;
     enum type { Sprite, Flat, Patch };
-
     FileStream wadOpener;
+    public bool isDone = false;
 
-    void Start()
-    {
-        StartCoroutine(ReadWad());
-    }
+    List<string> UsedImages = new List<string>();
 
-    IEnumerator ReadWad()
+    private void Awake()
     {
         wadFilePath = Application.dataPath + "/DOOM2.wad";
-
         wadOpener = new FileStream(wadFilePath, FileMode.Open, FileAccess.Read);
 
         ReadWADHeader();
         ReadWADDirectory();
 
         playPal = ReadColorPalette(wadFilePath, "PLAYPAL");
-
         ReadWADPatches();
         ReadWADTextures();
         ReadWADFlats();
         ReadWADSprites();
         ReadMAPEntries();
         ReadWADSounds();
-
-        yield return new WaitForSeconds(0f);
+        ReadWADUISprites();
+        isDone = true;
     }
-
 
     void ReadWADHeader()
     {
@@ -290,16 +282,6 @@ public class wadReader : MonoBehaviour
 
         sprites = FindWADEntrys(type.Sprite);
 
-
-        foreach(DrctEntry entry in newWad.directory)
-        {
-            //if its a sprite, isnt already in the list of sprites, and isnt in the list of textures
-            if(isDoomGfx(entry) && !sprites.Contains(entry) && !newWad.textures.ContainsKey(entry.name))
-            {
-                sprites.Add(entry);//add other doom gfx
-            }
-        }
-
         foreach (DrctEntry sprite in sprites)
         {
             PICTURES newPicture = new PICTURES();
@@ -393,13 +375,120 @@ public class wadReader : MonoBehaviour
             newTex.name = sprite.name;
             newTex.wrapMode = TextureWrapMode.Clamp;
             newPicture.texture = newTex;
-
+            UsedImages.Add(sprite.name);
             newWad.sprites.Add(newPicture);
             
         }
 
 
 
+    }
+
+    void ReadWADUISprites()
+    {
+        List<DrctEntry> sprites = new List<DrctEntry>();
+
+        foreach (DrctEntry entry in newWad.directory)
+        {
+            //if its a sprite, isnt already in the list of sprites, and isnt in the list of textures
+            if (isDoomGfx(entry) && !UsedImages.Contains(entry.name))
+            {
+                sprites.Add(entry);//add other doom gfx
+            }
+        }
+
+        foreach (DrctEntry sprite in sprites)
+        {
+            PICTURES newPicture = new PICTURES();
+
+            byte[] spriteBytes = new byte[sprite.size]; //the entire picture resource in bytes
+
+            wadOpener.Position = sprite.filepos; //FAK U
+            wadOpener.Read(spriteBytes, 0, spriteBytes.Length);
+
+            //read the picture header (first 8 bytes of the picture resource) [0-7]
+            newPicture.Width = BitConverter.ToInt16(spriteBytes, 0);
+            newPicture.Height = BitConverter.ToInt16(spriteBytes, 2);
+            newPicture.LeftOffset = BitConverter.ToInt16(spriteBytes, 4);
+            newPicture.TopOffset = BitConverter.ToInt16(spriteBytes, 6);
+
+            int[] pointers = new int[newPicture.Width];
+
+
+            //Reading pointer data (4 bytes each, as many as the width skipping the header)
+            for (int i = 8; i < 8 + newPicture.Width * 4; i += 4)
+            {
+                pointers[(i - 8) / 4] = BitConverter.ToInt32(spriteBytes, i);
+            }
+
+            //Create a new texture fill it with CLEAR PIXELS
+            Texture2D newTex = new Texture2D(newPicture.Width, newPicture.Height);
+
+            Color[] texColors = new Color[newPicture.Width * newPicture.Height];
+            for (int q = 0; q < texColors.Length; q++)
+            {
+                texColors[q] = Color.clear;
+            }
+
+            newTex.SetPixels(texColors);
+
+
+            for (int i = 0; i < newPicture.Width - 2; i++) // (for each column)
+            {
+
+                int colPos = pointers[i]; //Position from start of picture to column position
+                int colSize = 0; //Size of entire column in bytes
+
+                for (int l = pointers[i]; l < spriteBytes.Length; l++) //Get the length of each column
+                {
+                    if (spriteBytes[l] == 255)
+                    {
+                        colSize = l - pointers[i];
+                        break;
+                    }
+                }
+
+                byte[] columnBytes = new byte[colSize]; //create columnBytes to store data bout the column
+
+                for (int j = 0; j < columnBytes.Length; j++) //Filling columnBytes with data about the current column
+                {
+                    columnBytes[j] = spriteBytes[colPos + j];
+                }
+
+                if (columnBytes.Length > 0)
+                {
+                    int postSize = columnBytes[1] + 4;
+
+                    for (int p = 0; p < columnBytes.Length; p += postSize) //for each post (need correct post size and amount of posts or ERROR)
+                    {
+                        if (p < columnBytes.Length)
+                        {
+                            for (int j = 0; j < columnBytes[p + 1]; j++) //FOR EACH PIXEL
+                            {
+                                int yPos; //the position of the pixel from the bottom of the image. (extrapolated from the top. and whatnot..)
+                                          //J signifies which pixel (from TOP TO BOTTOM) we are on
+                                label = (postSize) + " " + p;
+                                yPos = ((newPicture.Height) - (columnBytes[p] + j)) - 2;
+                                newTex.SetPixel(i + 1, yPos + 1, playPal.colors[columnBytes[p + j + 3]]);
+                            }
+                            postSize = columnBytes[p + 1] + 4;
+                        }
+                    }
+                }
+
+            }
+            // newTex.SetPixel(i, j, new Color(columnBytes[i], columnBytes[i], columnBytes[i]));
+
+            newTex.Apply();
+            newTex.filterMode = FilterMode.Point;
+            newTex.wrapMode = TextureWrapMode.Clamp;
+            newTex.name = sprite.name;
+            newPicture.texture = newTex;
+
+            Sprite newSprite = Sprite.Create(newTex, new Rect(0, 0, newTex.width, newTex.height), new Vector2(0.5f, 0.5f));
+            newSprite.name = newTex.name;
+            newWad.UIGraphics.Add(sprite.name, newSprite);
+        }
     }
 
 
@@ -482,6 +571,7 @@ public class wadReader : MonoBehaviour
             if (!newPatches.Contains(str1))
             {
                 newPatches.Add(str1); //fill the list with all patch names
+                UsedImages.Add(str1);
             }
 
 
@@ -677,6 +767,7 @@ public class wadReader : MonoBehaviour
 
                 mtex.name = mtex.name.Replace("\0", "");
 
+                UsedImages.Add(mtex.name);
 
                 for (int a = ofs + 22; a < ofs + 22 + (10 * mtex.patchCount); a += 10)
                 {
@@ -689,8 +780,6 @@ public class wadReader : MonoBehaviour
                 }
 
                 newTexture.mtex.Add(mtex);//store the info in newTexture.mtex
-
-                List<Texture2D> texPatches = new List<Texture2D>();
 
                 Color32[,] texPixels = new Color32[mtex.width, mtex.height]; //store the pixels for the texture (L->R, U->D)
 

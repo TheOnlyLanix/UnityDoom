@@ -4,7 +4,7 @@ using System;
 
 public class WadLumps : MonoBehaviour
 {
-
+    
 }
 
 //////////WAD//////////
@@ -23,7 +23,7 @@ public class WAD
 
     public List<DoomMap> maps = new List<DoomMap>(); //maps and associated lumps
     [HideInInspector]
-    public List<PICTURES> sprites = new List<PICTURES>(); //sprites
+    public List<PICTURES>sprites = new List<PICTURES>(); //sprites
     public Dictionary<string, Material> flats = new Dictionary<string, Material>(); //flats (ceiling and floor textures)
     public Dictionary<string, Material> textures = new Dictionary<string, Material>(); //textures
     public List<string> pnames = new List<string>(); //pnames lump
@@ -31,8 +31,8 @@ public class WAD
     public List<MUS> music = new List<MUS>();
     public List<Thing> thingdefs = new List<Thing>();
     public Dictionary<string, AudioClip> sounds = new Dictionary<string, AudioClip>();
-    //more to come
-
+    public Dictionary<string, Sprite> UIGraphics = new Dictionary<string, Sprite>();
+   
 }
 
 //////////WAD Directory//////////
