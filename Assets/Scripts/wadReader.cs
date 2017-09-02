@@ -14,9 +14,8 @@ public class wadReader : MonoBehaviour
     public Shader DoomShader;
     enum type { Sprite, Flat, Patch };
     FileStream wadOpener;
-    public Text testText;
     public bool isDone = false;
-
+    public Font fontBase;
     List<string> UsedImages = new List<string>();
 
 
@@ -336,15 +335,7 @@ public class wadReader : MonoBehaviour
 
             newTex.SetPixels(texColors);
 
-            /*
-                Column Bytes:
-                first byte = the pixels from the top of the graphic that we start drawing at
-                second byte = the amount of pixels that are drawn from the fist bytes location going DOWNWARD
-                3rd+ byte = color data for each pixel directing it toward a palette 1st and last are NOT USED.
-                FF byte = end of column 
-            */
-
-            for (int i = 0; i < newPicture.Width - 2; i++) // (for each column)
+            for (int i = 0; i < newPicture.Width; i++) // (for each column)
             {
 
                 int colPos = pointers[i]; //Position from start of picture to column position
@@ -379,8 +370,8 @@ public class wadReader : MonoBehaviour
                                 int yPos; //the position of the pixel from the bottom of the image. (extrapolated from the top. and whatnot..)
                                           //J signifies which pixel (from TOP TO BOTTOM) we are on
                                 label = (postSize) + " " + p;
-                                yPos = ((newPicture.Height) - (columnBytes[p] + j)) - 2;
-                                newTex.SetPixel(i + 1, yPos + 1, playPal.colors[columnBytes[p + j + 3]]);
+                                yPos = ((newPicture.Height) - (columnBytes[p] + j)) - 1;
+                                newTex.SetPixel(i, yPos, playPal.colors[columnBytes[p + j + 3]]);
                             }
                             postSize = columnBytes[p + 1] + 4;
                         }
@@ -452,7 +443,7 @@ public class wadReader : MonoBehaviour
             newTex.SetPixels(texColors);
 
 
-            for (int i = 0; i < newPicture.Width - 2; i++) // (for each column)
+            for (int i = 0; i < newPicture.Width; i++) // (for each column)
             {
 
                 int colPos = pointers[i]; //Position from start of picture to column position
@@ -487,8 +478,8 @@ public class wadReader : MonoBehaviour
                                 int yPos; //the position of the pixel from the bottom of the image. (extrapolated from the top. and whatnot..)
                                           //J signifies which pixel (from TOP TO BOTTOM) we are on
                                 label = (postSize) + " " + p;
-                                yPos = ((newPicture.Height) - (columnBytes[p] + j)) - 2;
-                                newTex.SetPixel(i + 1, yPos + 1, playPal.colors[columnBytes[p + j + 3]]);
+                                yPos = ((newPicture.Height) - (columnBytes[p] + j))-1;
+                                newTex.SetPixel(i, yPos, playPal.colors[columnBytes[p + j + 3]]);
                             }
                             postSize = columnBytes[p + 1] + 4;
                         }
@@ -976,23 +967,34 @@ public class wadReader : MonoBehaviour
 
     void CreateFonts()
     {
-        string key = "STCFN";
+        string key = "AMMNUM";
 
         while (key != "")
         {
-            Font newFont = new Font();
+            Font newFont = Instantiate(fontBase);//doing it this way because cant change line spacing on 'new Font()'
             List<CharacterInfo> charInfos = new List<CharacterInfo>();
             List<Sprite> sprites = new List<Sprite>();
-
+            int width = 0;
             foreach (string str in newWad.UIGraphics.Keys)
             {
                 if (str.StartsWith(key))
                 {
                     sprites.Add(newWad.UIGraphics[str]);
+                    width += newWad.UIGraphics[str].texture.width;
+                }
+
+                //Add the Percent and minus signs for this font
+                if(key == "STTNUM")
+                {
+                    sprites.Add(newWad.UIGraphics["STTMINUS"]);
+                    width += newWad.UIGraphics["STTMINUS"].texture.width;
+
+                    sprites.Add(newWad.UIGraphics["STTPRCNT"]);
+                    width += newWad.UIGraphics["STTPRCNT"].texture.width;
                 }
             }
 
-            Texture2D newTex = new Texture2D((sprites[0].texture.width)* sprites.Count, sprites[0].texture.height);
+            Texture2D newTex = new Texture2D(width*2, sprites[0].texture.height);
             newTex.filterMode = FilterMode.Point;
             int ofs = 0;
             foreach (Sprite spr in sprites)
@@ -1009,19 +1011,20 @@ public class wadReader : MonoBehaviour
                 }
 
                 charInfo.advance = tex.width;
+                charInfo.bearing = 10;
                 charInfo.glyphWidth = tex.width;
                 charInfo.glyphHeight = tex.height;
 
                 charInfo.minX = 0;
                 charInfo.maxX = tex.width;
-                charInfo.minY = 0;
-                charInfo.maxY = tex.height;
+                charInfo.minY = -tex.height;
+                charInfo.maxY = 0;
 
 
-                float minx = (float)((float)ofs / (float)newTex.width);
-                float maxx = (float)(((float)ofs + (float)tex.width) / (float)newTex.width);
+                float minx = (float)((float)(ofs)/ (float)newTex.width) + 0.00001f;
+                float maxx = (float)(((float)(ofs+1) + (float)(tex.width - 1f)) / (float)newTex.width) - 0.00001f;
                 float miny = 0.000f;
-                float maxy = (float)((float)tex.height / (float)newTex.height);
+                float maxy = (float)((float)tex.height / (float)newTex.height) - 0.00001f;
 
                 charInfo.uvBottomLeft = new Vector2(minx, miny);
                 charInfo.uvBottomRight = new Vector2(maxx, miny);
@@ -1030,16 +1033,35 @@ public class wadReader : MonoBehaviour
 
                 string chr = spr.name.Remove(0, key.Length);
                 int val;
-                if (AsciiNum.TryGetValue(chr, out val))
+
+                if(spr.name == "STTMINUS")
+                {
+                    charInfo.index = 45;
+                }
+                else if (spr.name == "STTPRCNT")
+                {
+                    charInfo.index = 37;
+                }
+                else if (AsciiNum.TryGetValue(chr, out val))
                 {
                     charInfo.index = val;
                 }
                 else
                     charInfo.index = int.Parse(chr);
 
+                if (key == "STCFN" && charInfo.index == 121)//fix for STCFN font
+                    charInfo.index = 124;
+
                 charInfos.Add(charInfo);
-                ofs += tex.width;
+                ofs += tex.width*2;
             }
+
+            //Adds a space
+            CharacterInfo space = new CharacterInfo();
+            space.advance = charInfos[0].maxX;
+            space.index = 32; //space
+            charInfos.Add(space);
+
             newTex.wrapMode = TextureWrapMode.Clamp;
             newTex.Apply();
             Material fontMat = new Material(Shader.Find("UI/Default Font"));
@@ -1047,10 +1069,19 @@ public class wadReader : MonoBehaviour
             newFont.name = key;
             newFont.material = fontMat;
             newFont.characterInfo = charInfos.ToArray();
-            newWad.test.Add(newTex);
-            testText.font = newFont;
             newWad.fonts.Add(newFont);
-            key = "";
+
+            if (key == "AMMNUM")
+                key = "STGNUM";
+            else if (key == "STGNUM")
+                key = "STTNUM";
+            else if (key == "STTNUM")
+                key = "STYSNUM";
+            else if (key == "STYSNUM")
+                key = "STCFN";
+            else if (key == "STCFN")
+                key = "";//no more fonts
+
         }
     }
 
@@ -1200,15 +1231,6 @@ public class wadReader : MonoBehaviour
                 soundList.Add(entry);
             }
         }
-
-        /*
-        0x00	unsigned 16-bit LE int	Format number (must be 3)
-        0x02	unsigned 16-bit LE int	Sample rate (usually, but not necessarily, 11025)
-        0x04	Unsigned 32-bit LE int	Number of samples + 32 pad bytes
-        0x08	Unsigned 8-bit array	16 pad bytes
-        0x18	Unsigned 8-bit array	Samples
-        0x??	Unsigned 8-bit array	16 pad bytes, immediately following samples
-        */
 
         foreach(DrctEntry entry in soundList)
         {
