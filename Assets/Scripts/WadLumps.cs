@@ -32,6 +32,8 @@ public class WAD
     public List<Thing> thingdefs = new List<Thing>();
     public Dictionary<string, AudioClip> sounds = new Dictionary<string, AudioClip>();
     public Dictionary<string, Sprite> UIGraphics = new Dictionary<string, Sprite>();
+    public List<Font> fonts = new List<Font>();
+    public List<Texture2D> test = new List<Texture2D>();
    
 }
 

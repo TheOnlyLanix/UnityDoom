@@ -14,9 +14,27 @@ public class wadReader : MonoBehaviour
     public Shader DoomShader;
     enum type { Sprite, Flat, Patch };
     FileStream wadOpener;
+    public Text testText;
     public bool isDone = false;
 
     List<string> UsedImages = new List<string>();
+
+
+    //Numbers to their corresponding ascii characters
+    Dictionary<string, int> AsciiNum = new Dictionary<string, int>
+    {
+        { "0", 48 },
+        { "1", 49 },
+        { "2", 50 },
+        { "3", 51 },
+        { "4", 52 },
+        { "5", 53 },
+        { "6", 54 },
+        { "7", 55 },
+        { "8", 56 },
+        { "9", 57 }
+    };
+
 
     private void Awake()
     {
@@ -34,6 +52,7 @@ public class wadReader : MonoBehaviour
         ReadMAPEntries();
         ReadWADSounds();
         ReadWADUISprites();
+        CreateFonts();
         isDone = true;
     }
 
@@ -955,7 +974,85 @@ public class wadReader : MonoBehaviour
         return false;
     }
 
+    void CreateFonts()
+    {
+        string key = "STCFN";
 
+        while (key != "")
+        {
+            Font newFont = new Font();
+            List<CharacterInfo> charInfos = new List<CharacterInfo>();
+            List<Sprite> sprites = new List<Sprite>();
+
+            foreach (string str in newWad.UIGraphics.Keys)
+            {
+                if (str.StartsWith(key))
+                {
+                    sprites.Add(newWad.UIGraphics[str]);
+                }
+            }
+
+            Texture2D newTex = new Texture2D((sprites[0].texture.width)* sprites.Count, sprites[0].texture.height);
+            newTex.filterMode = FilterMode.Point;
+            int ofs = 0;
+            foreach (Sprite spr in sprites)
+            {
+                Texture2D tex = spr.texture;
+                CharacterInfo charInfo = new CharacterInfo();
+
+                for (int x = 0; x < tex.width; x++)
+                {
+                    for(int y = 0; y< tex.height; y++)
+                    {
+                        newTex.SetPixel(ofs + x, y, tex.GetPixel(x, y));
+                    }
+                }
+
+                charInfo.advance = tex.width;
+                charInfo.glyphWidth = tex.width;
+                charInfo.glyphHeight = tex.height;
+
+                charInfo.minX = 0;
+                charInfo.maxX = tex.width;
+                charInfo.minY = 0;
+                charInfo.maxY = tex.height;
+
+
+                float minx = (float)((float)ofs / (float)newTex.width);
+                float maxx = (float)(((float)ofs + (float)tex.width) / (float)newTex.width);
+                float miny = 0.000f;
+                float maxy = (float)((float)tex.height / (float)newTex.height);
+
+                charInfo.uvBottomLeft = new Vector2(minx, miny);
+                charInfo.uvBottomRight = new Vector2(maxx, miny);
+                charInfo.uvTopLeft = new Vector2(minx, maxy);
+                charInfo.uvTopRight = new Vector2(maxx, maxy);
+
+                string chr = spr.name.Remove(0, key.Length);
+                int val;
+                if (AsciiNum.TryGetValue(chr, out val))
+                {
+                    charInfo.index = val;
+                }
+                else
+                    charInfo.index = int.Parse(chr);
+
+                charInfos.Add(charInfo);
+                ofs += tex.width;
+            }
+            newTex.wrapMode = TextureWrapMode.Clamp;
+            newTex.Apply();
+            Material fontMat = new Material(Shader.Find("UI/Default Font"));
+            fontMat.mainTexture = newTex;
+            newFont.name = key;
+            newFont.material = fontMat;
+            newFont.characterInfo = charInfos.ToArray();
+            newWad.test.Add(newTex);
+            testText.font = newFont;
+            newWad.fonts.Add(newFont);
+            key = "";
+        }
+    }
 
 
 
