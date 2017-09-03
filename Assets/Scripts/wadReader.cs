@@ -975,26 +975,33 @@ public class wadReader : MonoBehaviour
             List<CharacterInfo> charInfos = new List<CharacterInfo>();
             List<Sprite> sprites = new List<Sprite>();
             int width = 0;
+            int height = 0;
             foreach (string str in newWad.UIGraphics.Keys)
             {
                 if (str.StartsWith(key))
                 {
                     sprites.Add(newWad.UIGraphics[str]);
                     width += newWad.UIGraphics[str].texture.width;
-                }
 
-                //Add the Percent and minus signs for this font
-                if(key == "STTNUM")
-                {
-                    sprites.Add(newWad.UIGraphics["STTMINUS"]);
-                    width += newWad.UIGraphics["STTMINUS"].texture.width;
-
-                    sprites.Add(newWad.UIGraphics["STTPRCNT"]);
-                    width += newWad.UIGraphics["STTPRCNT"].texture.width;
+                    if (newWad.UIGraphics[str].texture.height > height)
+                        height = newWad.UIGraphics[str].texture.height;
                 }
             }
 
-            Texture2D newTex = new Texture2D(width*2, sprites[0].texture.height);
+            //Add the Percent and minus signs for this font
+            if (key == "STTNUM")
+            {
+                sprites.Add(newWad.UIGraphics["STTMINUS"]);
+                width += newWad.UIGraphics["STTMINUS"].texture.width;
+
+                sprites.Add(newWad.UIGraphics["STTPRCNT"]);
+                width += newWad.UIGraphics["STTPRCNT"].texture.width;
+
+                if (newWad.UIGraphics["STTPRCNT"].texture.height > height)
+                    height = newWad.UIGraphics["STTPRCNT"].texture.height;
+            }
+
+            Texture2D newTex = new Texture2D(width*2, height);
             newTex.filterMode = FilterMode.Point;
             int ofs = 0;
             foreach (Sprite spr in sprites)
@@ -1024,7 +1031,7 @@ public class wadReader : MonoBehaviour
                 float minx = (float)((float)(ofs)/ (float)newTex.width) + 0.00001f;
                 float maxx = (float)(((float)(ofs+1) + (float)(tex.width - 1f)) / (float)newTex.width) - 0.00001f;
                 float miny = 0.000f;
-                float maxy = (float)((float)tex.height / (float)newTex.height) - 0.00001f;
+                float maxy = (float)((float)tex.height / (float)newTex.height);
 
                 charInfo.uvBottomLeft = new Vector2(minx, miny);
                 charInfo.uvBottomRight = new Vector2(maxx, miny);
@@ -1069,7 +1076,7 @@ public class wadReader : MonoBehaviour
             newFont.name = key;
             newFont.material = fontMat;
             newFont.characterInfo = charInfos.ToArray();
-            newWad.fonts.Add(newFont);
+            newWad.fonts.Add(newFont.name, newFont);
 
             if (key == "AMMNUM")
                 key = "STGNUM";
