@@ -615,17 +615,33 @@ namespace DoomTriangulator
             skymesh.triangles = newtris;
         }
 
-        public static void CombineSubmeshes(ref Mesh mesh, List<SubMesh> submeshes, ref Material[] materials)
+        public static void CombineAsMesh(ref Mesh mesh, List<SubMesh> submeshes, ref Material[] materials)
         {
             mesh.Clear();
+
+            List<SubMesh> combinedSubmeshes = new List<SubMesh>();
+
+            // group every submesh by material
+            Dictionary<Material, List<SubMesh>> submeshByMaterial = new Dictionary<Material, List<SubMesh>>();
+            foreach(SubMesh submesh in submeshes)
+            {
+                if (!submeshByMaterial.ContainsKey(submesh.material))
+                    submeshByMaterial.Add(submesh.material, new List<SubMesh> { submesh });
+                else
+                    submeshByMaterial[submesh.material].Add(submesh);
+            }
+
+            // combine grouped submeshes into one submesh
+            foreach(List<SubMesh> listSubmeshes in submeshByMaterial.Values)
+                combinedSubmeshes.Add(CombineAsSubMesh(listSubmeshes));
 
             List<Material> materialList = new List<Material>();
             List<Vector3> vertices = new List<Vector3>();
             List<Vector2> uvs = new List<Vector2>();
             List<Vector3> normals = new List<Vector3>();
-
+            
             // add info from each submesh into lists
-            foreach (SubMesh submesh in submeshes)
+            foreach (SubMesh submesh in combinedSubmeshes)
             {
                 vertices.AddRange(submesh.mesh.vertices);
                 uvs.AddRange(submesh.mesh.uv);
@@ -636,13 +652,13 @@ namespace DoomTriangulator
             // convert lists to arrays and apply to mesh
             mesh.vertices = vertices.ToArray();
             mesh.uv = uvs.ToArray();
-            mesh.subMeshCount = submeshes.Count();
+            mesh.subMeshCount = combinedSubmeshes.Count();
             materials = materialList.ToArray();
 
             // set triangles correctly according to new vertex offsets
             int onMesh = 0;
             int vertexCount = 0;
-            foreach (SubMesh submesh in submeshes)
+            foreach (SubMesh submesh in combinedSubmeshes)
             {
                 int[] triangles = new int[submesh.mesh.triangles.Count()];
                 for (int i = 0; i < submesh.mesh.triangles.Count(); i++)
@@ -656,6 +672,49 @@ namespace DoomTriangulator
 
         }
 
+        public static SubMesh CombineAsSubMesh(List<SubMesh> submeshes)
+        {
+            SubMesh submesh = new SubMesh();
+            submesh.material = submeshes.First().material;
+            submesh.mesh = new Mesh();
+
+            List<Vector3> vertices = new List<Vector3>();
+            List<Vector2> uvs = new List<Vector2>();
+            List<Vector3> normals = new List<Vector3>();
+
+            // add info from each submesh into lists
+            foreach (SubMesh smesh in submeshes)
+            {
+                if (smesh.material != submesh.material)
+                    throw new Exception("Combining submeshes with different materials isn't allowed");
+
+                vertices.AddRange(smesh.mesh.vertices);
+                uvs.AddRange(smesh.mesh.uv);
+                normals.AddRange(smesh.mesh.normals);
+            }
+
+            // convert lists to arrays and apply to mesh
+            submesh.mesh.vertices = vertices.ToArray();
+            submesh.mesh.uv = uvs.ToArray();
+            submesh.mesh.subMeshCount = submeshes.Count();
+
+            // set triangles correctly according to new vertex offsets
+            int onMesh = 0;
+            int vertexCount = 0;
+            foreach (SubMesh smesh in submeshes)
+            {
+                int[] triangles = new int[smesh.mesh.triangles.Count()];
+                for (int i = 0; i < smesh.mesh.triangles.Count(); i++)
+                {
+                    triangles[i] = smesh.mesh.triangles[i] + vertexCount;
+                }
+                submesh.mesh.SetTriangles(triangles, onMesh);
+                vertexCount += smesh.mesh.vertices.Count();
+                onMesh++;
+            }
+
+            return submesh;
+        }
 
         private static Line GetLine(List<Line> lines, Vertex v1, Vertex v2)
         {

@@ -244,7 +244,7 @@ public class mapCreator : MonoBehaviour
 
         for (int i = 0; i < openedMap.sectors.Count(); i++)    //start with a loop for each sector
         {
-            //if(i != 7) { continue; }
+            //if(i != 31) { continue; }
 
             SECTORS sector = openedMap.sectors[i];
             CreateMapObject(sector, "Sector_" + i, Triangulator.GeneratingGo.Sector);
@@ -356,7 +356,7 @@ public class mapCreator : MonoBehaviour
 
         //combine the meshes
         Mesh mesh = new Mesh();
-        Triangulator.CombineSubmeshes(ref mesh, sectorMeshes, ref sectorMaterials);
+        Triangulator.CombineAsMesh(ref mesh, sectorMeshes, ref sectorMaterials);
 
         Renderer rend;
         MaterialPropertyBlock propBlock = new MaterialPropertyBlock();
@@ -443,13 +443,13 @@ public class mapCreator : MonoBehaviour
     void fillInfo(DoomMap map)
     {
         // find and remember each sector's tag and index
+        map.sectorsByTag.Clear();
         for (int i = 0; i < map.sectors.Count; i++)
         {
             SECTORS sector = map.sectors[i];
             sector.lines.Clear();
             sector.otherLines.Clear();
             sector.sectorIndex = i;
-            map.sectorsByTag.Clear();
             if (sector.sectorTag == 0) { continue; }
             if (!map.sectorsByTag.ContainsKey(sector.sectorTag))
                 map.sectorsByTag.Add(sector.sectorTag, new List<SECTORS> { sector });
