@@ -26,6 +26,15 @@ public class mapCreator : MonoBehaviour
     public Skybox skyboxScript;
     private bool hasOpenedAllDoors = false; // TODO: temporary
 
+    /// <summary>
+    /// 0 = I 'm too young to die,
+    /// 1 = Hey, Not Too Rough,
+    /// 2 = Hurt Me Plenty,
+    /// 3 = Ultra-Violence,
+    /// 4 = NIGHTMARE,
+    /// </summary>
+    public int skill;
+
     mus2mid musmid;
     public MIDIPlayer midiplayer;
 
@@ -285,8 +294,19 @@ public class mapCreator : MonoBehaviour
 
             if(MonsterType.ContainsKey(thing.thingType))//If its a monster
             {
+                //Only spawn the monster if it is supposed to be on the current skill level
+                if(skill == 0 || skill == 1)
+                    if ((thing.thingOptions & 0x01) != 1)
+                        continue;
+                else if (skill == 2)
+                    if ((thing.thingOptions & 0x02) != 1)
+                        continue;
+                else if (skill == 3 || skill == 4)
+                    if ((thing.thingOptions & 0x04) != 1)
+                        continue;
+
                 newThing.AddComponent(MonsterType[thing.thingType]);
-                
+
                 ThingController controller = newThing.AddComponent<ThingController>();
                 controller.OnCreate(reader.newWad.sprites, thing, reader.newWad.sounds);
                 

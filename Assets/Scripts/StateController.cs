@@ -17,7 +17,7 @@ public class StateController
     Vector2[] StartUV = new Vector2[4];
     Vector2[] FlipUV = new Vector2[4];
 
-    public StateController(Actor actor, List<PICTURES> allSprites, AudioSource audioSource, GameObject obj)
+    public StateController(Actor actor, Dictionary<string, PICTURES> allSprites, AudioSource audioSource, GameObject obj)
     {
         state = actor.actorStates["Spawn"];
         this.actor = actor;
@@ -41,7 +41,7 @@ public class StateController
         }
 
         // remember every sprite that matches a state sprite
-        foreach (PICTURES sprite in allSprites)
+        foreach (PICTURES sprite in allSprites.Values)
         {
             if (sprite.texture.name.Length < 4)
                 continue;

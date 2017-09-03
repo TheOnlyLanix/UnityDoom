@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class DoomPlayer : MonoBehaviour
 {
-    
+
     public int Speed = 20; //adjusted for use with unity
     public int Health = 100;
     public int Radius = 16;
@@ -40,18 +40,21 @@ public class DoomPlayer : MonoBehaviour
     float vertical;
     float horizontal;
 
-    void Start ()
+    public bool god = false;
+    public bool noclip = false;
+
+    void Start()
     {
         cam = transform.GetChild(0);//camera transform
         rb = GetComponent<Rigidbody>();
         cc = GetComponent<CharacterController>();
-	}
+    }
 
-	void Update ()
-    {        
+    void Update()
+    {
         //action = Input.GetButtonDown("Action");
 
-        if(cc.isGrounded)//cant already be jumping
+        if (cc.isGrounded)//cant already be jumping
         {
             moveDir = new Vector3(horizontal, 0, vertical);
             moveDir = transform.TransformDirection(moveDir);
@@ -62,11 +65,30 @@ public class DoomPlayer : MonoBehaviour
             if (horizontal != 0f || vertical != 0f)
                 curMoveDir = moveDir;
 
-            if (Input.GetButtonDown("Jump") && !Physics.Raycast(transform.position + new Vector3(0, Height, 0), Vector3.up, Height))//dont jump if we are in the air, or our head is blocked
-                curMoveDir.y = jumpHeight;
         }
 
-        curMoveDir.y -= downForce * Time.deltaTime;
+        if (!noclip)
+        {
+            if (cc.isGrounded)
+            {
+                if (Input.GetButtonDown("Jump") && !Physics.Raycast(transform.position + new Vector3(0, Height, 0), Vector3.up, Height))//dont jump if we are in the air, or our head is blocked
+                    curMoveDir.y = jumpHeight;
+            }
+            curMoveDir.y -= downForce * Time.deltaTime;
+        }
+        else
+        {
+            moveDir = new Vector3(horizontal, 0, vertical);
+            moveDir = transform.TransformDirection(moveDir);
+            moveDir *= Speed;
+
+            curMoveDir = Vector3.Lerp(curMoveDir, moveDir, friction * Time.deltaTime);
+
+            if (horizontal != 0f || vertical != 0f)
+                curMoveDir = moveDir;
+
+        }
+
         cc.Move(curMoveDir * Time.deltaTime);
 
         //Mouse look
@@ -74,7 +96,6 @@ public class DoomPlayer : MonoBehaviour
         mouseInputY += Mathf.Lerp(mouseInputY, -Input.GetAxis("Mouse Y") * sensitivity, smoothing);
 
         mouseInputY = Mathf.Clamp(mouseInputY, -90, 90);
-
 
         //Movement
         horizontal = Input.GetAxis("Horizontal");
@@ -115,5 +136,11 @@ public class DoomPlayer : MonoBehaviour
         {
             cam.localPosition = new Vector3(cam.localPosition.x, midpoint + Height - 2, cam.localPosition.x);
         }
+    }
+
+    public void TakeDamage(int damage)
+    {
+        if(!god)
+            Health -= damage;
     }
 }

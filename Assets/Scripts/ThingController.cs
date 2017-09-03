@@ -19,7 +19,7 @@ public class ThingController : MonoBehaviour {
     Dictionary<string, AudioClip> usedSounds = new Dictionary<string, AudioClip>();
 
     //TODO: SOUNDS
-    public void OnCreate(List<PICTURES> sprites, THINGS thing, Dictionary<string, AudioClip> sounds)
+    public void OnCreate(Dictionary<string, PICTURES> sprites, THINGS thing, Dictionary<string, AudioClip> sounds)
     {
         player = GameObject.FindGameObjectWithTag("Player");
         this.thing = thing;

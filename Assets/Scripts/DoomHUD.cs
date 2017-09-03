@@ -32,6 +32,7 @@ public class DoomHUD : MonoBehaviour {
     public Text Health;
     public Text Ammo;
     public Image Face;
+    public Image Weapon;
 
     Font STTNUM;
     Font STCFN;
@@ -48,6 +49,11 @@ public class DoomHUD : MonoBehaviour {
     int oldHealth = 0;
     bool hurt = false;
     int healthInd = 0;
+
+    public int armor;
+    public int ammo;
+
+
     string newfaceName = "STFST00";
     private void Awake()
     {
@@ -86,15 +92,16 @@ public class DoomHUD : MonoBehaviour {
         Ammo.font = reader.newWad.fonts["STTNUM"];
         Armor.font = reader.newWad.fonts["STTNUM"];
 
-        foreach(string str in reader.newWad.UIGraphics.Keys)
+        foreach (string str in reader.newWad.UIGraphics.Keys)
         {
             if(str.StartsWith("STF") && !str.Contains("STFB0") && !str.Contains("STFB1") && !str.Contains("STFB2") && !str.Contains("STFB3"))
             {
                 faces.Add(str, reader.newWad.UIGraphics[str]);
             }
         }
-        Face.sprite = faces["STFST00"];
 
+
+        Face.sprite = faces["STFST00"];
         StartCoroutine(ChangeFace());
     }
 
@@ -102,6 +109,8 @@ public class DoomHUD : MonoBehaviour {
     {
         StatBar.rectTransform.sizeDelta = new Vector2(Screen.width + 15, (Screen.width + 15) / 10);
         Health.text = health + "%";
+        Ammo.text = ammo + "";
+        Armor.text = armor + "%";
 
         if (health > 0 && Face.sprite)
         {
@@ -137,7 +146,7 @@ public class DoomHUD : MonoBehaviour {
 
         if (health <= 0)
             Face.sprite = faces["STFDEAD0"];
-        Debug.Log(newfaceName);
+
         if (health > 0)
         {
             if (newfaceName != Face.sprite.name)

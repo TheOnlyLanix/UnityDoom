@@ -34,7 +34,6 @@ public class wadReader : MonoBehaviour
         { "9", 57 }
     };
 
-
     private void Awake()
     {
         wadFilePath = Application.dataPath + "/DOOM2.wad";
@@ -386,7 +385,7 @@ public class wadReader : MonoBehaviour
             newTex.wrapMode = TextureWrapMode.Clamp;
             newPicture.texture = newTex;
             UsedImages.Add(sprite.name);
-            newWad.sprites.Add(newPicture);
+            newWad.sprites.Add(sprite.name, newPicture);
             
         }
 
