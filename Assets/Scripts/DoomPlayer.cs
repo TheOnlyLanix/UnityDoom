@@ -1,19 +1,26 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class DoomPlayer : MonoBehaviour
 {
 
-    public int Speed = 20; //adjusted for use with unity
-    public int Health = 100;
-    public int Radius = 16;
-    public int Height = 40; //adjusted from 56 for use with Unity
-    public int Mass = 100;
-    public int PainChance = 255;
-    public string DisplayName = "Marine";
-    public string CrouchSprite = "PLYC";
+    public int speed = 20; //adjusted for use with unity
+    public int radius = 16;
+    public int height = 40; //adjusted from 56 for use with Unity
+    public int mass = 100;
+    public int painChance = 255;
+    public string displayName = "Marine";
+    public string crouchSprite = "PLYC";
     public int direction = 0;
+
+    //Health and armor
+    public int health = 100;
+    public int armor = 0;
+    public int armorResist = 0;
+    public int healthMax = 200;
+    public int armorMax = 200;
 
     Transform cam;
     Rigidbody rb;
@@ -40,25 +47,84 @@ public class DoomPlayer : MonoBehaviour
     float vertical;
     float horizontal;
 
+    //Initilize inventory with default values
+    public Inventory inv = new Inventory();
+
     public bool god = false;
     public bool noclip = false;
+
+    static List<Type> PickupType = new List<Type>
+    {
+        typeof(SuperShotgun),
+        typeof(Megasphere),
+        typeof(BlueCard),
+        typeof(YellowCard),
+        typeof(Backpack),
+        typeof(RedCard),
+        typeof(CellPack),
+        typeof(RedSkull),
+        typeof(YellowSkull),
+        typeof(RedSkull),
+        typeof(Shotgun),
+        typeof(Chaingun),
+        typeof(RocketLauncher),
+        typeof(PlasmaRifle),
+        typeof(Chainsaw),
+        typeof(BFG9000),
+        typeof(Clip),
+        typeof(Shell),
+        typeof(RocketAmmo),
+        typeof(Stimpack),
+        typeof(Medikit),
+        typeof(Soulsphere),
+        typeof(HealthBonus),
+        typeof(ArmorBonus),
+        typeof(GreenArmor),
+        typeof(BlueArmor),
+        typeof(InvulnerabilitySphere),
+        typeof(Berserk),
+        typeof(BlurSphere),
+        typeof(RadSuit),
+        typeof(Allmap),
+        typeof(Infrared),
+        typeof(RocketBox),
+        typeof(Cell),
+        typeof(ClipBox),
+        typeof(ShellBox),
+        typeof(Pistol)
+
+    };
+
+    public DoomHUD hud;
 
     void Start()
     {
         cam = transform.GetChild(0);//camera transform
         rb = GetComponent<Rigidbody>();
         cc = GetComponent<CharacterController>();
+            
     }
 
     void Update()
     {
-        //action = Input.GetButtonDown("Action");
+        hud.ammo = inv.bull;
+        hud.armor = armor;
+        hud.health = health;
+        hud.bull = inv.bull;
+        hud.bullMax = inv.bullMax;
+        hud.shel = inv.shell;
+        hud.shelMax = inv.shellMax;
+        hud.cell = inv.cell;
+        hud.cellMax = inv.cellMax;
+        hud.rckt = inv.rckt;
+        hud.rcktMax = inv.rcktMax;
 
+        //action = Input.GetButtonDown("Action");
         if (cc.isGrounded)//cant already be jumping
         {
             moveDir = new Vector3(horizontal, 0, vertical);
             moveDir = transform.TransformDirection(moveDir);
-            moveDir *= Speed;
+            moveDir *= speed;
 
             curMoveDir = Vector3.Lerp(curMoveDir, moveDir, friction * Time.deltaTime);
 
@@ -71,7 +137,7 @@ public class DoomPlayer : MonoBehaviour
         {
             if (cc.isGrounded)
             {
-                if (Input.GetButtonDown("Jump") && !Physics.Raycast(transform.position + new Vector3(0, Height, 0), Vector3.up, Height))//dont jump if we are in the air, or our head is blocked
+                if (Input.GetButtonDown("Jump") && !Physics.Raycast(transform.position + new Vector3(0, height, 0), Vector3.up, height))//dont jump if we are in the air, or our head is blocked
                     curMoveDir.y = jumpHeight;
             }
             curMoveDir.y -= downForce * Time.deltaTime;
@@ -80,7 +146,7 @@ public class DoomPlayer : MonoBehaviour
         {
             moveDir = new Vector3(horizontal, 0, vertical);
             moveDir = transform.TransformDirection(moveDir);
-            moveDir *= Speed;
+            moveDir *= speed;
 
             curMoveDir = Vector3.Lerp(curMoveDir, moveDir, friction * Time.deltaTime);
 
@@ -130,17 +196,55 @@ public class DoomPlayer : MonoBehaviour
             float totalAxes = Mathf.Abs(horizontal) + Mathf.Abs(vertical);
             totalAxes = Mathf.Clamp(totalAxes, 0.0f, 1.0f);
             translateChange = totalAxes * translateChange;
-            cam.localPosition = new Vector3(cam.localPosition.x, midpoint + translateChange + Height - 2, cam.localPosition.x);
+            cam.localPosition = new Vector3(cam.localPosition.x, midpoint + translateChange + height - 2, cam.localPosition.x);
         }
         else
         {
-            cam.localPosition = new Vector3(cam.localPosition.x, midpoint + Height - 2, cam.localPosition.x);
+            cam.localPosition = new Vector3(cam.localPosition.x, midpoint + height - 2, cam.localPosition.x);
         }
     }
 
     public void TakeDamage(int damage)
     {
         if(!god)
-            Health -= damage;
+            health -= damage;
     }
+}
+
+public class Inventory
+{
+    //Ammo 
+    public int bull = 50;
+    public int shell = 0;
+    public int cell = 0;
+    public int rckt = 0;
+
+    public int bullMax = 200;
+    public int shellMax = 50;
+    public int cellMax = 300;
+    public int rcktMax = 50;
+
+    //Keys
+    public bool blueCard = false;
+    public bool yellowCard = false;
+    public bool redCard = false;
+    public bool blueSkull = false;
+    public bool yellowSkull = false;
+    public bool redSkull = false;
+
+    //Weapons
+    public bool fist = true;
+    public bool pistol = true;
+    public bool chainsaw = false;
+    public bool chaingun = false;
+    public bool shotgun = false;
+    public bool superShotgun = false;
+    public bool rocketLauncher = false;
+    public bool plasmaRifle = false;
+    public bool BFG9000 = false;
+
+    //powerups
+    public bool backpack = false;
+    public bool map = false;
+
 }

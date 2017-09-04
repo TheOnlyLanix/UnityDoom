@@ -34,6 +34,25 @@ public class DoomHUD : MonoBehaviour {
     public Image Face;
     public Image Weapon;
 
+
+    //Values
+    public int bullMax = 0;
+    public int shelMax = 0;
+    public int rcktMax = 0;
+    public int cellMax = 0;
+    public int bull = 0;
+    public int shel = 0;
+    public int rckt = 0;
+    public int cell = 0;
+
+    public int armor = 0;
+    public int ammo = 0;
+
+    public int health = 100;
+    int oldHealth = 0;
+    bool hurt = false;
+    int healthInd = 0;
+
     Font STTNUM;
     Font STCFN;
     Font STYSNUM;
@@ -41,20 +60,9 @@ public class DoomHUD : MonoBehaviour {
 
     float time = 0;
     Dictionary<string, Sprite> faces = new Dictionary<string, Sprite>();
-
-    /// <summary>
-    /// Player Health
-    /// </summary>
-    public int health = 100;
-    int oldHealth = 0;
-    bool hurt = false;
-    int healthInd = 0;
-
-    public int armor;
-    public int ammo;
-
-
     string newfaceName = "STFST00";
+
+
     private void Awake()
     {
 
@@ -111,6 +119,16 @@ public class DoomHUD : MonoBehaviour {
         Health.text = health + "%";
         Ammo.text = ammo + "";
         Armor.text = armor + "%";
+
+        BullAmnt.text = bull.ToString();
+        BullMax.text = bullMax.ToString();
+        ShelAmnt.text = shel.ToString();
+        ShelMax.text = shelMax.ToString();
+        CellAmnt.text = cell.ToString();
+        CellMax.text = cellMax.ToString();
+        RcktAmnt.text = rckt.ToString();
+        RcktMax.text = rcktMax.ToString();
+
 
         if (health > 0 && Face.sprite)
         {

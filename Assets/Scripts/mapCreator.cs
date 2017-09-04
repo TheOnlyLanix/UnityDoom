@@ -131,6 +131,49 @@ public class mapCreator : MonoBehaviour
 
     };
 
+    static Dictionary<int, Type> PickupType = new Dictionary<int, Type>
+    {
+        {82,     typeof(SuperShotgun)          },
+        {83,     typeof(Megasphere)            },
+        {5,      typeof(BlueCard)              },
+        {6,      typeof(YellowCard)            },
+        {8,      typeof(Backpack)              },
+        {13,     typeof(RedCard)               },
+        {17,     typeof(CellPack)              },
+        {38,     typeof(RedSkull)              },
+        {39,     typeof(YellowSkull)           },
+        {40,     typeof(RedSkull)              },
+        {2001,   typeof(Shotgun)               },
+        {2002,   typeof(Chaingun)              },
+        {2003,   typeof(RocketLauncher)        },
+        {2004,   typeof(PlasmaRifle)           },
+        {2005,   typeof(Chainsaw)              },
+        {2006,   typeof(BFG9000)               },
+        {2007,   typeof(Clip)                  },
+        {2008,   typeof(Shell)                 },
+        {2010,   typeof(RocketAmmo)            },
+        {2011,   typeof(Stimpack)              },
+        {2012,   typeof(Medikit)               },
+        {2013,   typeof(Soulsphere)            },
+        {2014,   typeof(HealthBonus)           },
+        {2015,   typeof(ArmorBonus)            },
+        {2018,   typeof(GreenArmor)            },
+        {2019,   typeof(BlueArmor)             },
+        {2022,   typeof(InvulnerabilitySphere) },
+        {2023,   typeof(Berserk)               },
+        {2024,   typeof(BlurSphere)            },
+        {2025,   typeof(RadSuit)               },
+        {2026,   typeof(Allmap)                },
+        {2045,   typeof(Infrared)              },
+        {2046,   typeof(RocketBox)             },
+        {2047,   typeof(Cell)                  },
+        {2048,   typeof(ClipBox)               },
+        {2049,   typeof(ShellBox)              },
+        {5010,   typeof(Pistol)                }
+
+    };
+
+
     //This is a collection of all the animated textures in doom 1 and 2.
     //the string in the dictionary is the name that should be present in the map
     //the list of strings is each frame of that animated texture
@@ -279,6 +322,10 @@ public class mapCreator : MonoBehaviour
         foreach(THINGS thing in openedMap.things)
         {
 
+            //Multiplayer only thing
+            if (((thing.thingOptions & 0x10) >> 4) == 1)
+                continue;
+
             float Zpos = 0;
             
             RaycastHit hit;
@@ -317,6 +364,13 @@ public class mapCreator : MonoBehaviour
                 newThing.AddComponent(DecorationType[thing.thingType]);
 
                 ThingController controller = newThing.AddComponent<ThingController>();
+                controller.OnCreate(reader.newWad.sprites, thing, reader.newWad.sounds);
+            }
+            else if (PickupType.ContainsKey(thing.thingType))//if its a Pickup
+            {
+                Component type = newThing.AddComponent(PickupType[thing.thingType]);
+
+                PickupController controller = newThing.AddComponent<PickupController>();
                 controller.OnCreate(reader.newWad.sprites, thing, reader.newWad.sounds);
             }
             else if (thing.thingType == 1)//player 1

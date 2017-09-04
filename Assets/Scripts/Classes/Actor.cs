@@ -291,6 +291,9 @@ public class Actor : MonoBehaviour
     List<int> VisiblePitch = new List<int>();
 
     // Functions
+
+    public virtual bool PickedUp(DoomPlayer player, Inventory inv) { return false; }
+
     bool CheckClass(Thing checkclass, int ptr_select, bool match_superclass) { return false; }
 
     public int CountInv(string itemtype, int ptr_select) { return 0; }
