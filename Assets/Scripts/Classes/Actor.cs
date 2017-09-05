@@ -272,7 +272,8 @@ public class Actor : MonoBehaviour
     public bool SUMMONEDMONSTER = false;
     public bool SPECIAL = false;
 
-
+    public string pickupSound = "DSITEMUP";
+    public float bonusTime = 0f;
     public enum BloodType
     {
         Blood,

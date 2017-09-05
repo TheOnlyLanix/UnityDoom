@@ -828,7 +828,7 @@ public class wadReader : MonoBehaviour
                         texPix[i * mtex.width + j] = texPixels[j, i]; //collapse the 2Darry "texPixels" to a 1D array "texPix"
                     }
                 }
-                Texture2D newTex = new Texture2D(mtex.width, mtex.height);
+                Texture2D newTex = new Texture2D(mtex.width, mtex.height, TextureFormat.RGBA32, false);
                 newTex.filterMode = FilterMode.Point;
                 newTex.SetPixels(texPix);
                 newTex.Apply();

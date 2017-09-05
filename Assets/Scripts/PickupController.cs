@@ -17,15 +17,15 @@ public class PickupController : MonoBehaviour
     public string overrideState = ""; // TODO: remove? only for debugging
     public AudioSource audioSource;
     StateController stateController;
-    Dictionary<string, AudioClip> soundz;
+    Dictionary<string, AudioClip> sounds;
 
     //TODO: SOUNDS
-    public void OnCreate(Dictionary<string, PICTURES> sprites, THINGS thing, Dictionary<string, AudioClip> sounds)
+    public void OnCreate(Dictionary<string, PICTURES> sprites, THINGS thing, Dictionary<string, AudioClip> snds)
     {
         player = GameObject.FindGameObjectWithTag("Player");
         this.thing = thing;
         actor = GetComponent<Actor>();
-        soundz = sounds;
+        sounds = snds;
         transform.rotation = Quaternion.Euler(0, thing.angle, 0);
         gameObject.name = actor.Name;
         audioSource = gameObject.AddComponent<AudioSource>();
@@ -54,7 +54,7 @@ public class PickupController : MonoBehaviour
             //if the player touches the pickup and picks it up
             if(actor.PickedUp(other.GetComponent<DoomPlayer>(), other.GetComponent<DoomPlayer>().inv))
             {
-                audioSource.clip = soundz["DSITEMUP"];
+                audioSource.clip = sounds[actor.pickupSound];
                 audioSource.Play();
                 StartCoroutine(Destroy());
             }

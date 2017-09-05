@@ -95,14 +95,21 @@ public class DoomPlayer : MonoBehaviour
 
     };
 
+    public float bonusTime = 0f;//duration of bonus
+    public bool lightAmp = false;
+    public bool blurSphere = false;
+    public bool radSuit = false;
+    public bool invulnerability = false;
+    public bool berserk = false;
+
     public DoomHUD hud;
+    public PostProcessEffects ppe;
 
     void Start()
     {
         cam = transform.GetChild(0);//camera transform
         rb = GetComponent<Rigidbody>();
         cc = GetComponent<CharacterController>();
-            
     }
 
     void Update()
@@ -167,6 +174,11 @@ public class DoomPlayer : MonoBehaviour
         horizontal = Input.GetAxis("Horizontal");
         vertical = Input.GetAxis("Vertical");
 
+    }
+
+    public void LightAmp()
+    {
+        GetComponent<LightAmp>().Enable(ppe);
     }
 
     void FixedUpdate()

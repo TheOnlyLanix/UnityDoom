@@ -195,7 +195,7 @@ public class SuperShotgun : Actor            // Double-barreled Shotgun
                 {
                    info = new List<StateInfo>
                    {
-                       new StateInfo{spr = "SHT2", sprInd = "A", time = -1, function = ""},
+                       new StateInfo{spr = "SGN2", sprInd = "A", time = -1, function = ""},
                        new StateInfo{function = "Stop" }
                    }
                }
@@ -545,6 +545,7 @@ public class Allmap : Actor                  // Computer Area Map
     public void Awake()
     {
         Name = "Allmap";
+        pickupSound = "DSGETPOW";
         actorStates = new Dictionary<string, State>
         {
             {"Spawn", new State
@@ -607,6 +608,8 @@ public class Berserk : Actor                 // Berserk Pack (Full Health+Super 
     public void Awake()
     {
         Name = "Berserk";
+        pickupSound = "DSGETPOW";
+        bonusTime = 120f;//2 minutes
         actorStates = new Dictionary<string, State>
         {
             {"Spawn", new State
@@ -665,6 +668,8 @@ public class BlurSphere : Actor              // Partial Invisibility
     public void Awake()
     {
         Name = "BlurSphere";
+        pickupSound = "DSGETPOW";
+        bonusTime = 120f;//2 minutes
         actorStates = new Dictionary<string, State>
         {
             {"Spawn", new State
@@ -760,6 +765,8 @@ public class Infrared : Actor                // Light-Amp Goggles
     public void Awake()
     {
         Name = "Infrared";
+        pickupSound = "DSGETPOW";
+        bonusTime = 120f;//2 minutes
         actorStates = new Dictionary<string, State>
         {
             {"Spawn", new State
@@ -777,6 +784,9 @@ public class Infrared : Actor                // Light-Amp Goggles
     public override bool PickedUp(DoomPlayer player, Inventory inv)
     {
         //Light Amp
+        LightAmp la = player.gameObject.AddComponent<LightAmp>();
+        la.bonusTime = 120f;
+        player.LightAmp();
         return true;
     }
 }
@@ -786,6 +796,8 @@ public class InvulnerabilitySphere : Actor   // Invulnerability
     public void Awake()
     {
         Name = "InvulnerabilitySphere";
+        pickupSound = "DSGETPOW";
+        bonusTime = 120f;//2 minutes
         actorStates = new Dictionary<string, State>
         {
             {"Spawn", new State
@@ -876,6 +888,8 @@ public class RadSuit : Actor                 // Radiation Suit
     public void Awake()
     {
         Name = "RadSuit";
+        pickupSound = "DSGETPOW";
+        bonusTime = 120f;//2 minutes
         actorStates = new Dictionary<string, State>
         {
             {"Spawn", new State
