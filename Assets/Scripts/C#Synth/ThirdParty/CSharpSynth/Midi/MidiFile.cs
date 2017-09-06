@@ -202,7 +202,7 @@ namespace CSharpSynth.Midi
             //Read header length
             stream.Read(tmp, 0, 4);
             Array.Reverse(tmp); //Reverse the bytes
-            int headerLength = BitConverter.ToInt32(tmp, 0);
+            //int headerLength = BitConverter.ToInt32(tmp, 0);
             //Read midi format
             tmp = new byte[2];
             stream.Read(tmp, 0, 2);
@@ -505,7 +505,7 @@ namespace CSharpSynth.Midi
             Array.Reverse(buff);
             data = BitConverter.ToUInt32(buff, 0);
             data >>= (32 - (numOfBytes * 8));
-            UInt32 b = data;
+            //UInt32 b = data;
             UInt32 bffr = (data & 0x7F);
             int c = 1;
             while ((data >>= 8) > 0)

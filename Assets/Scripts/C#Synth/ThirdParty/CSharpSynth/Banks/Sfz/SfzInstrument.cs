@@ -57,7 +57,7 @@ namespace CSharpSynth.Banks.Sfz
             //Enforce SampleRate on Parameters
             for (int x = 0; x < regions.Length; x++)
             {
-                Sample s = base.SampleList[regions[x].SampleIndex];
+                //Sample s = base.SampleList[regions[x].SampleIndex];
                 float factor = (sampleRate / this.SampleRate);
                 regions[x].LoopEnd = (int)(regions[x].LoopEnd * factor);
                 regions[x].LoopStart = (int)(regions[x].LoopStart * factor);

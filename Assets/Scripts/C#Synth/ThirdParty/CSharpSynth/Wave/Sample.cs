@@ -35,7 +35,7 @@ namespace CSharpSynth.Wave
                 throw new ArgumentException("Wave file is in unrecognized format!");
             if (fChunk.wBitsPerSample != 16)
                 WaveHelper.ChangeBitsPerSample(fChunk, dChunk, 16);
-            int channels = fChunk.nChannels;
+            //int channels = fChunk.nChannels;
             sampleRate = fChunk.nSamplesPerSec;
             originalRate = sampleRate;
             data = WaveHelper.GetSampleData(fChunk, dChunk);

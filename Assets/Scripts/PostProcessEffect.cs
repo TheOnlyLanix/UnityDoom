@@ -37,7 +37,10 @@ public class PostProcessEffect : MonoBehaviour
     void OnRenderImage(RenderTexture source, RenderTexture destination)
     {
         if (visible)
+        {
             Graphics.Blit(source, destination, material);
+        }
+            
         else//used for flashing effect
             Graphics.Blit(source, destination, Vector2.one, Vector2.zero);
     }

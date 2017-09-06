@@ -368,7 +368,7 @@ public class mapCreator : MonoBehaviour
             }
             else if (PickupType.ContainsKey(thing.thingType))//if its a Pickup
             {
-                Component type = newThing.AddComponent(PickupType[thing.thingType]);
+                newThing.AddComponent(PickupType[thing.thingType]);
 
                 PickupController controller = newThing.AddComponent<PickupController>();
                 controller.OnCreate(reader.newWad.sprites, thing, reader.newWad.sounds);

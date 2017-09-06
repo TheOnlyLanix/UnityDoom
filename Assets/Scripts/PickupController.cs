@@ -78,7 +78,7 @@ public class PickupController : MonoBehaviour
         sprObj.transform.rotation = Quaternion.Euler(rot);
 
         // Use the state controller to set our texture according to angle from player
-        Quaternion lookRot = Quaternion.LookRotation(transform.position - player.transform.position, Vector3.up);
+
         stateController.OverrideState(ref overrideState);
         stateController.Update();
         PICTURES texture = stateController.UpdateMaterial(mr.material, 0);

@@ -1,6 +1,7 @@
 ﻿Shader "Custom/Powerups/Berserk" {
     Properties {
         _MainTex ("Base (RGB)", 2D) = "white" {}
+		_Tint ("Tint Color(red)", Color) = (0.8,0,0,1)
     }
     SubShader {
         Pass {
@@ -13,20 +14,13 @@
  
                 sampler2D _MainTex;
 
+				//red tint
+				fixed4 _Tint = (0.8,0,0,1);
+
                 float4 frag (v2f_img i) : COLOR 
 				{
-					float4 cColor = tex2D(_MainTex,i.uv); //this takes our sampler and turns the rgba into floats between 0 and 1
-
-					float4 cTempColor = cColor; //a new float4 cTempColor for use later
-					float4 cFinal = cTempColor;
- 
-					cFinal.g = 0;
-					cFinal.r = (cTempColor.r + cTempColor.g + cTempColor.b)/3;
-					cFinal.b = 0;
-
-					cColor = cFinal/0.5;
-
-                    return cColor;
+					float4 col = tex2D(_MainTex,i.uv) + _Tint/3;
+                    return col;
                 }
             ENDCG
         }
