@@ -425,5 +425,6 @@ public class StateInfo
     public string sprInd;
     public int time;
     public string function;
+    public bool bright = false;
 
 }

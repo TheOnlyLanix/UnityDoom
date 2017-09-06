@@ -31,7 +31,7 @@ public class PickupController : MonoBehaviour
         audioSource = gameObject.AddComponent<AudioSource>();
         BoxCollider coll = gameObject.AddComponent<BoxCollider>();
         coll.isTrigger = true;
-        coll.size = new Vector3(20, 20, 20);
+        coll.size = new Vector3(40, 20, 40);
 
         sprObj = new GameObject("sprite");
         sprObj.transform.parent = transform;
@@ -56,15 +56,15 @@ public class PickupController : MonoBehaviour
             {
                 audioSource.clip = sounds[actor.pickupSound];
                 audioSource.Play();
-                StartCoroutine(Destroy());
+                StartCoroutine(Destroy(audioSource.clip.length));
             }
                 
         }
     }
 
-    IEnumerator Destroy()
+    IEnumerator Destroy(float t)
     {
-        yield return new WaitForSeconds(0.2f);
+        yield return new WaitForSeconds(t);
         Destroy(gameObject);
     }
 

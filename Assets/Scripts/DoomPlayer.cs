@@ -103,7 +103,6 @@ public class DoomPlayer : MonoBehaviour
     public bool berserk = false;
 
     public DoomHUD hud;
-    public PostProcessEffects ppe;
 
     void Start()
     {
@@ -174,11 +173,6 @@ public class DoomPlayer : MonoBehaviour
         horizontal = Input.GetAxis("Horizontal");
         vertical = Input.GetAxis("Vertical");
 
-    }
-
-    public void LightAmp()
-    {
-        GetComponent<LightAmp>().Enable(ppe);
     }
 
     void FixedUpdate()

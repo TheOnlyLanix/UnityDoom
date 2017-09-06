@@ -1,7 +1,6 @@
 ﻿Shader "Custom/Powerups/LightAmp" {
     Properties {
         _MainTex ("Base (RGB)", 2D) = "white" {}
-        _Brightness ("Brightness", Float) = 0.5
     }
     SubShader {
         Pass {
@@ -31,11 +30,11 @@
  
 					cFinal.g = (cTempColor.r + cTempColor.g + cTempColor.b)/3; // sets green the the average of rgb
 					cFinal.r = 0; //removes red and blue colors
-					cFinal.b = 0;
+					cFinal.b = cColor.b *0.5;
 
-					cColor = cFinal * _Brightness; // brighten the final image and return it
+					cColor = cFinal; // brighten the final image and return it
 
-                    return cColor;
+                    return cColor/0.5;
                 }
             ENDCG
         }

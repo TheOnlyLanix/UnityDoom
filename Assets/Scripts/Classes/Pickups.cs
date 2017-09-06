@@ -16,7 +16,7 @@ public class BFG9000 : Actor                 // BFG 9000
                 {
                    info = new List<StateInfo>
                    {
-                       new StateInfo{spr = "BFUG", sprInd = "A", time = -1, function = ""},
+                       new StateInfo{spr = "BFUG", sprInd = "A", time = -1},
                        new StateInfo{function = "Stop" }
                    }
                }
@@ -41,7 +41,7 @@ public class Chaingun : Actor                // Chaingun
                 {
                    info = new List<StateInfo>
                    {
-                       new StateInfo{spr = "MGUN", sprInd = "A", time = -1, function = ""},
+                       new StateInfo{spr = "MGUN", sprInd = "A", time = -1},
                        new StateInfo{function = "Stop" }
                    }
                }
@@ -66,7 +66,7 @@ public class Chainsaw : Actor                // Chainsaw
                 {
                    info = new List<StateInfo>
                    {
-                       new StateInfo{spr = "CSAW", sprInd = "A", time = -1, function = ""},
+                       new StateInfo{spr = "CSAW", sprInd = "A", time = -1},
                        new StateInfo{function = "Stop" }
                    }
                }
@@ -95,7 +95,7 @@ public class Pistol : Actor                  // Pistol
                 {
                    info = new List<StateInfo>
                    {
-                       new StateInfo{spr = "PIST", sprInd = "A", time = -1, function = ""},
+                       new StateInfo{spr = "PIST", sprInd = "A", time = -1},
                        new StateInfo{function = "Stop" }
                    }
                }
@@ -120,7 +120,7 @@ public class PlasmaRifle : Actor             // Plasma Gun
                 {
                    info = new List<StateInfo>
                    {
-                       new StateInfo{spr = "PLAS", sprInd = "A", time = -1, function = ""},
+                       new StateInfo{spr = "PLAS", sprInd = "A", time = -1},
                        new StateInfo{function = "Stop" }
                    }
                }
@@ -145,7 +145,7 @@ public class RocketLauncher : Actor          // Rocket Launcher
                 {
                    info = new List<StateInfo>
                    {
-                       new StateInfo{spr = "LAUN", sprInd = "A", time = -1, function = ""},
+                       new StateInfo{spr = "LAUN", sprInd = "A", time = -1},
                        new StateInfo{function = "Stop" }
                    }
                }
@@ -170,7 +170,7 @@ public class Shotgun : Actor                 // Shotgun
                 {
                    info = new List<StateInfo>
                    {
-                       new StateInfo{spr = "SHOT", sprInd = "A", time = -1, function = ""},
+                       new StateInfo{spr = "SHOT", sprInd = "A", time = -1},
                        new StateInfo{function = "Stop" }
                    }
                }
@@ -195,7 +195,7 @@ public class SuperShotgun : Actor            // Double-barreled Shotgun
                 {
                    info = new List<StateInfo>
                    {
-                       new StateInfo{spr = "SGN2", sprInd = "A", time = -1, function = ""},
+                       new StateInfo{spr = "SGN2", sprInd = "A", time = -1},
                        new StateInfo{function = "Stop" }
                    }
                }
@@ -225,7 +225,7 @@ public class Backpack : Actor              // Backpack (Increase carrying capaci
                 {
                    info = new List<StateInfo>
                    {
-                       new StateInfo{spr = "BPAK", sprInd = "A", time = -1, function = ""},
+                       new StateInfo{spr = "BPAK", sprInd = "A", time = -1},
                        new StateInfo{function = "Stop" }
                    }
 
@@ -283,7 +283,7 @@ public class Cell : Actor                    // Cell
                 {
                    info = new List<StateInfo>
                    {
-                       new StateInfo{spr = "CELL", sprInd = "A", time = -1, function = ""},
+                       new StateInfo{spr = "CELL", sprInd = "A", time = -1},
                        new StateInfo{function = "Stop" }
                    }
                }
@@ -316,7 +316,7 @@ public class CellPack : Actor                // Cell Pack
                 {
                    info = new List<StateInfo>
                    {
-                       new StateInfo{spr = "CELP", sprInd = "A", time = -1, function = ""},
+                       new StateInfo{spr = "CELP", sprInd = "A", time = -1},
                        new StateInfo{function = "Stop" }
                    }
                }
@@ -349,7 +349,7 @@ public class Clip : Actor                    // Ammo Clip
                 {
                    info = new List<StateInfo>
                    {
-                       new StateInfo{spr = "CLIP", sprInd = "A", time = -1, function = ""},
+                       new StateInfo{spr = "CLIP", sprInd = "A", time = -1},
                        new StateInfo{function = "Stop" }
                    }
                }
@@ -383,7 +383,7 @@ public class ClipBox : Actor                 // Box of Bullets
                 {
                    info = new List<StateInfo>
                    {
-                       new StateInfo{spr = "AMMO", sprInd = "A", time = -1, function = ""},
+                       new StateInfo{spr = "AMMO", sprInd = "A", time = -1},
                        new StateInfo{function = "Stop" }
                    }
                }
@@ -416,7 +416,7 @@ public class RocketAmmo : Actor              // Rocket
                 {
                    info = new List<StateInfo>
                    {
-                       new StateInfo{spr = "ROCK", sprInd = "A", time = -1, function = ""},
+                       new StateInfo{spr = "ROCK", sprInd = "A", time = -1},
                        new StateInfo{function = "Stop" }
                    }
                }
@@ -449,7 +449,7 @@ public class RocketBox : Actor               // Box of Rockets
                 {
                    info = new List<StateInfo>
                    {
-                       new StateInfo{spr = "BROK", sprInd = "A", time = -1, function = ""},
+                       new StateInfo{spr = "BROK", sprInd = "A", time = -1},
                        new StateInfo{function = "Stop" }
                    }
                }
@@ -482,7 +482,7 @@ public class Shell : Actor                   // 4 Shells
                 {
                    info = new List<StateInfo>
                    {
-                       new StateInfo{spr = "SHEL", sprInd = "A", time = -1, function = ""},
+                       new StateInfo{spr = "SHEL", sprInd = "A", time = -1},
                        new StateInfo{function = "Stop" }
                    }
                }
@@ -515,7 +515,7 @@ public class ShellBox : Actor                // Box of Shells
                 {
                    info = new List<StateInfo>
                    {
-                       new StateInfo{spr = "SBOX", sprInd = "A", time = -1, function = ""},
+                       new StateInfo{spr = "SBOX", sprInd = "A", time = -1},
                        new StateInfo{function = "Stop" }
                    }
                }
@@ -552,7 +552,7 @@ public class Allmap : Actor                  // Computer Area Map
                 {
                    info = new List<StateInfo>
                    {
-                       new StateInfo{spr = "AMAP", sprInd = "ABCDCB", time = 6, function = ""},
+                       new StateInfo{spr = "AMAP", sprInd = "ABCDCB", time = 6},
                        new StateInfo{function = "Loop" }
                    }
                }
@@ -578,7 +578,7 @@ public class ArmorBonus : Actor              // Armor Helmet
                 {
                    info = new List<StateInfo>
                    {
-                       new StateInfo{spr = "BON2", sprInd = "ABCDCB", time = 6, function = ""},
+                       new StateInfo{spr = "BON2", sprInd = "ABCDCB", time = 6},
                        new StateInfo{function = "Loop" }
                    }
                }
@@ -616,7 +616,7 @@ public class Berserk : Actor                 // Berserk Pack (Full Health+Super 
                 {
                    info = new List<StateInfo>
                    {
-                       new StateInfo{spr = "PSTR", sprInd = "A", time = -1, function = ""},
+                       new StateInfo{spr = "PSTR", sprInd = "A", time = -1},
                        new StateInfo{function = "Stop" }
                    }
                }
@@ -629,6 +629,13 @@ public class Berserk : Actor                 // Berserk Pack (Full Health+Super 
         if (player.health < 100)
             player.health = 100;
 
+        player.bonusTime = 120;
+        player.berserk = true;
+
+        //Add the screen effect to the camera on the player
+        PostProcessEffect ppe = player.gameObject.transform.GetChild(0).gameObject.AddComponent<PostProcessEffect>();
+        ppe.shader = Shader.Find("Custom/Powerups/Berserk");
+        ppe.bonusTime = 120f;
         return true;
     }
 }
@@ -644,7 +651,8 @@ public class BlueArmor : Actor               // Heavy Armor
                 {
                    info = new List<StateInfo>
                    {
-                       new StateInfo{spr = "ARM2", sprInd = "AB", time = 6, function = ""},
+                       new StateInfo{spr = "ARM2", sprInd = "A", time = 6},
+                       new StateInfo{spr = "ARM2", sprInd = "B", time = 6, bright = true},
                        new StateInfo{function = "Loop" }
                    }
                }
@@ -676,7 +684,7 @@ public class BlurSphere : Actor              // Partial Invisibility
                 {
                    info = new List<StateInfo>
                    {
-                       new StateInfo{spr = "PINS", sprInd = "ABCD", time = 6, function = ""},
+                       new StateInfo{spr = "PINS", sprInd = "ABCD", time = 6},
                        new StateInfo{function = "Loop" }
                    }
                }
@@ -687,6 +695,8 @@ public class BlurSphere : Actor              // Partial Invisibility
     public override bool PickedUp(DoomPlayer player, Inventory inv)
     {
         //Partial Invisibility
+        player.blurSphere = true;
+        player.bonusTime = 120;
         return true;
     }
 }
@@ -702,7 +712,8 @@ public class GreenArmor : Actor              // Light Armor
                 {
                    info = new List<StateInfo>
                    {
-                       new StateInfo{spr = "ARM1", sprInd = "AB", time = 6, function = ""},
+                       new StateInfo{spr = "ARM1", sprInd = "A", time = 6},
+                       new StateInfo{spr = "ARM1", sprInd = "B", time = 6, bright = true},
                        new StateInfo{function = "Loop" }
                    }
                }
@@ -737,7 +748,7 @@ public class HealthBonus : Actor             // Health Potion
                 {
                    info = new List<StateInfo>
                    {
-                       new StateInfo{spr = "BON1", sprInd = "ABCDCB", time = 6, function = ""},
+                       new StateInfo{spr = "BON1", sprInd = "ABCDCB", time = 6},
                        new StateInfo{function = "Loop" }
                    }
                }
@@ -773,7 +784,8 @@ public class Infrared : Actor                // Light-Amp Goggles
                 {
                    info = new List<StateInfo>
                    {
-                       new StateInfo{spr = "PVIS", sprInd = "AB", time = 6, function = ""},
+                       new StateInfo{spr = "PVIS", sprInd = "A", time = 6},
+                       new StateInfo{spr = "PVIS", sprInd = "B", time = 6, bright = true},
                        new StateInfo{function = "Loop" }
                    }
                }
@@ -783,10 +795,10 @@ public class Infrared : Actor                // Light-Amp Goggles
 
     public override bool PickedUp(DoomPlayer player, Inventory inv)
     {
-        //Light Amp
-        LightAmp la = player.gameObject.AddComponent<LightAmp>();
-        la.bonusTime = 120f;
-        player.LightAmp();
+        //Add the screen effect to the camera on the player
+        PostProcessEffect ppe = player.gameObject.transform.GetChild(0).gameObject.AddComponent<PostProcessEffect>();
+        ppe.shader = Shader.Find("Custom/Powerups/LightAmp");
+        ppe.bonusTime = 120f;
         return true;
     }
 }
@@ -804,7 +816,7 @@ public class InvulnerabilitySphere : Actor   // Invulnerability
                 {
                    info = new List<StateInfo>
                    {
-                       new StateInfo{spr = "PINV", sprInd = "ABCD", time = 6, function = ""},
+                       new StateInfo{spr = "PINV", sprInd = "ABCD", time = 6},
                        new StateInfo{function = "Loop" }
                    }
                }
@@ -815,6 +827,11 @@ public class InvulnerabilitySphere : Actor   // Invulnerability
     public override bool PickedUp(DoomPlayer player, Inventory inv)
     {
         //invulnerability
+        //Add the screen effect to the camera on the player
+        PostProcessEffect ppe = player.gameObject.transform.GetChild(0).gameObject.AddComponent<PostProcessEffect>();
+        ppe.shader = Shader.Find("Custom/Powerups/Invulnerability");
+        ppe.bonusTime = 120f;
+        player.invulnerability = true;
         return true;
     }
 }
@@ -830,7 +847,7 @@ public class Medikit : Actor                 // Medikit(+25 Health)
                 {
                    info = new List<StateInfo>
                    {
-                       new StateInfo{spr = "MEDI", sprInd = "A", time = -1, function = ""},
+                       new StateInfo{spr = "MEDI", sprInd = "A", time = -1},
                        new StateInfo{function = "Stop" }
                    }
                }
@@ -866,7 +883,7 @@ public class Megasphere : Actor              // Megasphere (+200 Health/Armor)
                 {
                    info = new List<StateInfo>
                    {
-                       new StateInfo{spr = "MEGA", sprInd = "ABCD", time = 6, function = ""},
+                       new StateInfo{spr = "MEGA", sprInd = "ABCD", time = 6},
                        new StateInfo{function = "Loop" }
                    }
                }
@@ -896,7 +913,7 @@ public class RadSuit : Actor                 // Radiation Suit
                 {
                    info = new List<StateInfo>
                    {
-                       new StateInfo{spr = "SUIT", sprInd = "A", time = -1, function = ""},
+                       new StateInfo{spr = "SUIT", sprInd = "A", time = -1},
                        new StateInfo{function = "Stop" }
                    }
                }
@@ -907,6 +924,10 @@ public class RadSuit : Actor                 // Radiation Suit
     public override bool PickedUp(DoomPlayer player, Inventory inv)
     {
         //Radiation resist
+        //Add the screen effect to the camera on the player
+        PostProcessEffect ppe = player.gameObject.transform.GetChild(0).gameObject.AddComponent<PostProcessEffect>();
+        ppe.shader = Shader.Find("Custom/Powerups/Radsuit");
+        ppe.bonusTime = 120f;
         return true;
     }
 }
@@ -922,7 +943,7 @@ public class Soulsphere : Actor              // Soul Sphere (+100 Health)
                 {
                    info = new List<StateInfo>
                    {
-                       new StateInfo{spr = "SOUL", sprInd = "ABCDCB", time = 6, function = ""},
+                       new StateInfo{spr = "SOUL", sprInd = "ABCDCB", time = 6},
                        new StateInfo{function = "Loop" }
                    }
                }
@@ -952,7 +973,7 @@ public class Stimpack : Actor                // Stimpack(+10 Health)
                 {
                    info = new List<StateInfo>
                    {
-                       new StateInfo{spr = "STIM", sprInd = "A", time = -1, function = ""},
+                       new StateInfo{spr = "STIM", sprInd = "A", time = -1},
                        new StateInfo{function = "Stop" }
                    }
                }
@@ -990,7 +1011,8 @@ public class BlueCard : Actor                // Blue Keycard
                 {
                    info = new List<StateInfo>
                    {
-                       new StateInfo{spr = "BKEY", sprInd = "AB", time = 10, function = ""},
+                       new StateInfo{spr = "BKEY", sprInd = "A", time = 10},
+                       new StateInfo{spr = "BKEY", sprInd = "B", time = 10, bright = true},
                        new StateInfo{function = "Loop" }
                    }
                }
@@ -1015,7 +1037,8 @@ public class BlueSkull : Actor               // Blue Skull Key
                 {
                    info = new List<StateInfo>
                    {
-                       new StateInfo{spr = "BSKU", sprInd = "AB", time = 10, function = ""},
+                       new StateInfo{spr = "BSKU", sprInd = "A", time = 10},
+                       new StateInfo{spr = "BSKU", sprInd = "B", time = 10, bright = true},
                        new StateInfo{function = "Loop" }
                    }
                }
@@ -1040,7 +1063,8 @@ public class RedCard : Actor                 // Red Keycard
                 {
                    info = new List<StateInfo>
                    {
-                       new StateInfo{spr = "RKEY", sprInd = "AB", time = 10, function = ""},
+                       new StateInfo{spr = "RKEY", sprInd = "A", time = 10},
+                       new StateInfo{spr = "RKEY", sprInd = "B", time = 10, bright = true},
                        new StateInfo{function = "Loop" }
                    }
                }
@@ -1065,7 +1089,8 @@ public class RedSkull : Actor                // Red Skull Key
                 {
                    info = new List<StateInfo>
                    {
-                       new StateInfo{spr = "RSKU", sprInd = "AB", time = 10, function = ""},
+                       new StateInfo{spr = "RSKU", sprInd = "A", time = 10},
+                       new StateInfo{spr = "RSKU", sprInd = "B", time = 10, bright = true},
                        new StateInfo{function = "Loop" }
                    }
                }
@@ -1090,7 +1115,8 @@ public class YellowCard : Actor              // Yellow Keycard
                 {
                    info = new List<StateInfo>
                    {
-                       new StateInfo{spr = "YKEY", sprInd = "AB", time = 10, function = ""},
+                       new StateInfo{spr = "YKEY", sprInd = "A", time = 10},
+                       new StateInfo{spr = "YKEY", sprInd = "B", time = 10, bright = true},
                        new StateInfo{function = "Loop" }
                    }
                }
@@ -1115,7 +1141,8 @@ public class YellowSkull : Actor             // Yellow Skull Key
                 {
                    info = new List<StateInfo>
                    {
-                       new StateInfo{spr = "YSKU", sprInd = "AB", time = 10, function = ""},
+                       new StateInfo{spr = "YSKU", sprInd = "A", time = 10},
+                       new StateInfo{spr = "YSKU", sprInd = "B", time = 10, bright = true},
                        new StateInfo{function = "Loop" }
                    }
                }

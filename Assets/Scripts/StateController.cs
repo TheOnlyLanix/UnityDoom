@@ -135,7 +135,12 @@ public class StateController
         string funct = state.info[infoIndex].function;
         if ((funct != "" && funct != null))
         {
-           //actor.Invoke(funct, 0);
+            //actor.Invoke(funct, 0);
+        }
+
+        if (state.info[infoIndex].bright)
+        {
+            //create(enable?) a light
         }
 
     }
