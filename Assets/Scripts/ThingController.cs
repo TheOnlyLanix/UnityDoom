@@ -29,7 +29,17 @@ public class ThingController : MonoBehaviour {
         transform.rotation = Quaternion.Euler(0, thing.angle, 0);
         gameObject.name = actor.Name;
 
-        if(actor.SOLID)//if the actor isnt solid, it shouldnt have a collider
+        //place the actor on the ceiling if it has the SPAWNCEILING flag set
+        if(actor.SPAWNCEILING)
+        {
+            RaycastHit hit;
+            if (Physics.Raycast(new Vector3(transform.position.x, -1000, transform.position.z), Vector3.up, out hit))
+            {
+                transform.position = new Vector3(hit.point.x, hit.point.y, hit.point.z);
+            }
+        }
+
+        if (actor.SOLID)//if the actor isnt solid, it shouldnt have a collider
         {
             BoxCollider collider = gameObject.AddComponent<BoxCollider>();
             collider.size = new Vector3(actor.Radius*2, actor.Height, actor.Radius*2);
@@ -42,10 +52,15 @@ public class ThingController : MonoBehaviour {
         this.mesh = createPlane();
         MeshFilter mf = sprObj.AddComponent<MeshFilter>();
         mr = sprObj.AddComponent<MeshRenderer>();
+       
         mr.material = new Material(Shader.Find("Custom/DoomShader"));
         mf.mesh = this.mesh;
 
-        if(actor.Sounds.Count > 0)//only create the audio source if the thing has sounds defined
+        Light lightObj = new GameObject("lightObj").AddComponent<Light>();
+        lightObj.transform.parent = transform;
+        lightObj.gameObject.transform.localPosition = Vector3.zero;
+
+        if (actor.Sounds.Count > 0)//only create the audio source if the thing has sounds defined
         {
             audioSource = gameObject.AddComponent<AudioSource>();
 
@@ -62,7 +77,7 @@ public class ThingController : MonoBehaviour {
             }
         }
 
-        stateController = new StateController(actor, sprites, audioSource, sprObj);
+        stateController = new StateController(actor, sprites, audioSource, sprObj, lightObj);
         stateController.UpdateMaterial(mr.material, 1);
 
     }

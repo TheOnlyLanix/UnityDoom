@@ -17,12 +17,14 @@ public class StateController
     Vector2[] StartUV = new Vector2[4];
     Vector2[] FlipUV = new Vector2[4];
 
-    public StateController(Actor actor, Dictionary<string, PICTURES> allSprites, AudioSource audioSource, GameObject obj)
+    Light brightLight;
+
+    public StateController(Actor actor, Dictionary<string, PICTURES> allSprites, AudioSource audioSource, GameObject obj, Light light)
     {
         state = actor.actorStates["Spawn"];
         this.actor = actor;
         go = obj;
-
+        brightLight = light;
         StartUV = go.GetComponent<MeshFilter>().mesh.uv;//Original UVS
         FlipUV = go.GetComponent<MeshFilter>().mesh.uv;//Original UVS again?
         System.Array.Reverse(FlipUV);//Just kidding, flipped them
@@ -139,9 +141,9 @@ public class StateController
         }
 
         if (state.info[infoIndex].bright)
-        {
-            //create(enable?) a light
-        }
+            brightLight.enabled = true;
+        else
+            brightLight.enabled = false;
 
     }
 

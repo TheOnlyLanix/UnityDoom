@@ -42,7 +42,11 @@ public class PickupController : MonoBehaviour
         mr.material = new Material(Shader.Find("Custom/DoomShader"));
         mf.mesh = this.mesh;
 
-        stateController = new StateController(actor, sprites, audioSource, sprObj);
+        Light lightObj = new GameObject("lightObj").AddComponent<Light>();
+        lightObj.transform.parent = transform;
+        lightObj.transform.localPosition = new Vector3(0, 30, 0);
+
+        stateController = new StateController(actor, sprites, audioSource, sprObj, lightObj);
         stateController.UpdateMaterial(mr.material, 1);
 
     }
@@ -56,6 +60,7 @@ public class PickupController : MonoBehaviour
             {
                 audioSource.clip = sounds[actor.pickupSound];
                 audioSource.Play();
+                sprObj.GetComponent<MeshRenderer>().enabled = false;
                 StartCoroutine(Destroy(audioSource.clip.length));
             }
                 
