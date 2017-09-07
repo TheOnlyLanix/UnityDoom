@@ -653,7 +653,9 @@ namespace DoomTriangulator
             mesh.vertices = vertices.ToArray();
             mesh.uv = uvs.ToArray();
             mesh.subMeshCount = combinedSubmeshes.Count();
+            mesh.normals = normals.ToArray();
             materials = materialList.ToArray();
+
 
             // set triangles correctly according to new vertex offsets
             int onMesh = 0;
@@ -697,6 +699,7 @@ namespace DoomTriangulator
             submesh.mesh.vertices = vertices.ToArray();
             submesh.mesh.uv = uvs.ToArray();
             submesh.mesh.subMeshCount = submeshes.Count();
+            submesh.mesh.normals = normals.ToArray();
 
             // set triangles correctly according to new vertex offsets
             int onMesh = 0;

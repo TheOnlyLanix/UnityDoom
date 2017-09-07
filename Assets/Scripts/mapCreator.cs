@@ -309,8 +309,6 @@ public class mapCreator : MonoBehaviour
 
         }
 
-
-
         hasOpenedAllDoors = false;
     }
 
@@ -454,7 +452,6 @@ public class mapCreator : MonoBehaviour
         go.GetComponent<MeshRenderer>().materials = sectorMaterials;
         go.GetComponent<MeshFilter>().mesh = mesh;
         go.AddComponent<MeshCollider>();
-
 
         foreach (Material mat in go.GetComponent<MeshRenderer>().materials)
         {

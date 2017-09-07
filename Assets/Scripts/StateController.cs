@@ -130,6 +130,11 @@ public class StateController
                         }
                     }
                 }
+
+                if (state.info[infoIndex].bright)
+                    brightLight.enabled = true;
+                else
+                    brightLight.enabled = false;
             }
         }
 
@@ -139,11 +144,6 @@ public class StateController
         {
             //actor.Invoke(funct, 0);
         }
-
-        if (state.info[infoIndex].bright)
-            brightLight.enabled = true;
-        else
-            brightLight.enabled = false;
 
     }
 

@@ -33,18 +33,25 @@ public class PickupController : MonoBehaviour
         coll.isTrigger = true;
         coll.size = new Vector3(40, 20, 40);
 
+
+        Light lightObj = new GameObject("lightObj").AddComponent<Light>();
+        lightObj.transform.parent = transform;
+        lightObj.transform.localPosition = new Vector3(0f, 5f, 0f);
+        lightObj.intensity = 20f;
+        lightObj.range = 20f;
+        lightObj.cullingMask = (1 << 9);
+        lightObj.cullingMask = ~lightObj.cullingMask;
+        lightObj.enabled = false;
+
         sprObj = new GameObject("sprite");
         sprObj.transform.parent = transform;
         sprObj.transform.position = transform.position;
+        sprObj.layer = 9;
         this.mesh = createPlane();
         MeshFilter mf = sprObj.AddComponent<MeshFilter>();
         mr = sprObj.AddComponent<MeshRenderer>();
         mr.material = new Material(Shader.Find("Custom/DoomShader"));
         mf.mesh = this.mesh;
-
-        Light lightObj = new GameObject("lightObj").AddComponent<Light>();
-        lightObj.transform.parent = transform;
-        lightObj.transform.localPosition = new Vector3(0, 30, 0);
 
         stateController = new StateController(actor, sprites, audioSource, sprObj, lightObj);
         stateController.UpdateMaterial(mr.material, 1);
