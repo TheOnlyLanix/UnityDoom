@@ -50,7 +50,7 @@ public class PickupController : MonoBehaviour
         this.mesh = createPlane();
         MeshFilter mf = sprObj.AddComponent<MeshFilter>();
         mr = sprObj.AddComponent<MeshRenderer>();
-        mr.material = new Material(Shader.Find("Custom/DoomShader"));
+        mr.material = new Material(Shader.Find("Custom/DoomShaderTransparent"));
         mf.mesh = this.mesh;
 
         stateController = new StateController(actor, sprites, audioSource, sprObj, lightObj);

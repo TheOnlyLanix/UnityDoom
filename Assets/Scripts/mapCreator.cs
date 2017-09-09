@@ -444,7 +444,6 @@ public class mapCreator : MonoBehaviour
         rend = go.GetComponent<Renderer>();
 
         //Set the color for the material independently (for setting light level)
-        rend.GetPropertyBlock(propBlock);
         propBlock.SetColor("_Color", new Color(sector.lightLevel / 255f, sector.lightLevel / 255f, sector.lightLevel / 255f, 1));
         rend.SetPropertyBlock(propBlock);
 

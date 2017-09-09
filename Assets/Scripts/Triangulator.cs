@@ -656,7 +656,6 @@ namespace DoomTriangulator
             mesh.normals = normals.ToArray();
             materials = materialList.ToArray();
 
-
             // set triangles correctly according to new vertex offsets
             int onMesh = 0;
             int vertexCount = 0;

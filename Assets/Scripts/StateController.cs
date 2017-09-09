@@ -132,7 +132,10 @@ public class StateController
                 }
 
                 if (state.info[infoIndex].bright)
+                {
+                    brightLight.color = state.info[infoIndex].brightColor;
                     brightLight.enabled = true;
+                }
                 else
                     brightLight.enabled = false;
             }
@@ -144,7 +147,6 @@ public class StateController
         {
             //actor.Invoke(funct, 0);
         }
-
     }
 
     public PICTURES UpdateMaterial(Material mat, int side)

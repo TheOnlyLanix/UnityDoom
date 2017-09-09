@@ -53,7 +53,7 @@ public class ThingController : MonoBehaviour {
         MeshFilter mf = sprObj.AddComponent<MeshFilter>();
         mr = sprObj.AddComponent<MeshRenderer>();
        
-        mr.material = new Material(Shader.Find("Custom/DoomShader"));
+        mr.material = new Material(Shader.Find("Custom/DoomShaderTransparent"));
         mf.mesh = this.mesh;
 
         Light lightObj = new GameObject("lightObj").AddComponent<Light>();

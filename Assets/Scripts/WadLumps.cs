@@ -426,5 +426,6 @@ public class StateInfo
     public int time;
     public string function;
     public bool bright = false;
+    public Color brightColor = Color.white;
 
 }

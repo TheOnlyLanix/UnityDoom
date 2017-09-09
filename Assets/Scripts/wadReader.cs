@@ -12,6 +12,7 @@ public class wadReader : MonoBehaviour
     public string label;
     PLAYPAL playPal;
     public Shader DoomShader;
+    public Shader DoomShaderTransparent;
     enum type { Sprite, Flat, Patch };
     FileStream wadOpener;
     public bool isDone = false;
@@ -521,18 +522,28 @@ public class wadReader : MonoBehaviour
             Texture2D newTex = new Texture2D((int)Mathf.Sqrt(flat.size), (int)Mathf.Sqrt(flat.size), TextureFormat.RGBA32, false);
 
             Color[] texColors = new Color[(int)Mathf.Sqrt(flat.size) * (int)Mathf.Sqrt(flat.size)];
+            bool trans = false;
 
             for (int q = 0; q < texColors.Length; q++)
             {
                 texColors[q] = playPal.colors[spriteBytes[q]];
+                if(texColors[q] == Color.clear)
+                {
+                    trans = true;
+                }
             }
 
             newTex.SetPixels(texColors);
             newTex.Apply();
             newTex.name = flat.name;
             newTex.filterMode = FilterMode.Point;
+            Material newMat;
 
-            Material newMat = new Material(DoomShader);
+            if (!trans)
+                newMat = new Material(DoomShader);
+            else
+                newMat = new Material(DoomShaderTransparent);
+
             newMat.mainTexture = newTex;
 
             if (flat.name.StartsWith("F_SKY"))
@@ -791,6 +802,7 @@ public class wadReader : MonoBehaviour
                 newTexture.mtex.Add(mtex);//store the info in newTexture.mtex
 
                 Color32[,] texPixels = new Color32[mtex.width, mtex.height]; //store the pixels for the texture (L->R, U->D)
+                bool trans = false;
 
                 foreach (MapPatch mpatch in mtex.mPatch) //for each patch in the texture
                 {
@@ -805,6 +817,9 @@ public class wadReader : MonoBehaviour
                             int xofs = x + mpatch.originx;
                             int yofs = y + mpatch.originy;
 
+                            if (pixel == Color.clear)
+                                trans = true;
+
                             if (pixel.a > 0 && xofs >= 0 && yofs >= 0 && xofs < mtex.width && yofs < mtex.height)
                             {
                                 texPixels[xofs, yofs] = pixel;
@@ -818,7 +833,10 @@ public class wadReader : MonoBehaviour
                 Color[] texPix = new Color[mtex.width * mtex.height];
                 Material newMat;
 
-                newMat = new Material(DoomShader);
+                if(!trans)
+                    newMat = new Material(DoomShader);
+                else
+                    newMat = new Material(DoomShaderTransparent);
 
                 for (int i = 0; i < mtex.height; i++)
                 {

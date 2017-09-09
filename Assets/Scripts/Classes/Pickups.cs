@@ -652,7 +652,7 @@ public class BlueArmor : Actor               // Heavy Armor
                    info = new List<StateInfo>
                    {
                        new StateInfo{spr = "ARM2", sprInd = "A", time = 6},
-                       new StateInfo{spr = "ARM2", sprInd = "B", time = 6, bright = true},
+                       new StateInfo{spr = "ARM2", sprInd = "B", time = 6, bright = true, brightColor = Color.blue},
                        new StateInfo{function = "Loop" }
                    }
                }
@@ -713,7 +713,7 @@ public class GreenArmor : Actor              // Light Armor
                    info = new List<StateInfo>
                    {
                        new StateInfo{spr = "ARM1", sprInd = "A", time = 6},
-                       new StateInfo{spr = "ARM1", sprInd = "B", time = 6, bright = true},
+                       new StateInfo{spr = "ARM1", sprInd = "B", time = 6, bright = true, brightColor = Color.green },
                        new StateInfo{function = "Loop" }
                    }
                }
@@ -785,7 +785,7 @@ public class Infrared : Actor                // Light-Amp Goggles
                    info = new List<StateInfo>
                    {
                        new StateInfo{spr = "PVIS", sprInd = "A", time = 6},
-                       new StateInfo{spr = "PVIS", sprInd = "B", time = 6, bright = true},
+                       new StateInfo{spr = "PVIS", sprInd = "B", time = 6, bright = true, brightColor = Color.yellow},
                        new StateInfo{function = "Loop" }
                    }
                }
@@ -1012,7 +1012,7 @@ public class BlueCard : Actor                // Blue Keycard
                    info = new List<StateInfo>
                    {
                        new StateInfo{spr = "BKEY", sprInd = "A", time = 10},
-                       new StateInfo{spr = "BKEY", sprInd = "B", time = 10, bright = true},
+                       new StateInfo{spr = "BKEY", sprInd = "B", time = 10, bright = true, brightColor = Color.blue},
                        new StateInfo{function = "Loop" }
                    }
                }
@@ -1038,7 +1038,7 @@ public class BlueSkull : Actor               // Blue Skull Key
                    info = new List<StateInfo>
                    {
                        new StateInfo{spr = "BSKU", sprInd = "A", time = 10},
-                       new StateInfo{spr = "BSKU", sprInd = "B", time = 10, bright = true},
+                       new StateInfo{spr = "BSKU", sprInd = "B", time = 10, bright = true, brightColor = Color.blue},
                        new StateInfo{function = "Loop" }
                    }
                }
@@ -1064,7 +1064,7 @@ public class RedCard : Actor                 // Red Keycard
                    info = new List<StateInfo>
                    {
                        new StateInfo{spr = "RKEY", sprInd = "A", time = 10},
-                       new StateInfo{spr = "RKEY", sprInd = "B", time = 10, bright = true},
+                       new StateInfo{spr = "RKEY", sprInd = "B", time = 10, bright = true, brightColor = Color.red},
                        new StateInfo{function = "Loop" }
                    }
                }
@@ -1090,7 +1090,7 @@ public class RedSkull : Actor                // Red Skull Key
                    info = new List<StateInfo>
                    {
                        new StateInfo{spr = "RSKU", sprInd = "A", time = 10},
-                       new StateInfo{spr = "RSKU", sprInd = "B", time = 10, bright = true},
+                       new StateInfo{spr = "RSKU", sprInd = "B", time = 10, bright = true, brightColor = Color.red},
                        new StateInfo{function = "Loop" }
                    }
                }
@@ -1116,7 +1116,7 @@ public class YellowCard : Actor              // Yellow Keycard
                    info = new List<StateInfo>
                    {
                        new StateInfo{spr = "YKEY", sprInd = "A", time = 10},
-                       new StateInfo{spr = "YKEY", sprInd = "B", time = 10, bright = true},
+                       new StateInfo{spr = "YKEY", sprInd = "B", time = 10, bright = true, brightColor = Color.yellow},
                        new StateInfo{function = "Loop" }
                    }
                }
@@ -1142,7 +1142,7 @@ public class YellowSkull : Actor             // Yellow Skull Key
                    info = new List<StateInfo>
                    {
                        new StateInfo{spr = "YSKU", sprInd = "A", time = 10},
-                       new StateInfo{spr = "YSKU", sprInd = "B", time = 10, bright = true},
+                       new StateInfo{spr = "YSKU", sprInd = "B", time = 10, bright = true, brightColor = Color.yellow},
                        new StateInfo{function = "Loop" }
                    }
                }
