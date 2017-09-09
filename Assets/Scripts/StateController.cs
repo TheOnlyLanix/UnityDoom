@@ -7,7 +7,7 @@ public class StateController
 {
     Actor actor;
     List<PICTURES> sprites = new List<PICTURES>();
-    State state;
+    public State state;
     float time = 0;
     int infoIndex = 0;
     int sprIndex = 0;
@@ -18,6 +18,7 @@ public class StateController
     Vector2[] FlipUV = new Vector2[4];
 
     Light brightLight;
+    ThingController tCont;
 
     public StateController(Actor actor, Dictionary<string, PICTURES> allSprites, AudioSource audioSource, GameObject obj, Light light)
     {
@@ -28,7 +29,7 @@ public class StateController
         StartUV = go.GetComponent<MeshFilter>().mesh.uv;//Original UVS
         FlipUV = go.GetComponent<MeshFilter>().mesh.uv;//Original UVS again?
         System.Array.Reverse(FlipUV);//Just kidding, flipped them
-
+        tCont = go.transform.parent.gameObject.GetComponent<ThingController>();
         // get a list of every sprite name possible in states
         HashSet<string> stateSprites = new HashSet<string>();
         foreach (State state in actor.actorStates.Values)
@@ -72,7 +73,6 @@ public class StateController
     public void Update()
     {
         if (stopped) { return; }
-
         // advance the time
         float ticksPerSecond = 35f;
         time += Time.deltaTime;
@@ -141,11 +141,14 @@ public class StateController
             }
         }
 
-        //functions?
+        //functions
         string funct = state.info[infoIndex].function;
-        if ((funct != "" && funct != null))
+        if ((funct != "" && funct != null && tCont != null))
         {
-            //actor.Invoke(funct, 0);
+            if(funct == "A_Look")
+                tCont.A_Look();
+            else if (funct == "A_Chase")
+                tCont.A_Chase();
         }
     }
 

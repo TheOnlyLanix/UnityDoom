@@ -17,6 +17,7 @@ public class ThingController : MonoBehaviour {
     public AudioSource audioSource;
     StateController stateController;
     Dictionary<string, AudioClip> usedSounds = new Dictionary<string, AudioClip>();
+    Transform target;
 
     //TODO: SOUNDS
     public void OnCreate(Dictionary<string, PICTURES> sprites, THINGS thing, Dictionary<string, AudioClip> sounds)
@@ -24,13 +25,13 @@ public class ThingController : MonoBehaviour {
         player = GameObject.FindGameObjectWithTag("Player");
         this.thing = thing;
         actor = GetComponent<Actor>();
-
         health = actor.Health; //sets the health of the actor
         transform.rotation = Quaternion.Euler(0, thing.angle, 0);
         gameObject.name = actor.Name;
+        target = player.transform;//this can change if the thing gets hurt by something other than the player
 
         //place the actor on the ceiling if it has the SPAWNCEILING flag set
-        if(actor.SPAWNCEILING)
+        if (actor.SPAWNCEILING)
         {
             RaycastHit hit;
             if (Physics.Raycast(new Vector3(transform.position.x, -1000, transform.position.z), Vector3.up, out hit))
@@ -60,28 +61,17 @@ public class ThingController : MonoBehaviour {
         lightObj.transform.parent = transform;
         lightObj.gameObject.transform.localPosition = Vector3.zero;
 
-        if (actor.Sounds.Count > 0)//only create the audio source if the thing has sounds defined
-        {
-            audioSource = gameObject.AddComponent<AudioSource>();
-
-            foreach(AudioClip clip in sounds.Values)//trim down the list of sounds for efficiency?
-            {
-                foreach (string s in actor.Sounds.Values)
-                {
-
-                    if (SoundInfo.soundInfo[s] == clip.name)
-                    {
-                        usedSounds.Add(s, clip);
-                    }
-                }
-            }
-        }
+        AddSounds(sounds);
 
         stateController = new StateController(actor, sprites, audioSource, sprObj, lightObj);
         stateController.UpdateMaterial(mr.material, 1);
 
     }
 
+    public Transform GetTarget()
+    {
+        return target;
+    }
 
     // Update is called once per frame
     void Update ()
@@ -97,11 +87,11 @@ public class ThingController : MonoBehaviour {
         int angleTexIndex = pickSide(lookRot.eulerAngles.y);
         stateController.OverrideState(ref overrideState);
         stateController.Update();
+
         PICTURES texture = stateController.UpdateMaterial(mr.material, angleTexIndex);
+
         if (stateController.stopped)
-        {
             Destroy(gameObject);
-        }
         else
         {
             float tWidth = mr.material.mainTexture.width;
@@ -112,6 +102,23 @@ public class ThingController : MonoBehaviour {
                 Vector3 xOffset = sprObj.transform.rotation * Vector3.forward * (texture.LeftOffset - texture.Width / 2f);
                 Vector3 yOffset = new Vector3(0, Math.Max(texture.TopOffset - texture.Height, 0), 0); // TODO: investigate why I have to use Math.Max here
                 sprObj.transform.localPosition = xOffset + yOffset;
+            }
+        }
+    }
+
+    void AddSounds(Dictionary<string, AudioClip> sounds)
+    {
+        if (actor.Sounds.Count == 0)//only create the audio source if the thing has sounds defined
+            return;
+
+        audioSource = gameObject.AddComponent<AudioSource>();
+
+        foreach (AudioClip clip in sounds.Values)//trim down the list of sounds for efficiency?
+        {
+            foreach (string s in actor.Sounds.Values)
+            {
+                if (SoundInfo.soundInfo[s] == clip.name)
+                    usedSounds.Add(s, clip);
             }
         }
     }
@@ -134,6 +141,27 @@ public class ThingController : MonoBehaviour {
         // figure out the actual side
         return 1 + (int)(ang2 * sideFrames / 360f);
     }
+
+    public void A_Look()
+    {
+        //Looks for the target
+        //need LOS and front 180 degrees of thing to see the target
+        //Default target is player
+
+        //TODO: finish this
+        if (!Physics.Linecast(transform.position + new Vector3(0, actor.Health / 2, 0), target.position + new Vector3(0, actor.Health / 2, 0), ~(1 >> 8)))
+            stateController.state = actor.actorStates["See"];//if we 'see' the target, change the state
+    }
+
+    public void A_Chase()
+    {
+        //Goto(melee), or create LOS(ranged), with the target
+        //Need target, dont need LOS.
+        
+        //This is where things get complicated....PATH FINDING *dun dun dun*
+        
+    }
+
 
     Mesh createPlane()
     {
