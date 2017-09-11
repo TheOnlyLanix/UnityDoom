@@ -23,7 +23,6 @@ public class DoomPlayer : MonoBehaviour
     public int armorMax = 200;
 
     Transform cam;
-    Rigidbody rb;
     CharacterController cc;
 
     public float sensitivity = 1f;
@@ -109,7 +108,6 @@ public class DoomPlayer : MonoBehaviour
     void Start()
     {
         cam = transform.GetChild(0);//camera transform
-        rb = GetComponent<Rigidbody>();
         cc = GetComponent<CharacterController>();
         lastPos = transform.position;
     }
@@ -218,6 +216,14 @@ public class DoomPlayer : MonoBehaviour
         else
         {
             cam.localPosition = new Vector3(cam.localPosition.x, midpoint + height - 2, cam.localPosition.x);
+        }
+    }
+
+    public void OnControllerColliderHit(ControllerColliderHit hit)
+    {
+        if(hit.gameObject.layer == 9)
+        {
+
         }
     }
 
