@@ -104,11 +104,14 @@ public class DoomPlayer : MonoBehaviour
 
     public DoomHUD hud;
 
+    Vector3 lastPos;
+
     void Start()
     {
         cam = transform.GetChild(0);//camera transform
         rb = GetComponent<Rigidbody>();
         cc = GetComponent<CharacterController>();
+        lastPos = transform.position;
     }
 
     void Update()
@@ -160,7 +163,7 @@ public class DoomPlayer : MonoBehaviour
                 curMoveDir = moveDir;
 
         }
-
+        lastPos = transform.position;
         cc.Move(curMoveDir * Time.deltaTime);
 
         //Mouse look
@@ -173,6 +176,14 @@ public class DoomPlayer : MonoBehaviour
         horizontal = Input.GetAxis("Horizontal");
         vertical = Input.GetAxis("Vertical");
 
+    }
+
+    private void LateUpdate()
+    {
+       // if(Physics.Raycast(transform.position + new Vector3(0, height/2, 0), transform.forward, 30, (1 << 10)))
+        {
+        //    transform.position = lastPos;
+        }
     }
 
     void FixedUpdate()

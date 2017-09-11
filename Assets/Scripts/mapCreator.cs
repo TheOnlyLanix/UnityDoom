@@ -351,10 +351,10 @@ public class mapCreator : MonoBehaviour
                         continue;
 
                 newThing.AddComponent(MonsterType[thing.thingType]);
-
+                newThing.AddComponent<CharacterController>();
                 ThingController controller = newThing.AddComponent<ThingController>();
                 controller.OnCreate(reader.newWad.sprites, thing, reader.newWad.sounds);
-                
+                newThing.layer = 10;
 
             }
             else if (DecorationType.ContainsKey(thing.thingType))//if its a Decoration

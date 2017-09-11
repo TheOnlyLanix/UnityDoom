@@ -18,6 +18,7 @@ public class ThingController : MonoBehaviour {
     StateController stateController;
     Dictionary<string, AudioClip> usedSounds = new Dictionary<string, AudioClip>();
     Transform target;
+    CharacterController cc;
 
     //TODO: SOUNDS
     public void OnCreate(Dictionary<string, PICTURES> sprites, THINGS thing, Dictionary<string, AudioClip> sounds)
@@ -26,9 +27,10 @@ public class ThingController : MonoBehaviour {
         this.thing = thing;
         actor = GetComponent<Actor>();
         health = actor.Health; //sets the health of the actor
-        transform.rotation = Quaternion.Euler(0, thing.angle, 0);
+        transform.rotation = Quaternion.Euler(0, 360f - (thing.angle - 90), 0);
         gameObject.name = actor.Name;
         target = player.transform;//this can change if the thing gets hurt by something other than the player
+        cc = GetComponent<CharacterController>();
 
         //place the actor on the ceiling if it has the SPAWNCEILING flag set
         if (actor.SPAWNCEILING)
@@ -40,11 +42,19 @@ public class ThingController : MonoBehaviour {
             }
         }
 
-        if (actor.SOLID)//if the actor isnt solid, it shouldnt have a collider
+        if (actor.SOLID && !cc)//if the actor isnt solid, it shouldnt have a collider
         {
             BoxCollider collider = gameObject.AddComponent<BoxCollider>();
             collider.size = new Vector3(actor.Radius*2, actor.Height, actor.Radius*2);
             collider.center = new Vector3(0, actor.Height / 2f, 0);
+        }
+
+        //if its a monster essentially
+        if(cc)
+        {
+            cc.radius = actor.Radius;
+            cc.height = actor.Height;
+            cc.center = new Vector3(0, actor.Height / 2, 0);
         }
 
         sprObj = new GameObject("sprite");
@@ -115,9 +125,9 @@ public class ThingController : MonoBehaviour {
 
         foreach (AudioClip clip in sounds.Values)//trim down the list of sounds for efficiency?
         {
-            foreach (string s in actor.Sounds.Values)
+            foreach (string s in actor.Sounds.Keys)
             {
-                if (SoundInfo.soundInfo[s] == clip.name)
+                if (SoundInfo.soundInfo[actor.Sounds[s]].ToUpper().Contains(clip.name))
                     usedSounds.Add(s, clip);
             }
         }
@@ -148,18 +158,51 @@ public class ThingController : MonoBehaviour {
         //need LOS and front 180 degrees of thing to see the target
         //Default target is player
 
-        //TODO: finish this
-        if (!Physics.Linecast(transform.position + new Vector3(0, actor.Health / 2, 0), target.position + new Vector3(0, actor.Health / 2, 0), ~(1 >> 8)))
+        //TODO: finish this?
+        if (!Physics.Linecast(transform.position + new Vector3(0, actor.Height / 2, 0), target.position + new Vector3(0, actor.Height / 2, 0), ~(3 << 8)) &&
+            Quaternion.Angle(transform.rotation, sprObj.transform.rotation) > 90f)
+        {
             stateController.state = actor.actorStates["See"];//if we 'see' the target, change the state
+            PlaySound("SeeSound");
+        }
     }
 
     public void A_Chase()
     {
+        if (!cc)
+            return;
+
         //Goto(melee), or create LOS(ranged), with the target
         //Need target, dont need LOS.
-        
-        //This is where things get complicated....PATH FINDING *dun dun dun*
-        
+
+        //if there is LOS
+        if (!Physics.Linecast(transform.position + new Vector3(0, actor.Height / 2, 0), target.position + new Vector3(0, actor.Height / 2, 0), ~(3 << 8)) &&
+            actor.actorStates.ContainsKey("Missile"))
+        {
+            //melee if the monster can
+            if (actor.actorStates.ContainsKey("Melee") && Vector3.Distance(transform.position, target.transform.position) < 30)
+            {
+                //change states - Melee
+            }
+            else if (actor.actorStates.ContainsKey("Missile"))//otherwise missile
+            {
+                //change states - Missile
+            }
+        }
+        else if (!Physics.Linecast(transform.position + new Vector3(0, actor.Height / 2, 0), target.position + new Vector3(0, actor.Height / 2, 0), ~(3 << 8)) &&
+            actor.actorStates.ContainsKey("Melee") && Vector3.Distance(transform.position, target.transform.position) < 30)//LOS, Melee State, and Within range of Melee Attack
+        {
+            //change states - Melee
+        }
+        else//if there isnt LOS, or distance(for melee)..
+        {
+            //pathfinding
+        }
+    }
+
+    void PlaySound(string sound)
+    {
+        audioSource.PlayOneShot(usedSounds[sound], 0.5f);
     }
 
 
