@@ -162,7 +162,12 @@ public class DoomPlayer : MonoBehaviour
 
         }
         lastPos = transform.position;
-        cc.Move(curMoveDir * Time.deltaTime);
+
+        //TODO: This could be done better
+        Ray ray = new Ray(transform.position + new Vector3(0, height / 2, 0), curMoveDir);
+        if (!Physics.SphereCast(ray, radius, 30f, 1 << 10))
+            cc.Move(curMoveDir * Time.deltaTime);
+
 
         //Mouse look
         mouseInputX += Mathf.Lerp(mouseInputX, Input.GetAxis("Mouse X") * sensitivity, smoothing);
@@ -178,10 +183,7 @@ public class DoomPlayer : MonoBehaviour
 
     private void LateUpdate()
     {
-       // if(Physics.Raycast(transform.position + new Vector3(0, height/2, 0), transform.forward, 30, (1 << 10)))
-        {
-        //    transform.position = lastPos;
-        }
+
     }
 
     void FixedUpdate()
@@ -219,17 +221,9 @@ public class DoomPlayer : MonoBehaviour
         }
     }
 
-    public void OnControllerColliderHit(ControllerColliderHit hit)
-    {
-        if(hit.gameObject.layer == 9)
-        {
-
-        }
-    }
-
     public void TakeDamage(int damage)
     {
-        if(!god)
+        if (!god)
             health -= damage;
     }
 }
