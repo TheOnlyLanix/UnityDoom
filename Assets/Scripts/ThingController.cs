@@ -23,7 +23,7 @@ public class ThingController : MonoBehaviour
     bool walking = false;
     Vector3 walkDir;
     float walkTime = 0f;
-
+    float attackTimer = 0f;
     //TODO: SOUNDS
     public void OnCreate(Dictionary<string, PICTURES> sprites, THINGS thing, Dictionary<string, AudioClip> sounds)
     {
@@ -100,6 +100,7 @@ public class ThingController : MonoBehaviour
         // Use the state controller to set our texture according to angle from player
         Quaternion lookRot = Quaternion.LookRotation(transform.position - player.transform.position, Vector3.up);
         int angleTexIndex = pickSide(lookRot.eulerAngles.y - transform.rotation.eulerAngles.y);
+
         stateController.OverrideState(ref overrideState);
         stateController.Update();
 
@@ -119,6 +120,10 @@ public class ThingController : MonoBehaviour
                 sprObj.transform.localPosition = xOffset + yOffset;
             }
         }
+
+        if (attackTimer >= 0)
+            attackTimer -= Time.deltaTime;
+
     }
 
     void AddSounds(Dictionary<string, AudioClip> sounds)
@@ -148,10 +153,12 @@ public class ThingController : MonoBehaviour
         float ang2 = ang - (360f / sideFrames) / 2f;
 
         // offset angle by -90 degrees, to make north actually north
-        ang2 += 90;
+        //ang2 += 90;
+        ang2 += 180;
 
         // wrap the angle by 360 so we don't have any negative degrees
-        ang2 = (360f * 2f - thing.angle - ang2) % 360;
+        //ang2 = (360f * 2f - thing.angle - ang2) % 360;
+        ang2 = (360f * 2f - ang2) % 360;
 
         // figure out the actual side
         return 1 + (int)(ang2 * sideFrames / 360f);
@@ -182,7 +189,7 @@ public class ThingController : MonoBehaviour
 
         //if there is LOS
         if (!Physics.Linecast(transform.position + new Vector3(0, actor.Height / 2, 0), target.position + new Vector3(0, actor.Height / 2, 0), ~(3 << 8)) &&
-            actor.actorStates.ContainsKey("Missile"))
+            actor.actorStates.ContainsKey("Missile") && attackTimer <= 0)
         {
             //melee if the monster can
             if (actor.actorStates.ContainsKey("Melee") && Vector3.Distance(transform.position, target.transform.position) < 30)
@@ -190,20 +197,24 @@ public class ThingController : MonoBehaviour
                 //change states - Melee
                 string st = "Melee";
                 stateController.OverrideState(ref st);
+                attackTimer = 2f;
             }
             else if (actor.actorStates.ContainsKey("Missile"))//otherwise missile
             {
                 //change states - Missile
                 string st = "Missile";
                 stateController.OverrideState(ref st);
+                attackTimer = Mathf.Clamp(100/Vector3.Distance(transform.position, target.transform.position), 2, 8);
+
             }
         }
         else if (!Physics.Linecast(transform.position + new Vector3(0, actor.Height / 2, 0), target.position + new Vector3(0, actor.Height / 2, 0), ~(3 << 8)) &&
-            actor.actorStates.ContainsKey("Melee") && Vector3.Distance(transform.position, target.transform.position) < 30)//LOS, Melee State, and Within range of Melee Attack
+            actor.actorStates.ContainsKey("Melee") && Vector3.Distance(transform.position, target.transform.position) < 30 && attackTimer <= 0)//LOS, Melee State, and Within range of Melee Attack
         {
             //change states - Melee
             string st = "Melee";
             stateController.OverrideState(ref st);
+            attackTimer = 2f;
         }
         else//if there isnt LOS, or distance(for melee)..
         {
@@ -229,7 +240,7 @@ public class ThingController : MonoBehaviour
 
     public void A_FaceTarget()
     {
-        transform.rotation = sprObj.transform.rotation;
+        transform.rotation = Quaternion.LookRotation(target.position - transform.position, Vector3.up);
     }
 
     void WalkAround()
