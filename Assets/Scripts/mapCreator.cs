@@ -351,7 +351,7 @@ public class mapCreator : MonoBehaviour
                         continue;
 
                 newThing.AddComponent(MonsterType[thing.thingType]);
-                newThing.AddComponent<CharacterController>();
+                newThing.AddComponent<Rigidbody>();
                 ThingController controller = newThing.AddComponent<ThingController>();
                 controller.OnCreate(reader.newWad.sprites, thing, reader.newWad.sounds);
                 newThing.layer = 10;

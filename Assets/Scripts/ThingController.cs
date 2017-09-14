@@ -19,12 +19,13 @@ public class ThingController : MonoBehaviour
     StateController stateController;
     Dictionary<string, AudioClip> usedSounds = new Dictionary<string, AudioClip>();
     Transform target;
-    CharacterController cc;
+    Rigidbody rb;
     bool walking = false;
     Vector3 walkDir;
     float walkTime = 0f;
     float attackTimer = 0f;
-    //TODO: SOUNDS
+
+
     public void OnCreate(Dictionary<string, PICTURES> sprites, THINGS thing, Dictionary<string, AudioClip> sounds)
     {
         player = GameObject.FindGameObjectWithTag("Player");
@@ -34,7 +35,7 @@ public class ThingController : MonoBehaviour
         transform.rotation = Quaternion.Euler(0, 360f - (thing.angle - 90), 0);
         gameObject.name = actor.Name;
         target = player.transform;//this can change if the thing gets hurt by something other than the player
-        cc = GetComponent<CharacterController>();
+        rb = GetComponent<Rigidbody>();
 
         //place the actor on the ceiling if it has the SPAWNCEILING flag set
         if (actor.SPAWNCEILING)
@@ -46,7 +47,7 @@ public class ThingController : MonoBehaviour
             }
         }
 
-        if (actor.SOLID && !cc)//if the actor isnt solid, it shouldnt have a collider
+        if (actor.SOLID)//if the actor isnt solid, it shouldnt have a collider
         {
             BoxCollider collider = gameObject.AddComponent<BoxCollider>();
             collider.size = new Vector3(actor.Radius * 2, actor.Height, actor.Radius * 2);
@@ -54,12 +55,10 @@ public class ThingController : MonoBehaviour
         }
 
         //if its a monster essentially
-        if (cc)
+        if (rb)
         {
-            cc.radius = actor.Radius;
-            cc.height = actor.Height;
-            cc.center = new Vector3(0, actor.Height / 2, 0);
-            cc.stepOffset = 24;
+            rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+            rb.mass = actor.Mass;
         }
 
         sprObj = new GameObject("sprite");
@@ -105,6 +104,11 @@ public class ThingController : MonoBehaviour
         stateController.Update();
 
         PICTURES texture = stateController.UpdateMaterial(mr.material, angleTexIndex);
+
+        if(rb)
+        {
+            rb.velocity -= transform.up * 20;
+        }
 
         if (stateController.stopped)
             Destroy(gameObject);
@@ -171,7 +175,7 @@ public class ThingController : MonoBehaviour
         //Default target is player
 
         //TODO: finish this?
-        if (!Physics.Linecast(transform.position + new Vector3(0, actor.Height / 2, 0), target.position + new Vector3(0, actor.Height / 2, 0), ~(3 << 8)) &&
+        if (!Physics.Linecast(transform.position + new Vector3(0, actor.Height / 1.5f, 0), target.position + new Vector3(0, actor.Height / 1.5f, 0), ~(3 << 8)) &&
             Quaternion.Angle(transform.rotation, sprObj.transform.rotation) > 90f)
         {
             stateController.state = actor.actorStates["See"];//if we 'see' the target, change the state
@@ -181,14 +185,14 @@ public class ThingController : MonoBehaviour
 
     public void A_Chase()
     {
-        if (!cc)
+        if (!rb)
             return;
 
         //Goto(melee), or create LOS(ranged), with the target
         //Need target, dont need LOS.
 
         //if there is LOS
-        if (!Physics.Linecast(transform.position + new Vector3(0, actor.Height / 2, 0), target.position + new Vector3(0, actor.Height / 2, 0), ~(3 << 8)) &&
+        if (!Physics.Linecast(transform.position + new Vector3(0, actor.Height / 1.5f, 0), target.position + new Vector3(0, actor.Height / 1.5f, 0), ~(3 << 8)) &&
             actor.actorStates.ContainsKey("Missile") && attackTimer <= 0)
         {
             //melee if the monster can
@@ -208,7 +212,7 @@ public class ThingController : MonoBehaviour
 
             }
         }
-        else if (!Physics.Linecast(transform.position + new Vector3(0, actor.Height / 2, 0), target.position + new Vector3(0, actor.Height / 2, 0), ~(3 << 8)) &&
+        else if (!Physics.Linecast(transform.position + new Vector3(0, actor.Height / 1.5f, 0), target.position + new Vector3(0, actor.Height / 1.5f, 0), ~(3 << 8)) &&
             actor.actorStates.ContainsKey("Melee") && Vector3.Distance(transform.position, target.transform.position) < 30 && attackTimer <= 0)//LOS, Melee State, and Within range of Melee Attack
         {
             //change states - Melee
@@ -228,7 +232,16 @@ public class ThingController : MonoBehaviour
             else
             {
                 walkTime -= Time.deltaTime;
-                cc.SimpleMove(walkDir);
+
+                RaycastHit hit;
+                if(Physics.Raycast(transform.position + new Vector3(walkDir.x, 24, walkDir.z), -Vector3.up,out hit, 48))
+                {
+                    rb.velocity = walkDir;
+                    if(hit.point.y > transform.position.y)
+                        transform.position += new Vector3(0, hit.point.y - transform.position.y , 0);
+                }
+                    
+
                 Debug.DrawRay(transform.position + new Vector3(0, 25, 0), walkDir, Color.red);
 
                 if (walkTime <= 0)
@@ -240,7 +253,8 @@ public class ThingController : MonoBehaviour
 
     public void A_FaceTarget()
     {
-        transform.rotation = Quaternion.LookRotation(target.position - transform.position, Vector3.up);
+        Vector3 lookRot = Quaternion.LookRotation(target.position - transform.position, Vector3.up).eulerAngles;
+        transform.rotation = Quaternion.Euler(0, lookRot.y, 0);
     }
 
     void WalkAround()
@@ -262,7 +276,8 @@ public class ThingController : MonoBehaviour
         //direction is invalid if it is blocked
         for (int i = 0; i < directions.Count; i++)
         {
-            if (Physics.Raycast(transform.position + new Vector3(0, 25, 0), directions[i], actor.Radius * 2))
+            if (Physics.Raycast(transform.position + new Vector3(0, 25, 0), directions[i], actor.Radius * 2) &&
+                Physics.Raycast(transform.position + new Vector3(directions[i].x + actor.Radius*2, 1000, directions[i].z + actor.Radius * 2), Vector3.down, 1024))//valid height
             {
                 directions.Remove(directions[i]);
                 i--;
@@ -272,7 +287,8 @@ public class ThingController : MonoBehaviour
         //if the direction is closer to a player than the current position, add it to the likely list, otherwise, the unlikely list
         foreach(Vector3 vec in directions)
         {
-            if(Vector3.Distance(transform.position + vec, target.transform.position) < Vector3.Distance(transform.position, target.transform.position))
+            if(Vector3.Distance(transform.position + vec, target.transform.position) < Vector3.Distance(transform.position, target.transform.position) &&
+                Vector3.Distance(transform.position, target.transform.position) > 30f)
                 likelyDirection.Add(vec);
             else
                 unlikelyDirection.Add(vec);
