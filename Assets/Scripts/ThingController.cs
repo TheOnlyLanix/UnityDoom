@@ -36,6 +36,7 @@ public class ThingController : MonoBehaviour
         gameObject.name = actor.Name;
         target = player.transform;//this can change if the thing gets hurt by something other than the player
         rb = GetComponent<Rigidbody>();
+        tag = "Monster";
 
         //place the actor on the ceiling if it has the SPAWNCEILING flag set
         if (actor.SPAWNCEILING)
@@ -228,6 +229,7 @@ public class ThingController : MonoBehaviour
                 walking = true;
                 WalkAround();
                 transform.rotation = Quaternion.LookRotation(walkDir, transform.up);
+                
             }
             else
             {
@@ -255,6 +257,47 @@ public class ThingController : MonoBehaviour
     {
         Vector3 lookRot = Quaternion.LookRotation(target.position - transform.position, Vector3.up).eulerAngles;
         transform.rotation = Quaternion.Euler(0, lookRot.y, 0);
+    }
+
+    public void A_PosAttack()
+    {
+        PlaySound("AttackSound");
+
+        RaycastHit hit;
+
+        Vector3 dir = new Vector3((target.transform.position.x - transform.position.x) + UnityEngine.Random.Range(-22.5f, 22.5f),
+            target.transform.position.y - transform.position.y - actor.Height/2,
+            (target.transform.position.z - transform.position.z) + UnityEngine.Random.Range(-22.5f, 22.5f));
+
+        if(Physics.Raycast(transform.position + new Vector3(0, actor.Height/1.5f, 0), dir, out hit, 10000f))
+        {
+            Debug.DrawLine(transform.position + new Vector3(0, actor.Height / 1.5f, 0), hit.point, Color.blue, 5f);
+
+            if(hit.collider.tag == player.tag)
+            {
+                //hit the player
+                player.GetComponent<DoomPlayer>().health -= UnityEngine.Random.Range(1, 5) * 3;
+            }
+            else if(hit.collider.tag == gameObject.tag ) //monster
+            {
+                hit.transform.GetComponent<ThingController>().health -= UnityEngine.Random.Range(1, 5) * 3;
+                hit.transform.GetComponent<ThingController>().target = gameObject.transform;
+            }
+            else
+            {
+                //Debug.Log("Hit a wall!", hit.collider.gameObject);
+                //bulletpuff on the wall
+                //instansiate a bulletpuff particle, gameObject, SOMETHING
+            }
+        }
+
+    }
+
+    public void A_Scream()
+    {
+        PlaySound("DeathSound");
+        string st = "Death";
+        stateController.OverrideState(ref st);
     }
 
     void WalkAround()

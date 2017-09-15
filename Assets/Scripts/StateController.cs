@@ -12,7 +12,6 @@ public class StateController
     int infoIndex = 0;
     int sprIndex = 0;
     public bool stopped = false;
-    AudioSource audioSource;
     GameObject go;
     Vector2[] StartUV = new Vector2[4];
     Vector2[] FlipUV = new Vector2[4];
@@ -83,6 +82,8 @@ public class StateController
             if (state.info[infoIndex].time < 0) { return; } // if time is -1, never advance from here
             time -= state.info[infoIndex].time / ticksPerSecond;
             sprIndex++;
+            //functions
+            string funct = state.info[infoIndex].function;
 
             // if we've run out of sprIndices, advance the infoIndex
             if (sprIndex >= state.info[infoIndex].sprInd.Length)
@@ -138,20 +139,31 @@ public class StateController
                 }
                 else
                     brightLight.enabled = false;
+
+
+                if ((funct != "" && funct != null && tCont != null))
+                {
+                    if (funct == "A_PosAttack")
+                        tCont.A_PosAttack();
+                    else if (funct == "A_Scream")
+                        tCont.A_Scream();
+                }
+            }
+
+
+            if ((funct != "" && funct != null && tCont != null))
+            {
+                if (funct == "A_Look")
+                    tCont.A_Look();
+                else if (funct == "A_Chase")
+                    tCont.A_Chase();
+                else if (funct == "A_FaceTarget")
+                    tCont.A_FaceTarget();
+
             }
         }
 
-        //functions
-        string funct = state.info[infoIndex].function;
-        if ((funct != "" && funct != null && tCont != null))
-        {
-            if (funct == "A_Look")
-                tCont.A_Look();
-            else if (funct == "A_Chase")
-                tCont.A_Chase();
-            else if (funct == "A_FaceTarget")
-                tCont.A_FaceTarget();
-        }
+
     }
 
     public PICTURES UpdateMaterial(Material mat, int side)
