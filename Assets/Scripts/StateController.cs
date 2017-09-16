@@ -145,6 +145,7 @@ public class StateController
         string funct = state.info[infoIndex].function;
         if ((funct != "" && funct != null && tCont != null))
         {
+            
             if (funct == "A_Look")
                 tCont.A_Look();
             else if (funct == "A_Chase")
@@ -159,7 +160,9 @@ public class StateController
                 tCont.A_NoBlocking();
             else if (funct == "A_Pain")
                 tCont.A_Pain();
+                
 
+            //tCont.Invoke(funct, 0f);
         }
 
     }
@@ -174,6 +177,9 @@ public class StateController
 
         foreach (PICTURES sprite in sprites)
         {
+            if (!sprite.texture.name.Contains(state.info[infoIndex].spr))
+                continue;
+
             if (sprite.texture.name.Substring(4).Contains(sprAndSide))
             {
                 mat.mainTexture = sprite.texture;
@@ -191,6 +197,9 @@ public class StateController
         sprAndSide = state.info[infoIndex].sprInd[sprIndex] + "0";
         foreach (PICTURES sprite in sprites)
         {
+            if (!sprite.texture.name.Contains(state.info[infoIndex].spr))
+                continue;
+
             if (sprite.texture.name.Substring(4).Contains(sprAndSide))
             {
                 mat.mainTexture = sprite.texture;

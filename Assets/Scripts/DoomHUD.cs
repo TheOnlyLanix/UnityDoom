@@ -50,15 +50,8 @@ public class DoomHUD : MonoBehaviour {
 
     public int health = 100;
     int oldHealth = 0;
-    bool hurt = false;
     int healthInd = 0;
 
-    Font STTNUM;
-    Font STCFN;
-    Font STYSNUM;
-    Font STGNUM;
-
-    float time = 0;
     Dictionary<string, Sprite> faces = new Dictionary<string, Sprite>();
     string newfaceName = "STFST00";
 

@@ -20,6 +20,67 @@ public class BFG9000 : Actor                 // BFG 9000
                        new StateInfo{function = "Stop" }
                    }
                }
+            },
+            {"Ready", new State
+                {
+                   info = new List<StateInfo>
+                   {
+                       new StateInfo{spr = "BFGG", sprInd = "A", time = 1, function = "A_WeaponReady"},
+                       new StateInfo{function = "Loop" }
+                   }
+               }
+            },
+            {"Deselect", new State
+                {
+                   info = new List<StateInfo>
+                   {
+                       new StateInfo{spr = "BFGG", sprInd = "A", time = 1, function = "A_Lower"},
+                       new StateInfo{function = "Loop" }
+                   }
+               }
+            },
+            {"Select", new State
+                {
+                   info = new List<StateInfo>
+                   {
+                       new StateInfo{spr = "BFGG", sprInd = "A", time = 1, function = "A_Raise"},
+                       new StateInfo{function = "Ready" }
+                   }
+               }
+            },
+            {"Fire", new State
+                {
+                   info = new List<StateInfo>
+                   {
+                       new StateInfo{spr = "BFGG", sprInd = "A", time = 20, function = "A_BFGSound"},
+                       new StateInfo{spr = "BFGG", sprInd = "B", time = 10, function = "A_GunFlash"},
+                       new StateInfo{spr = "BFGG", sprInd = "B", time = 10, function = "A_FireBFG"},
+                       new StateInfo{spr = "BFGG", sprInd = "B", time = 20, function = "A_ReFire"},
+                       new StateInfo{function = "Ready" }
+                   }
+               }
+            },
+            {"Flash", new State
+                {
+                   info = new List<StateInfo>
+                   {
+                       new StateInfo{spr = "BFGF", sprInd = "A", time = 20, function = "A_Light1"},
+                       new StateInfo{spr = "BFGF", sprInd = "B", time = 10, function = "A_Light2"},
+                       new StateInfo{function = "LightDone" }
+                   }
+               }
+            },
+            {"OldFire", new State
+                {
+                   info = new List<StateInfo>
+                   {
+                       new StateInfo{spr = "BFGG", sprInd = "A", time = 10, function = "A_BFGSound"},
+                       new StateInfo{spr = "BFGG", sprInd = "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB", time = 1, function = "A_FireOldBFG"},
+                       new StateInfo{spr = "BFGG", sprInd = "B", time = 0, function = "A_Light0"},
+                       new StateInfo{spr = "BFGG", sprInd = "B", time = 20, function = "A_ReFire"},
+                       new StateInfo{function = "Ready" }
+                   }
+               }
             }
         };
     }
@@ -45,6 +106,54 @@ public class Chaingun : Actor                // Chaingun
                        new StateInfo{function = "Stop" }
                    }
                }
+            },
+            {"Ready", new State
+                {
+                   info = new List<StateInfo>
+                   {
+                       new StateInfo{spr = "CHGG", sprInd = "A", time = 1, function = "A_WeaponReady"},
+                       new StateInfo{function = "Loop" }
+                   }
+               }
+            },
+            {"Deselect", new State
+                {
+                   info = new List<StateInfo>
+                   {
+                       new StateInfo{spr = "CHGG", sprInd = "A", time = 1, function = "A_Lower"},
+                       new StateInfo{function = "Loop" }
+                   }
+               }
+            },
+            {"Select", new State
+                {
+                   info = new List<StateInfo>
+                   {
+                       new StateInfo{spr = "CHGG", sprInd = "A", time = 1, function = "A_Raise"},
+                       new StateInfo{function = "Loop" }
+                   }
+               }
+            },
+            {"Fire", new State
+                {
+                   info = new List<StateInfo>
+                   {
+                       new StateInfo{spr = "CHGG", sprInd = "AB", time = 4, function = "A_FireCGun"},
+                       new StateInfo{spr = "CHGG", sprInd = "A", time = 0, function = "A_ReFire"},
+                       new StateInfo{function = "Ready" }
+                   }
+               }
+            },
+            {"Flash", new State
+                {
+                   info = new List<StateInfo>
+                   {
+                       new StateInfo{spr = "CHGF", sprInd = "A", time = 5, bright = true, function = "A_Light1"},
+                       new StateInfo{function = "LightDone"},
+                       new StateInfo{spr = "CHGF", sprInd = "B", time = 5, bright = true, function = "A_Light1"},
+                       new StateInfo{function = "LightDone"}
+                   }
+               }
             }
         };
     }
@@ -68,6 +177,43 @@ public class Chainsaw : Actor                // Chainsaw
                    {
                        new StateInfo{spr = "CSAW", sprInd = "A", time = -1},
                        new StateInfo{function = "Stop" }
+                   }
+               }
+            },
+            {"Ready", new State
+                {
+                   info = new List<StateInfo>
+                   {
+                       new StateInfo{spr = "SAWG", sprInd = "CD", time = 4, function = "A_WeaponReady"},
+                       new StateInfo{function = "Loop" }
+                   }
+               }
+            },
+            {"Deselect", new State
+                {
+                   info = new List<StateInfo>
+                   {
+                       new StateInfo{spr = "SAWG", sprInd = "C", time = 1, function = "A_Lower"},
+                       new StateInfo{function = "Loop" }
+                   }
+               }
+            },
+            {"Select", new State
+                {
+                   info = new List<StateInfo>
+                   {
+                       new StateInfo{spr = "SAWG", sprInd = "C", time = 1, function = "A_Raise"},
+                       new StateInfo{function = "Loop" }
+                   }
+               }
+            },
+            {"Fire", new State
+                {
+                   info = new List<StateInfo>
+                   {
+                       new StateInfo{spr = "SAWG", sprInd = "AB", time = 4, function = "A_Saw"},
+                       new StateInfo{spr = "SAWG", sprInd = "B", time = 0, function = "A_ReFire"},
+                       new StateInfo{function = "Ready" }
                    }
                }
             }
@@ -99,6 +245,56 @@ public class Pistol : Actor                  // Pistol
                        new StateInfo{function = "Stop" }
                    }
                }
+            },
+            {"Ready", new State
+                {
+                   info = new List<StateInfo>
+                   {
+                       new StateInfo{spr = "PISG", sprInd = "A", time = 1, function = "A_WeaponReady"},
+                       new StateInfo{function = "Loop" }
+                   }
+               }
+            },
+            {"Deselect", new State
+                {
+                   info = new List<StateInfo>
+                   {
+                       new StateInfo{spr = "PISG", sprInd = "A", time = 1, function = "A_Lower"},
+                       new StateInfo{function = "Loop" }
+                   }
+               }
+            },
+            {"Select", new State
+                {
+                   info = new List<StateInfo>
+                   {
+                       new StateInfo{spr = "PISG", sprInd = "A", time = 1, function = "A_Raise"},
+                       new StateInfo{function = "Loop" }
+                   }
+               }
+            },
+            {"Fire", new State
+                {
+                   info = new List<StateInfo>
+                   {
+                       new StateInfo{spr = "PISG", sprInd = "A", time = 4},
+                       new StateInfo{spr = "PISG", sprInd = "B", time = 6, function = "A_FirePistol"},
+                       new StateInfo{spr = "PISG", sprInd = "C", time = 4},
+                       new StateInfo{spr = "PISG", sprInd = "B", time = 5, function = "A_ReFire"},
+                       new StateInfo{function = "Ready" }
+                   }
+               }
+            },
+            {"Flash", new State
+                {
+                   info = new List<StateInfo>
+                   {
+                       new StateInfo{spr = "PISF", sprInd = "A", time = 7, bright = true, function = "A_Light1"},
+                       new StateInfo{function = "LightDone"},
+                       new StateInfo{spr = "PISF", sprInd = "A", time = 7, bright = true, function = "A_Light1"},
+                       new StateInfo{function = "LightDone"}
+                   }
+               }
             }
         };
     }
@@ -122,6 +318,54 @@ public class PlasmaRifle : Actor             // Plasma Gun
                    {
                        new StateInfo{spr = "PLAS", sprInd = "A", time = -1},
                        new StateInfo{function = "Stop" }
+                   }
+               }
+            },
+            {"Ready", new State
+                {
+                   info = new List<StateInfo>
+                   {
+                       new StateInfo{spr = "PLSG", sprInd = "A", time = 1, function = "A_WeaponReady"},
+                       new StateInfo{function = "Loop" }
+                   }
+               }
+            },
+            {"Deselect", new State
+                {
+                   info = new List<StateInfo>
+                   {
+                       new StateInfo{spr = "PLSG", sprInd = "A", time = 1, function = "A_Lower"},
+                       new StateInfo{function = "Loop" }
+                   }
+               }
+            },
+            {"Select", new State
+                {
+                   info = new List<StateInfo>
+                   {
+                       new StateInfo{spr = "PLSG", sprInd = "A", time = 1, function = "A_Raise"},
+                       new StateInfo{function = "Loop" }
+                   }
+               }
+            },
+            {"Fire", new State
+                {
+                   info = new List<StateInfo>
+                   {
+                       new StateInfo{spr = "PLSG", sprInd = "A", time = 3, function = "A_FirePlasma"},
+                       new StateInfo{spr = "PLSG", sprInd = "B", time = 20, function = "A_ReFire"},
+                       new StateInfo{function = "Ready" }
+                   }
+               }
+            },
+            {"Flash", new State
+                {
+                   info = new List<StateInfo>
+                   {
+                       new StateInfo{spr = "PLSF", sprInd = "A", time = 4, bright = true, function = "A_Light1"},
+                       new StateInfo{function = "LightDone"},
+                       new StateInfo{spr = "PLSF", sprInd = "A", time = 4, bright = true, function = "A_Light1"},
+                       new StateInfo{function = "LightDone"}
                    }
                }
             }
@@ -149,6 +393,55 @@ public class RocketLauncher : Actor          // Rocket Launcher
                        new StateInfo{function = "Stop" }
                    }
                }
+            },
+            {"Ready", new State
+                {
+                   info = new List<StateInfo>
+                   {
+                       new StateInfo{spr = "MISG", sprInd = "A", time = 1, function = "A_WeaponReady"},
+                       new StateInfo{function = "Loop" }
+                   }
+               }
+            },
+            {"Deselect", new State
+                {
+                   info = new List<StateInfo>
+                   {
+                       new StateInfo{spr = "MISG", sprInd = "A", time = 1, function = "A_Lower"},
+                       new StateInfo{function = "Loop" }
+                   }
+               }
+            },
+            {"Select", new State
+                {
+                   info = new List<StateInfo>
+                   {
+                       new StateInfo{spr = "MISG", sprInd = "A", time = 1, function = "A_Raise"},
+                       new StateInfo{function = "Loop" }
+                   }
+               }
+            },
+            {"Fire", new State
+                {
+                   info = new List<StateInfo>
+                   {
+                       new StateInfo{spr = "MISG", sprInd = "B", time = 8, function = "A_GunFlash"},
+                       new StateInfo{spr = "MISG", sprInd = "B", time = 12, function = "A_FireMissile"},
+                       new StateInfo{spr = "MISG", sprInd = "B", time = 0, function = "A_ReFire"},
+                       new StateInfo{function = "Ready" }
+                   }
+               }
+            },
+            {"Flash", new State
+                {
+                   info = new List<StateInfo>
+                   {
+                       new StateInfo{spr = "MISF", sprInd = "A", time = 3, bright = true, function = "A_Light1"},
+                       new StateInfo{spr = "MISF", sprInd = "B", time = 4, bright = true},
+                       new StateInfo{spr = "MISF", sprInd = "CD", time = 4, bright = true, function = "A_Light2"},
+                       new StateInfo{function = "LightDone"}
+                   }
+               }
             }
         };
     }
@@ -174,6 +467,58 @@ public class Shotgun : Actor                 // Shotgun
                        new StateInfo{function = "Stop" }
                    }
                }
+            },
+            {"Ready", new State
+                {
+                   info = new List<StateInfo>
+                   {
+                       new StateInfo{spr = "SHTG", sprInd = "A", time = 1, function = "A_WeaponReady"},
+                       new StateInfo{function = "Loop" }
+                   }
+               }
+            },
+            {"Deselect", new State
+                {
+                   info = new List<StateInfo>
+                   {
+                       new StateInfo{spr = "SHTG", sprInd = "A", time = 1, function = "A_Lower"},
+                       new StateInfo{function = "Loop" }
+                   }
+               }
+            },
+            {"Select", new State
+                {
+                   info = new List<StateInfo>
+                   {
+                       new StateInfo{spr = "SHTG", sprInd = "A", time = 1, function = "A_Raise"},
+                       new StateInfo{function = "Loop" }
+                   }
+               }
+            },
+            {"Fire", new State
+                {
+                   info = new List<StateInfo>
+                   {
+                       new StateInfo{spr = "SHTG", sprInd = "B", time = 3},
+                       new StateInfo{spr = "SHTG", sprInd = "B", time = 7, function = "A_FireShotgun"},
+                       new StateInfo{spr = "SHTG", sprInd = "BC", time = 5},
+                       new StateInfo{spr = "SHTG", sprInd = "D", time = 4},
+                       new StateInfo{spr = "SHTG", sprInd = "CB", time = 5},
+                       new StateInfo{spr = "SHTG", sprInd = "A", time = 3},
+                       new StateInfo{spr = "SHTG", sprInd = "A", time = 7, function = "A_ReFire"},
+                       new StateInfo{function = "Ready" }
+                   }
+               }
+            },
+            {"Flash", new State
+                {
+                   info = new List<StateInfo>
+                   {
+                       new StateInfo{spr = "SHTF", sprInd = "A", time = 4, bright = true, function = "A_Light1"},
+                       new StateInfo{spr = "SHTF", sprInd = "B", time = 3, bright = true, function = "A_Light2"},
+                       new StateInfo{function = "LightDone"}
+                   }
+               }
             }
         };
     }
@@ -197,6 +542,61 @@ public class SuperShotgun : Actor            // Double-barreled Shotgun
                    {
                        new StateInfo{spr = "SGN2", sprInd = "A", time = -1},
                        new StateInfo{function = "Stop" }
+                   }
+               }
+            },
+            {"Ready", new State
+                {
+                   info = new List<StateInfo>
+                   {
+                       new StateInfo{spr = "SHT2", sprInd = "A", time = 1, function = "A_WeaponReady"},
+                       new StateInfo{function = "Loop" }
+                   }
+               }
+            },
+            {"Deselect", new State
+                {
+                   info = new List<StateInfo>
+                   {
+                       new StateInfo{spr = "SHT2", sprInd = "A", time = 1, function = "A_Lower"},
+                       new StateInfo{function = "Loop" }
+                   }
+               }
+            },
+            {"Select", new State
+                {
+                   info = new List<StateInfo>
+                   {
+                       new StateInfo{spr = "SHT2", sprInd = "A", time = 1, function = "A_Raise"},
+                       new StateInfo{function = "Loop" }
+                   }
+               }
+            },
+            {"Fire", new State
+                {
+                   info = new List<StateInfo>
+                   {
+                       new StateInfo{spr = "SHT2", sprInd = "A", time = 3},
+                       new StateInfo{spr = "SHT2", sprInd = "A", time = 7, function = "A_FireShotgun2"},
+                       new StateInfo{spr = "SHT2", sprInd = "B", time = 7},
+                       new StateInfo{spr = "SHT2", sprInd = "C", time = 7, function = "A_CheckReload"},
+                       new StateInfo{spr = "SHT2", sprInd = "D", time = 7, function = "A_OpenShotgun2"},
+                       new StateInfo{spr = "SHT2", sprInd = "E", time = 7},
+                       new StateInfo{spr = "SHT2", sprInd = "F", time = 7, function = "A_LoadShotgun2"},
+                       new StateInfo{spr = "SHT2", sprInd = "G", time = 6},
+                       new StateInfo{spr = "SHT2", sprInd = "H", time = 6, function = "A_CloseShotgun2"},
+                       new StateInfo{spr = "SHT2", sprInd = "A", time = 5, function = "A_ReFire"},
+                       new StateInfo{function = "Ready" }
+                   }
+               }
+            },
+            {"Flash", new State
+                {
+                   info = new List<StateInfo>
+                   {
+                       new StateInfo{spr = "SHT2", sprInd = "I", time = 4, bright = true, function = "A_Light1"},
+                       new StateInfo{spr = "SHT2", sprInd = "J", time = 3, bright = true, function = "A_Light2"},
+                       new StateInfo{function = "LightDone"}
                    }
                }
             }
