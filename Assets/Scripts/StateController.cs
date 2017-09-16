@@ -83,7 +83,6 @@ public class StateController
             time -= state.info[infoIndex].time / ticksPerSecond;
             sprIndex++;
             //functions
-            string funct = state.info[infoIndex].function;
 
             // if we've run out of sprIndices, advance the infoIndex
             if (sprIndex >= state.info[infoIndex].sprInd.Length)
@@ -140,29 +139,28 @@ public class StateController
                 else
                     brightLight.enabled = false;
 
-
-                if ((funct != "" && funct != null && tCont != null))
-                {
-                    if (funct == "A_PosAttack")
-                        tCont.A_PosAttack();
-                    else if (funct == "A_Scream")
-                        tCont.A_Scream();
-                }
-            }
-
-
-            if ((funct != "" && funct != null && tCont != null))
-            {
-                if (funct == "A_Look")
-                    tCont.A_Look();
-                else if (funct == "A_Chase")
-                    tCont.A_Chase();
-                else if (funct == "A_FaceTarget")
-                    tCont.A_FaceTarget();
-
             }
         }
 
+        string funct = state.info[infoIndex].function;
+        if ((funct != "" && funct != null && tCont != null))
+        {
+            if (funct == "A_Look")
+                tCont.A_Look();
+            else if (funct == "A_Chase")
+                tCont.A_Chase();
+            else if (funct == "A_FaceTarget")
+                tCont.A_FaceTarget();
+            else if (funct == "A_PosAttack")
+                tCont.A_PosAttack();
+            else if (funct == "A_Scream")
+                tCont.A_Scream();
+            else if (funct == "A_NoBlocking")
+                tCont.A_NoBlocking();
+            else if (funct == "A_Pain")
+                tCont.A_Pain();
+
+        }
 
     }
 

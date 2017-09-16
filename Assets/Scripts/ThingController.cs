@@ -24,6 +24,7 @@ public class ThingController : MonoBehaviour
     Vector3 walkDir;
     float walkTime = 0f;
     float attackTimer = 0f;
+    bool attacking = false;
 
 
     public void OnCreate(Dictionary<string, PICTURES> sprites, THINGS thing, Dictionary<string, AudioClip> sounds)
@@ -127,7 +128,10 @@ public class ThingController : MonoBehaviour
         }
 
         if (attackTimer >= 0)
+        {
             attackTimer -= Time.deltaTime;
+        }
+            
 
     }
 
@@ -176,7 +180,7 @@ public class ThingController : MonoBehaviour
         //Default target is player
 
         //TODO: finish this?
-        if (!Physics.Linecast(transform.position + new Vector3(0, actor.Height / 1.5f, 0), target.position + new Vector3(0, actor.Height / 1.5f, 0), ~(3 << 8)) &&
+        if (!Physics.Linecast(transform.position + new Vector3(0, actor.Height / 1.5f, 0), target.position + new Vector3(0, actor.Height / 1.5f, 0), ~((1 << 8) | (1 << 10))) &&
             Quaternion.Angle(transform.rotation, sprObj.transform.rotation) > 90f)
         {
             stateController.state = actor.actorStates["See"];//if we 'see' the target, change the state
@@ -193,7 +197,7 @@ public class ThingController : MonoBehaviour
         //Need target, dont need LOS.
 
         //if there is LOS
-        if (!Physics.Linecast(transform.position + new Vector3(0, actor.Height / 1.5f, 0), target.position + new Vector3(0, actor.Height / 1.5f, 0), ~(3 << 8)) &&
+        if (!Physics.Linecast(transform.position + new Vector3(0, actor.Height / 1.5f, 0), target.position + new Vector3(0, actor.Height / 1.5f, 0), ~((1 << 8) | (1 << 10))) &&
             actor.actorStates.ContainsKey("Missile") && attackTimer <= 0)
         {
             //melee if the monster can
@@ -203,6 +207,7 @@ public class ThingController : MonoBehaviour
                 string st = "Melee";
                 stateController.OverrideState(ref st);
                 attackTimer = 2f;
+                attacking = true;
             }
             else if (actor.actorStates.ContainsKey("Missile"))//otherwise missile
             {
@@ -210,16 +215,18 @@ public class ThingController : MonoBehaviour
                 string st = "Missile";
                 stateController.OverrideState(ref st);
                 attackTimer = Mathf.Clamp(100/Vector3.Distance(transform.position, target.transform.position), 2, 8);
+                attacking = true;
 
             }
         }
-        else if (!Physics.Linecast(transform.position + new Vector3(0, actor.Height / 1.5f, 0), target.position + new Vector3(0, actor.Height / 1.5f, 0), ~(3 << 8)) &&
+        else if (!Physics.Linecast(transform.position + new Vector3(0, actor.Height / 1.5f, 0), target.position + new Vector3(0, actor.Height / 1.5f, 0), ~((1 << 8) | (1 << 10))) &&
             actor.actorStates.ContainsKey("Melee") && Vector3.Distance(transform.position, target.transform.position) < 30 && attackTimer <= 0)//LOS, Melee State, and Within range of Melee Attack
         {
             //change states - Melee
             string st = "Melee";
             stateController.OverrideState(ref st);
             attackTimer = 2f;
+            attacking = true;
         }
         else//if there isnt LOS, or distance(for melee)..
         {
@@ -261,15 +268,20 @@ public class ThingController : MonoBehaviour
 
     public void A_PosAttack()
     {
+        if (!attacking)
+            return;
+
+        attacking = false;
+
         PlaySound("AttackSound");
 
-        RaycastHit hit;
 
         Vector3 dir = new Vector3((target.transform.position.x - transform.position.x) + UnityEngine.Random.Range(-22.5f, 22.5f),
             target.transform.position.y - transform.position.y - actor.Height/2,
             (target.transform.position.z - transform.position.z) + UnityEngine.Random.Range(-22.5f, 22.5f));
 
-        if(Physics.Raycast(transform.position + new Vector3(0, actor.Height/1.5f, 0), dir, out hit, 10000f))
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position + new Vector3(0, actor.Height/1.5f, 0), dir, out hit, 10000f))
         {
             Debug.DrawLine(transform.position + new Vector3(0, actor.Height / 1.5f, 0), hit.point, Color.blue, 5f);
 
@@ -280,8 +292,8 @@ public class ThingController : MonoBehaviour
             }
             else if(hit.collider.tag == gameObject.tag ) //monster
             {
-                hit.transform.GetComponent<ThingController>().health -= UnityEngine.Random.Range(1, 5) * 3;
-                hit.transform.GetComponent<ThingController>().target = gameObject.transform;
+                if (hit.transform.GetComponent<ThingController>().gotHurt(UnityEngine.Random.Range(1, 5) * 3, gameObject.transform))
+                    target = player.transform;
             }
             else
             {
@@ -293,11 +305,45 @@ public class ThingController : MonoBehaviour
 
     }
 
+    public void A_Pain()
+    {
+        if (!audioSource.isPlaying)
+            PlaySound("PainSound");
+    }
+
     public void A_Scream()
     {
-        PlaySound("DeathSound");
-        string st = "Death";
-        stateController.OverrideState(ref st);
+        if(!audioSource.isPlaying)
+            PlaySound("DeathSound");
+    }
+
+    public void A_NoBlocking()
+    {
+        if(GetComponent<BoxCollider>() != null)
+        {
+            rb.isKinematic = true;
+            Destroy(GetComponent<BoxCollider>());
+        }
+    }
+
+    public bool gotHurt(int damage, Transform targ)
+    {
+        health -= damage;
+        target = targ;
+
+        if(health <= 0)
+        {
+            string st = "Death";
+            stateController.OverrideState(ref st);
+            return true;
+        }
+        else
+        {
+            string st = "Pain";
+            stateController.OverrideState(ref st);
+        }
+
+        return false;
     }
 
     void WalkAround()
@@ -320,7 +366,7 @@ public class ThingController : MonoBehaviour
         for (int i = 0; i < directions.Count; i++)
         {
             if (Physics.Raycast(transform.position + new Vector3(0, 25, 0), directions[i], actor.Radius * 2) &&
-                Physics.Raycast(transform.position + new Vector3(directions[i].x + actor.Radius*2, 1000, directions[i].z + actor.Radius * 2), Vector3.down, 1024))//valid height
+                !Physics.Raycast(transform.position + new Vector3(directions[i].x + actor.Radius*2, 1000, directions[i].z + actor.Radius * 2), Vector3.down, 1024))//valid height
             {
                 directions.Remove(directions[i]);
                 i--;
