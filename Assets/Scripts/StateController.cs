@@ -79,10 +79,11 @@ public class StateController
         // if we've spent enough time in current sprIndex, advance sprIndex
         if (time >= state.info[infoIndex].time / ticksPerSecond)
         {
+            
             if (state.info[infoIndex].time < 0) { return; } // if time is -1, never advance from here
             time -= state.info[infoIndex].time / ticksPerSecond;
             sprIndex++;
-            //functions
+
 
             // if we've run out of sprIndices, advance the infoIndex
             if (sprIndex >= state.info[infoIndex].sprInd.Length)

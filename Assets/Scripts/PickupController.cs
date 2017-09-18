@@ -19,6 +19,14 @@ public class PickupController : MonoBehaviour
     StateController stateController;
     Dictionary<string, AudioClip> sounds;
 
+    List<string> weapons = new List<string>
+    {
+        "DoomFist", "Pistol",
+        "Shotgun", "SuperShotgun",
+        "RocketLauncher", "PlasmaRifle",
+        "Chainsaw", "Chaingun", "BFG9000"
+    };
+
     //TODO: SOUNDS
     public void OnCreate(Dictionary<string, PICTURES> sprites, THINGS thing, Dictionary<string, AudioClip> snds)
     {
@@ -69,6 +77,7 @@ public class PickupController : MonoBehaviour
                 audioSource.Play();
                 sprObj.GetComponent<MeshRenderer>().enabled = false;
                 StartCoroutine(Destroy(audioSource.clip.length));
+
             }
                 
         }

@@ -108,7 +108,7 @@ public class DoomHUD : MonoBehaviour {
 
     private void Update()
     {
-        StatBar.rectTransform.sizeDelta = new Vector2(Screen.width + 15, (Screen.width + 15) / 10);
+        //StatBar.rectTransform.sizeDelta = new Vector2(Screen.width + 15, (Screen.width + 15) / 10);
         Health.text = health + "%";
         Ammo.text = ammo + "";
         Armor.text = armor + "%";

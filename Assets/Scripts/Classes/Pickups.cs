@@ -1,11 +1,17 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 
 //Weapons
 
-public class BFG9000 : Actor                 // BFG 9000
+public class Weapon : Actor
+{
+
+}
+
+public class BFG9000 : Weapon                 // BFG 9000
 {
     public void Awake()
     {
@@ -87,11 +93,20 @@ public class BFG9000 : Actor                 // BFG 9000
 
     public override bool PickedUp(DoomPlayer player, Inventory inv)
     {
-        inv.BFG9000 = true;
+        if (!inv.BFG9000)
+        {
+            inv.BFG9000 = player.gameObject.AddComponent<BFG9000>();
+        }
+
+        if (inv.cell < inv.cellMax - 20)
+            inv.cell += 20;//give the player some ammo
+        else
+            inv.cell = inv.cellMax;
+
         return true;
     }
 }
-public class Chaingun : Actor                // Chaingun
+public class Chaingun : Weapon                // Chaingun
 {
     public void Awake()
     {
@@ -160,11 +175,20 @@ public class Chaingun : Actor                // Chaingun
 
     public override bool PickedUp(DoomPlayer player, Inventory inv)
     {
-        inv.chaingun = true;
+        if (!inv.chaingun)
+        {
+            inv.chaingun = player.gameObject.AddComponent<Chaingun>();
+        }
+
+        if (inv.bull < inv.bullMax - 10)
+            inv.bull += 10;//give the player some ammo
+        else
+            inv.bull = inv.bullMax;
+
         return true;
     }
 }
-public class Chainsaw : Actor                // Chainsaw
+public class Chainsaw : Weapon                // Chainsaw
 {
     public void Awake()
     {
@@ -222,19 +246,24 @@ public class Chainsaw : Actor                // Chainsaw
 
     public override bool PickedUp(DoomPlayer player, Inventory inv)
     {
-        inv.chainsaw = true;
+        if (!inv.chainsaw)
+        {
+            inv.chainsaw = player.gameObject.AddComponent<Chainsaw>();
+        }
+
         return true;
     }
 }
-public class Fist : Actor                    // Punch (yes thats right)
+public class Fist : Weapon                    // Punch (yes thats right)
 {
 
 }
-public class Pistol : Actor                  // Pistol
+public class Pistol : Weapon                  // Pistol
 {
     public void Awake()
     {
         Name = "Pistol";
+
         actorStates = new Dictionary<string, State>
         {
             {"Spawn", new State
@@ -301,11 +330,21 @@ public class Pistol : Actor                  // Pistol
 
     public override bool PickedUp(DoomPlayer player, Inventory inv)
     {
-        inv.pistol = true;
+        if (!inv.pistol)
+        {
+            inv.pistol = player.gameObject.AddComponent<Pistol>();
+        }
+
+        if (inv.bull < inv.bullMax - 10)
+            inv.bull += 10;//give the player some ammo
+        else
+            inv.bull = inv.bullMax;
+
         return true;
     }
+
 }
-public class PlasmaRifle : Actor             // Plasma Gun
+public class PlasmaRifle : Weapon             // Plasma Gun
 {
     public void Awake()
     {
@@ -374,11 +413,20 @@ public class PlasmaRifle : Actor             // Plasma Gun
 
     public override bool PickedUp(DoomPlayer player, Inventory inv)
     {
-        inv.plasmaRifle = true;
+        if (!inv.plasmaRifle)
+        {
+            inv.plasmaRifle = player.gameObject.AddComponent<PlasmaRifle>();
+        }
+
+        if (inv.cell < inv.cellMax - 20)
+            inv.cell += 20;//give the player some ammo
+        else
+            inv.cell = inv.cellMax;
+
         return true;
     }
 }
-public class RocketLauncher : Actor          // Rocket Launcher
+public class RocketLauncher : Weapon          // Rocket Launcher
 {
     public void Awake()
     {
@@ -448,11 +496,20 @@ public class RocketLauncher : Actor          // Rocket Launcher
 
     public override bool PickedUp(DoomPlayer player, Inventory inv)
     {
-        inv.rocketLauncher = true;
+        if (!inv.rocketLauncher)
+        {
+            inv.rocketLauncher = player.gameObject.AddComponent<RocketLauncher>();
+        }
+
+        if (inv.rckt < inv.rckt - 2)
+            inv.rckt += 2;//give the player some ammo
+        else
+            inv.rckt = inv.rcktMax;
+
         return true;
     }
 }
-public class Shotgun : Actor                 // Shotgun
+public class Shotgun : Weapon                 // Shotgun
 {
     public void Awake()
     {
@@ -499,8 +556,8 @@ public class Shotgun : Actor                 // Shotgun
                 {
                    info = new List<StateInfo>
                    {
-                       new StateInfo{spr = "SHTG", sprInd = "B", time = 3},
-                       new StateInfo{spr = "SHTG", sprInd = "B", time = 7, function = "A_FireShotgun"},
+                       new StateInfo{spr = "SHTG", sprInd = "A", time = 3},
+                       new StateInfo{spr = "SHTG", sprInd = "A", time = 7, function = "A_FireShotgun"},
                        new StateInfo{spr = "SHTG", sprInd = "BC", time = 5},
                        new StateInfo{spr = "SHTG", sprInd = "D", time = 4},
                        new StateInfo{spr = "SHTG", sprInd = "CB", time = 5},
@@ -525,11 +582,20 @@ public class Shotgun : Actor                 // Shotgun
 
     public override bool PickedUp(DoomPlayer player, Inventory inv)
     {
-        inv.shotgun = true;
+        if (!inv.shotgun)
+        {
+            inv.shotgun = player.gameObject.AddComponent<Shotgun>();
+        }
+
+        if (inv.shell < inv.shell - 2)
+            inv.shell += 2;//give the player some ammo
+        else
+            inv.shell = inv.shellMax;
+
         return true;
     }
 }
-public class SuperShotgun : Actor            // Double-barreled Shotgun
+public class SuperShotgun : Weapon            // Double-barreled Shotgun
 {
     public void Awake()
     {
@@ -605,7 +671,16 @@ public class SuperShotgun : Actor            // Double-barreled Shotgun
 
     public override bool PickedUp(DoomPlayer player, Inventory inv)
     {
-        inv.superShotgun = true;
+        if (!inv.superShotgun)
+        {
+            inv.superShotgun = player.gameObject.AddComponent<SuperShotgun>();
+        }
+
+        if (inv.shell < inv.shellMax - 2)
+            inv.shell += 2;//give the player some ammo
+        else
+            inv.shell = inv.shellMax;
+
         return true;
     }
 }

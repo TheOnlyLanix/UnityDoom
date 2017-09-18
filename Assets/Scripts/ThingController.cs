@@ -288,7 +288,7 @@ public class ThingController : MonoBehaviour
             if(hit.collider.tag == player.tag)
             {
                 //hit the player
-                player.GetComponent<DoomPlayer>().health -= UnityEngine.Random.Range(1, 5) * 3;
+                player.GetComponent<DoomPlayer>().TakeDamage(UnityEngine.Random.Range(1, 5) * 3);
             }
             else if(hit.collider.tag == gameObject.tag ) //monster
             {

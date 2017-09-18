@@ -22,8 +22,9 @@ public class DoomPlayer : MonoBehaviour
     public int healthMax = 200;
     public int armorMax = 200;
 
-    Transform cam;
+    public Transform cam;
     CharacterController cc;
+    public AudioSource audS;
 
     public float sensitivity = 1f;
     public float smoothing = 1f;
@@ -102,14 +103,42 @@ public class DoomPlayer : MonoBehaviour
     public bool berserk = false;
 
     public DoomHUD hud;
+    public Actor currentWeapon;
+    public wadReader reader;
+    WeaponController weapC;
+
+    public bool shooting = false;
+    public Vector3 shootDir = new Vector3(0,0,0);
+
+    static Dictionary<string, Type> weaponType = new Dictionary<string, Type>
+    {
+        {"SuperShotgun",   typeof(SuperShotgun)   },
+        {"Shotgun",        typeof(Shotgun)        },
+        {"Chaingun",       typeof(Chaingun)       },
+        {"RocketLauncher", typeof(RocketLauncher) },
+        {"PlasmaRifle",    typeof(PlasmaRifle)    },
+        {"Chainsaw",       typeof(Chainsaw)       },
+        {"BFG9000",        typeof(BFG9000)        },
+        {"Pistol",         typeof(Pistol)         },
+        {"Fist",           typeof(Fist)           }
+    };
 
     Vector3 lastPos;
 
     void Start()
     {
+        gameObject.AddComponent(weaponType["Pistol"]);
+        currentWeapon = GetComponent<Weapon>();
+        gameObject.AddComponent(weaponType["Fist"]);
+        inv.fist = GetComponent<Fist>();
+        inv.pistol = GetComponent<Pistol>();
+
         cam = transform.GetChild(0);//camera transform
         cc = GetComponent<CharacterController>();
         lastPos = transform.position;
+        WeaponController wc = gameObject.AddComponent<WeaponController>();
+        wc.OnCreate(reader, currentWeapon);
+        weapC = wc;
     }
 
     void Update()
@@ -164,10 +193,7 @@ public class DoomPlayer : MonoBehaviour
         lastPos = transform.position;
 
         //TODO: This could be done better
-        Ray ray = new Ray(transform.position + new Vector3(0, height / 2, 0), curMoveDir);
-        if (!Physics.SphereCast(ray, radius, 30f, 1 << 10))
-            cc.Move(curMoveDir * Time.deltaTime);
-
+        cc.Move(curMoveDir * Time.deltaTime);
 
         //Mouse look
         mouseInputX += Mathf.Lerp(mouseInputX, Input.GetAxis("Mouse X") * sensitivity, smoothing);
@@ -179,6 +205,53 @@ public class DoomPlayer : MonoBehaviour
         horizontal = Input.GetAxis("Horizontal");
         vertical = Input.GetAxis("Vertical");
 
+        if(Input.GetKeyDown("1") && (inv.chainsaw || inv.fist))
+        {
+            //chainsaw or fist
+            if (inv.chainsaw != null && currentWeapon != inv.chainsaw)
+                currentWeapon = inv.chainsaw;
+            else if (inv.fist != null && currentWeapon != inv.fist)
+                currentWeapon = inv.fist;
+
+        }
+        else if (Input.GetKeyDown("2") && (inv.pistol))
+        {
+            //pistol
+            if (inv.pistol != null && currentWeapon != inv.pistol)
+                currentWeapon = inv.pistol;
+        }
+        else if (Input.GetKeyDown("3") && (inv.shotgun || inv.superShotgun))
+        {
+            //shotgun or supershotgun
+            if (inv.superShotgun != null && currentWeapon != inv.superShotgun)
+                currentWeapon = inv.superShotgun;
+            else if (inv.shotgun != null && currentWeapon != inv.shotgun)
+                currentWeapon = inv.shotgun;
+        }
+        else if (Input.GetKeyDown("4") && inv.chaingun)
+        {
+            //chaingun
+            if (inv.chaingun != null && currentWeapon != inv.chaingun)
+                currentWeapon = inv.chaingun;
+        }
+        else if (Input.GetKeyDown("5") && inv.rocketLauncher)
+        {
+            //rocket launcher
+            if (inv.rocketLauncher != null && currentWeapon != inv.rocketLauncher)
+                currentWeapon = inv.rocketLauncher;
+        }
+        else if (Input.GetKeyDown("6") && inv.plasmaRifle)
+        {
+            //plasma rifle
+            if (inv.plasmaRifle != null && currentWeapon != inv.plasmaRifle)
+                currentWeapon = inv.plasmaRifle;
+        }
+        else if (Input.GetKeyDown("7") && inv.BFG9000)
+        {
+            //bfg
+            if (inv.BFG9000 != null && currentWeapon != inv.BFG9000)
+                currentWeapon = inv.BFG9000;
+        }
     }
 
     private void LateUpdate()
@@ -226,7 +299,34 @@ public class DoomPlayer : MonoBehaviour
         if (!god)
             health -= damage;
     }
+
+    public void A_FirePistol()
+    {
+        if (shooting)
+            return;
+
+        shooting = true;
+
+        audS.PlayOneShot(reader.newWad.sounds["DSPISTOL"]);
+        RaycastHit hit;
+
+        shootDir = cam.transform.forward;
+        shootDir.x += UnityEngine.Random.Range(-0.5f, 0.5f);
+        shootDir.z += UnityEngine.Random.Range(-0.5f, 0.5f);
+
+        if (Physics.Raycast(cam.position, shootDir, out hit, 10000, ~(1 << 8)))
+        {
+            if(hit.collider.gameObject.tag == "Monster")
+            {
+                hit.collider.GetComponent<ThingController>().gotHurt(UnityEngine.Random.Range(5, 15), gameObject.transform);
+            }
+        }
+
+        //do pistol shooting stuff
+    }
 }
+
+
 
 public class Inventory
 {
@@ -250,15 +350,15 @@ public class Inventory
     public bool redSkull = false;
 
     //Weapons
-    public bool fist = true;
-    public bool pistol = true;
-    public bool chainsaw = false;
-    public bool chaingun = false;
-    public bool shotgun = false;
-    public bool superShotgun = false;
-    public bool rocketLauncher = false;
-    public bool plasmaRifle = false;
-    public bool BFG9000 = false;
+    public Actor fist = null;
+    public Actor pistol = null;
+    public Actor chainsaw = null;
+    public Actor chaingun = null;
+    public Actor shotgun = null;
+    public Actor superShotgun = null;
+    public Actor rocketLauncher = null;
+    public Actor plasmaRifle = null;
+    public Actor BFG9000 = null;
 
     //powerups
     public bool backpack = false;

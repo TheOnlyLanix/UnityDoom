@@ -350,6 +350,7 @@ public class mapCreator : MonoBehaviour
                     if ((thing.thingOptions & 0x04) != 1)
                         continue;
 
+                
                 newThing.AddComponent(MonsterType[thing.thingType]);
                 newThing.AddComponent<Rigidbody>();
                 ThingController controller = newThing.AddComponent<ThingController>();

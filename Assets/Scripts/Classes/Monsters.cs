@@ -611,7 +611,7 @@ public class ZombieMan : Monster
                    new StateInfo{spr = "POSS", sprInd = "I", time = 5, function = "A_Scream" },
                    new StateInfo{spr = "POSS", sprInd = "J", time = 5, function = "A_NoBlocking" },
                    new StateInfo{spr = "POSS", sprInd = "K", time = 5},
-                   new StateInfo{spr = "CPOS", sprInd = "L", time = -1},
+                   new StateInfo{spr = "POSS", sprInd = "L", time = -1},
                    new StateInfo{function = "Stop"}
                }
             }
