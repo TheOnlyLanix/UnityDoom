@@ -317,10 +317,30 @@ public class DoomPlayer : MonoBehaviour
                 hit.collider.GetComponent<ThingController>().gotHurt(UnityEngine.Random.Range(5, 15), gameObject.transform);
             }
 
-            Debug.DrawLine(cam.transform.position, hit.point, Color.green, 5f);
+            //Debug.DrawLine(cam.transform.position, hit.point, Color.green, 5f);
         }
+    }
 
-        //do pistol shooting stuff
+    public void A_Punch()
+    {
+        if (shooting)
+            return;
+
+        shooting = true;
+
+        RaycastHit hit;
+        if (Physics.Raycast(cam.position, shootDir, out hit, 64, ~(1 << 8)))
+        {
+            if (hit.collider.gameObject.tag == "Monster")
+            {
+                int damage = UnityEngine.Random.Range(2, 20);
+
+                if (berserk)
+                    damage *= 10;
+
+                hit.collider.GetComponent<ThingController>().gotHurt(damage, gameObject.transform, berserk);
+            }
+        }
     }
 }
 

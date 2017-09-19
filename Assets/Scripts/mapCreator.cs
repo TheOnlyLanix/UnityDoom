@@ -466,7 +466,7 @@ public class mapCreator : MonoBehaviour
                 }
             }
         }
-
+        go.tag = "Map";
         return go;
     }
 

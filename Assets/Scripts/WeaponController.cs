@@ -185,6 +185,8 @@ public class WeaponController : MonoBehaviour
                 A_ReFire();
             else if (funct == "A_FirePistol")
                 dPlayer.A_FirePistol();
+            else if (funct == "A_Punch")
+                dPlayer.A_Punch();
         }
     }
 

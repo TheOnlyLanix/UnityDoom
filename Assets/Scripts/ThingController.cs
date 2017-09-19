@@ -326,15 +326,25 @@ public class ThingController : MonoBehaviour
         }
     }
 
-    public bool gotHurt(int damage, Transform targ)
+    public bool gotHurt(int damage, Transform targ, bool XDeath = false)
     {
         health -= damage;
         target = targ;
 
         if(health <= 0)
         {
-            string st = "Death";
-            stateController.OverrideState(ref st);
+            if(!XDeath)
+            {
+                string st = "Death";
+                stateController.OverrideState(ref st);
+
+                rb.AddForce(target.transform.position * 1000f, ForceMode.Impulse);
+            }
+            else
+            {
+                string st = "XDeath";
+                stateController.OverrideState(ref st);
+            }
             return true;
         }
         else

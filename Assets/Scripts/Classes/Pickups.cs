@@ -256,7 +256,54 @@ public class Chainsaw : Weapon                // Chainsaw
 }
 public class Fist : Weapon                    // Punch (yes thats right)
 {
+    public void Awake()
+    {
+        Name = "Fist";
 
+        actorStates = new Dictionary<string, State>
+        {
+            {"Ready", new State
+                {
+                   info = new List<StateInfo>
+                   {
+                       new StateInfo{spr = "PUNG", sprInd = "A", time = 1, function = "A_WeaponReady"},
+                       new StateInfo{function = "Loop" }
+                   }
+               }
+            },
+            {"Deselect", new State
+                {
+                   info = new List<StateInfo>
+                   {
+                       new StateInfo{spr = "PUNG", sprInd = "A", time = 1, function = "A_Lower"},
+                       new StateInfo{function = "Loop" }
+                   }
+               }
+            },
+            {"Select", new State
+                {
+                   info = new List<StateInfo>
+                   {
+                       new StateInfo{spr = "PUNG", sprInd = "A", time = 1, function = "A_Raise"},
+                       new StateInfo{function = "Loop" }
+                   }
+               }
+            },
+            {"Fire", new State
+                {
+                   info = new List<StateInfo>
+                   {
+                       new StateInfo{spr = "PUNG", sprInd = "B", time = 4},
+                       new StateInfo{spr = "PUNG", sprInd = "C", time = 4, function = "A_Punch"},
+                       new StateInfo{spr = "PUNG", sprInd = "D", time = 5},
+                       new StateInfo{spr = "PUNG", sprInd = "C", time = 4},
+                       new StateInfo{spr = "PUNG", sprInd = "B", time = 5, function = "A_ReFire"},
+                       new StateInfo{function = "Ready" }
+                   }
+               }
+            },
+        };
+    }
 }
 public class Pistol : Weapon                  // Pistol
 {
