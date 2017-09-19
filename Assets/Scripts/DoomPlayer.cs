@@ -310,16 +310,14 @@ public class DoomPlayer : MonoBehaviour
         audS.PlayOneShot(reader.newWad.sounds["DSPISTOL"]);
         RaycastHit hit;
 
-        shootDir = cam.transform.forward;
-        shootDir.x += UnityEngine.Random.Range(-0.5f, 0.5f);
-        shootDir.z += UnityEngine.Random.Range(-0.5f, 0.5f);
-
         if (Physics.Raycast(cam.position, shootDir, out hit, 10000, ~(1 << 8)))
         {
             if(hit.collider.gameObject.tag == "Monster")
             {
                 hit.collider.GetComponent<ThingController>().gotHurt(UnityEngine.Random.Range(5, 15), gameObject.transform);
             }
+
+            Debug.DrawLine(cam.transform.position, hit.point, Color.green, 5f);
         }
 
         //do pistol shooting stuff

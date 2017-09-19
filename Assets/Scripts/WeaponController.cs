@@ -25,6 +25,7 @@ public class WeaponController : MonoBehaviour
     bool lowering = false;
     bool raising = false;
     float yHeight = 0;
+    float shootAccuracy = 0f;
 
     public void OnCreate(wadReader read, Actor weap)
     {
@@ -193,7 +194,8 @@ public class WeaponController : MonoBehaviour
         {
             string st = "Fire";
             OverrideState(ref st);
-            //dPlayer.shooting = false;
+            shootAccuracy = 0f;
+            dPlayer.shootDir = dPlayer.cam.transform.forward;
         }
 
         //bobbing?
@@ -206,6 +208,9 @@ public class WeaponController : MonoBehaviour
             string st = "Fire";
             OverrideState(ref st);
             dPlayer.shooting = false;
+            shootAccuracy += 0.025f;
+            shootAccuracy = Mathf.Min(shootAccuracy, 0.2f);
+            dPlayer.shootDir = new Vector3(dPlayer.cam.transform.forward.x + UnityEngine.Random.Range(-shootAccuracy, shootAccuracy), dPlayer.cam.transform.forward.y, dPlayer.cam.transform.forward.z + UnityEngine.Random.Range(-shootAccuracy, shootAccuracy));
         }
     }
 
