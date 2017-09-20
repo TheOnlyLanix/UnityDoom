@@ -98,6 +98,9 @@ public class ThingController : MonoBehaviour
         rot = new Vector3(0, rot.y, 0);
         sprObj.transform.rotation = Quaternion.Euler(rot);
 
+        if (rb && health > 0)//extra gravity
+            rb.velocity -= Vector3.up * 20f;
+
         // Use the state controller to set our texture according to angle from player
         Quaternion lookRot = Quaternion.LookRotation(transform.position - player.transform.position, Vector3.up);
         int angleTexIndex = pickSide(lookRot.eulerAngles.y - transform.rotation.eulerAngles.y);
@@ -106,11 +109,6 @@ public class ThingController : MonoBehaviour
         stateController.Update();
 
         PICTURES texture = stateController.UpdateMaterial(mr.material, angleTexIndex);
-
-        if(rb)
-        {
-            rb.velocity -= transform.up * 20;
-        }
 
         if (stateController.stopped)
             Destroy(gameObject);
@@ -131,8 +129,6 @@ public class ThingController : MonoBehaviour
         {
             attackTimer -= Time.deltaTime;
         }
-            
-
     }
 
     void AddSounds(Dictionary<string, AudioClip> sounds)
@@ -321,12 +317,20 @@ public class ThingController : MonoBehaviour
     {
         if(GetComponent<BoxCollider>() != null)
         {
-            rb.isKinematic = true;
-            Destroy(GetComponent<BoxCollider>());
+            //rb.isKinematic = true;
+            //Destroy(GetComponent<BoxCollider>());
+            GetComponent<BoxCollider>().size = new Vector3(0.1f, 0.1f, 0.1f);
+            rb.velocity = Vector3.zero;
+            GetComponent<BoxCollider>().center = Vector3.zero;
+            RaycastHit hit;
+            if(Physics.Raycast(new Vector3(transform.position.x, 10000, transform.position.z), Vector3.down, out hit, Mathf.Infinity, 1))
+            {
+                transform.position = hit.point;
+            }
         }
     }
 
-    public bool gotHurt(int damage, Transform targ, bool XDeath = false)
+    public bool gotHurt(int damage, Transform targ, bool XDeath = false, Vector3 forceDir = new Vector3())
     {
         health -= damage;
         target = targ;
@@ -337,13 +341,12 @@ public class ThingController : MonoBehaviour
             {
                 string st = "Death";
                 stateController.OverrideState(ref st);
-
-                rb.AddForce(target.transform.position * 1000f, ForceMode.Impulse);
             }
             else
             {
                 string st = "XDeath";
                 stateController.OverrideState(ref st);
+                rb.AddForce(forceDir * 1000f, ForceMode.VelocityChange);
             }
             return true;
         }

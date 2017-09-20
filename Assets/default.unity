@@ -163,6 +163,7 @@ MonoBehaviour:
   Map_Prev: {fileID: 1916408161}
   sky: {fileID: 0}
   skyboxScript: {fileID: 1983545252}
+  NoFrictionMaterial: {fileID: 13400000, guid: 4454ef63a0b38a74887b83466ce5dfb7, type: 2}
   skill: 0
   midiplayer: {fileID: 69035038}
 --- !u!114 &69035036
@@ -602,6 +603,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 527446937}
+  - component: {fileID: 527446938}
   - component: {fileID: 527446935}
   - component: {fileID: 527446934}
   - component: {fileID: 527446936}
@@ -671,7 +673,7 @@ CharacterController:
   serializedVersion: 2
   m_Height: 40
   m_Radius: 16
-  m_SlopeLimit: 0
+  m_SlopeLimit: 45
   m_StepOffset: 24
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
@@ -770,6 +772,21 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!54 &527446938
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 527446933}
+  serializedVersion: 2
+  m_Mass: 100
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 112
+  m_CollisionDetection: 0
 --- !u!1 &558230373
 GameObject:
   m_ObjectHideFlags: 0
@@ -2149,7 +2166,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: 0.049995, y: 0}
+  m_AnchoredPosition: {x: 0.049995005, y: 0}
   m_SizeDelta: {x: 319.9, y: 36.1}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &1505530501
@@ -2768,7 +2785,6 @@ GameObject:
   - component: {fileID: 1871399559}
   - component: {fileID: 1871399558}
   - component: {fileID: 1871399557}
-  - component: {fileID: 1871399556}
   m_Layer: 0
   m_Name: EventSystem
   m_TagString: Untagged
@@ -2776,18 +2792,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1871399556
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1871399555}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 1997211142, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_ForceModuleActive: 0
 --- !u!114 &1871399557
 MonoBehaviour:
   m_ObjectHideFlags: 0

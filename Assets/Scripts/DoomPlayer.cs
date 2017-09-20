@@ -338,7 +338,7 @@ public class DoomPlayer : MonoBehaviour
                 if (berserk)
                     damage *= 10;
 
-                hit.collider.GetComponent<ThingController>().gotHurt(damage, gameObject.transform, berserk);
+                hit.collider.GetComponent<ThingController>().gotHurt(damage, gameObject.transform, berserk, transform.forward);
             }
         }
     }
