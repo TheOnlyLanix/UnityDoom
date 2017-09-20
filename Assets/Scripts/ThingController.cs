@@ -98,7 +98,7 @@ public class ThingController : MonoBehaviour
         rot = new Vector3(0, rot.y, 0);
         sprObj.transform.rotation = Quaternion.Euler(rot);
 
-        if (rb && health > 0)//extra gravity
+        if (rb)//extra gravity
             rb.velocity -= Vector3.up * 20f;
 
         // Use the state controller to set our texture according to angle from player
@@ -129,6 +129,14 @@ public class ThingController : MonoBehaviour
         {
             attackTimer -= Time.deltaTime;
         }
+    }
+
+    private void FixedUpdate()
+    {
+        RaycastHit hit;
+        if (Physics.Raycast(new Vector3(transform.position.x, 10000, transform.position.z), Vector3.down, out hit, Mathf.Infinity, 1))
+            if (transform.position.y < hit.point.y)
+                transform.position = hit.point;
     }
 
     void AddSounds(Dictionary<string, AudioClip> sounds)
@@ -322,11 +330,6 @@ public class ThingController : MonoBehaviour
             GetComponent<BoxCollider>().size = new Vector3(0.1f, 0.1f, 0.1f);
             rb.velocity = Vector3.zero;
             GetComponent<BoxCollider>().center = Vector3.zero;
-            RaycastHit hit;
-            if(Physics.Raycast(new Vector3(transform.position.x, 10000, transform.position.z), Vector3.down, out hit, Mathf.Infinity, 1))
-            {
-                transform.position = hit.point;
-            }
         }
     }
 
