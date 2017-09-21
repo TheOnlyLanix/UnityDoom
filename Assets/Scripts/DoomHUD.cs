@@ -46,7 +46,6 @@ public class DoomHUD : MonoBehaviour {
     public int cell = 0;
 
     public int armor = 0;
-    public int ammo = 0;
 
     public int health = 100;
     int oldHealth = 0;
@@ -58,7 +57,6 @@ public class DoomHUD : MonoBehaviour {
 
     private void Awake()
     {
-
         StartCoroutine(LateAwake());
     }
 
@@ -110,7 +108,6 @@ public class DoomHUD : MonoBehaviour {
     {
         //StatBar.rectTransform.sizeDelta = new Vector2(Screen.width + 15, (Screen.width + 15) / 10);
         Health.text = health + "%";
-        Ammo.text = ammo + "";
         Armor.text = armor + "%";
 
         BullAmnt.text = bull.ToString();

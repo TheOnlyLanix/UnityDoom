@@ -143,7 +143,6 @@ public class DoomPlayer : MonoBehaviour
 
     void Update()
     {
-        hud.ammo = inv.bull;
         hud.armor = armor;
         hud.health = health;
         hud.bull = inv.bull;
@@ -212,48 +211,76 @@ public class DoomPlayer : MonoBehaviour
             {
                 currentWeapon = inv.chainsaw;
                 audS.loop = true;
+                hud.Ammo.text = "";
             }
             else if (inv.fist != null && currentWeapon != inv.fist)
+            {
                 currentWeapon = inv.fist;
+                hud.Ammo.text = "";
+            }
+                
 
         }
         else if (Input.GetKeyDown("2") && (inv.pistol))
         {
             //pistol
             if (inv.pistol != null && currentWeapon != inv.pistol)
+            {
                 currentWeapon = inv.pistol;
+                hud.Ammo.text = inv.bull + "";
+            }
+                
         }
         else if (Input.GetKeyDown("3") && (inv.shotgun || inv.superShotgun))
         {
             //shotgun or supershotgun
             if (inv.superShotgun != null && currentWeapon != inv.superShotgun)
+            {
                 currentWeapon = inv.superShotgun;
+                hud.Ammo.text = inv.shell + "";
+            }
             else if (inv.shotgun != null && currentWeapon != inv.shotgun)
+            {
                 currentWeapon = inv.shotgun;
+                hud.Ammo.text = inv.shell + "";
+            }
+                
         }
         else if (Input.GetKeyDown("4") && inv.chaingun)
         {
             //chaingun
             if (inv.chaingun != null && currentWeapon != inv.chaingun)
+            { 
                 currentWeapon = inv.chaingun;
+                hud.Ammo.text = inv.bull + "";
+            }
         }
         else if (Input.GetKeyDown("5") && inv.rocketLauncher)
         {
             //rocket launcher
             if (inv.rocketLauncher != null && currentWeapon != inv.rocketLauncher)
+            { 
                 currentWeapon = inv.rocketLauncher;
+                hud.Ammo.text = inv.rckt + "";
+            }
         }
         else if (Input.GetKeyDown("6") && inv.plasmaRifle)
         {
             //plasma rifle
             if (inv.plasmaRifle != null && currentWeapon != inv.plasmaRifle)
+            { 
                 currentWeapon = inv.plasmaRifle;
+                hud.Ammo.text = inv.cell + "";
+            }
         }
         else if (Input.GetKeyDown("7") && inv.BFG9000)
         {
             //bfg
             if (inv.BFG9000 != null && currentWeapon != inv.BFG9000)
+            {
                 currentWeapon = inv.BFG9000;
+                hud.Ammo.text = inv.cell + "";
+            }
         }
     }
 
@@ -308,9 +335,13 @@ public class DoomPlayer : MonoBehaviour
         if (shooting)
             return;
 
-        shooting = true;
+        if (inv.bull == 0)
+            return;
 
+        shooting = true;
         audS.PlayOneShot(reader.newWad.sounds["DSPISTOL"]);
+        inv.bull -= 1;
+        hud.Ammo.text = inv.bull + "";
         RaycastHit hit;
 
         if (Physics.Raycast(cam.position, shootDir, out hit, 10000, ~(1 << 8)))
@@ -377,8 +408,95 @@ public class DoomPlayer : MonoBehaviour
                     
             }
         }
-
     }
+
+    public void A_FireCGun()
+    {
+        if (shooting)
+            return;
+
+        if (inv.bull == 0)
+            return;
+
+        shooting = true;
+
+        audS.PlayOneShot(reader.newWad.sounds["DSPISTOL"]);
+        inv.bull -= 1;
+        hud.Ammo.text = inv.bull + "";
+        RaycastHit hit;
+        if (Physics.Raycast(cam.position, shootDir, out hit, 10000, ~(1 << 8)))
+        {
+            if (hit.collider.gameObject.tag == "Monster")
+            {
+                if (hit.collider.GetComponent<ThingController>().health > 0)
+                    hit.collider.GetComponent<ThingController>().gotHurt(UnityEngine.Random.Range(5, 15), gameObject.transform);
+            }
+        }
+    }
+
+    public void A_FireShotgun()
+    {
+        if (shooting)
+            return;
+
+        if (inv.shell == 0)
+            return;
+
+        shooting = true;
+
+        audS.PlayOneShot(reader.newWad.sounds["DSSHOTGN"]);
+
+        inv.shell -= 1;
+        hud.Ammo.text = inv.shell + "";
+
+        //Fires 7 pellets
+        for (int i = 0; i < 7; i++)
+        {
+            RaycastHit hit;
+            if (Physics.Raycast(cam.position, shootDir, out hit, 10000, ~(1 << 8)))
+            {
+                if (hit.collider.gameObject.tag == "Monster")
+                {
+                    if (hit.collider.GetComponent<ThingController>().health > 0)
+                        hit.collider.GetComponent<ThingController>().gotHurt(UnityEngine.Random.Range(5, 15), gameObject.transform);
+                }
+            }
+        }
+    }
+
+    public void A_FireShotgun2()
+    {
+        if (shooting)
+            return;
+
+        if (inv.shell < 2)
+            return;
+
+        shooting = true;
+        audS.PlayOneShot(reader.newWad.sounds["DSSHOTGN"]);
+
+        shootDir = new Vector3(cam.transform.forward.x + UnityEngine.Random.Range(-0.05f, 0.05f), cam.transform.forward.y, cam.transform.forward.z + UnityEngine.Random.Range(-0.05f, 0.05f));
+        inv.shell -= 2;
+        hud.Ammo.text = inv.shell + "";
+        //Fires 7 pellets
+        for (int i = 0; i < 20; i++)
+        {
+            RaycastHit hit;
+            if (Physics.Raycast(cam.position, shootDir, out hit, 10000, ~(1 << 8)))
+            {
+                if (hit.collider.gameObject.tag == "Monster")
+                {
+                    if (hit.collider.GetComponent<ThingController>().health > 0)
+                        hit.collider.GetComponent<ThingController>().gotHurt(UnityEngine.Random.Range(5, 15), gameObject.transform);
+                }
+            }
+        }
+    }
+
+
+
+
+
 }
 
 

@@ -163,7 +163,6 @@ MonoBehaviour:
   Map_Prev: {fileID: 1916408161}
   sky: {fileID: 0}
   skyboxScript: {fileID: 1983545252}
-  NoFrictionMaterial: {fileID: 13400000, guid: 4454ef63a0b38a74887b83466ce5dfb7, type: 2}
   skill: 0
   midiplayer: {fileID: 69035038}
 --- !u!114 &69035036
@@ -733,7 +732,7 @@ AudioSource:
       tangentMode: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
-    m_RotationOrder: 4
+    m_RotationOrder: 0
   spreadCustomCurve:
     serializedVersion: 2
     m_Curve:
@@ -745,7 +744,7 @@ AudioSource:
       tangentMode: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
-    m_RotationOrder: 4
+    m_RotationOrder: 0
   reverbZoneMixCustomCurve:
     serializedVersion: 2
     m_Curve:
@@ -757,7 +756,7 @@ AudioSource:
       tangentMode: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
-    m_RotationOrder: 4
+    m_RotationOrder: 0
 --- !u!4 &527446937
 Transform:
   m_ObjectHideFlags: 0
@@ -2572,7 +2571,6 @@ MonoBehaviour:
   rckt: 0
   cell: 0
   armor: 100
-  ammo: 50
   health: 100
 --- !u!1 &1738142297
 GameObject:

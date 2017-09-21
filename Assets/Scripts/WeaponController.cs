@@ -56,7 +56,7 @@ public class WeaponController : MonoBehaviour
             img.rectTransform.anchoredPosition = vec;
             if (vec.y <= 0)
             {
-                if (dPlayer.currentWeapon = dPlayer.inv.chainsaw)
+                if (dPlayer.currentWeapon == dPlayer.inv.chainsaw)
                 {
                     dPlayer.audS.loop = false;
                     dPlayer.audS.Stop();
@@ -188,7 +188,7 @@ public class WeaponController : MonoBehaviour
                 img.rectTransform.anchoredPosition = new Vector2(img.rectTransform.anchoredPosition.x, 0);
                 raising = true;
 
-                if (dPlayer.currentWeapon = dPlayer.inv.chainsaw)
+                if (dPlayer.currentWeapon == dPlayer.inv.chainsaw)
                 {
                     Debug.Log("Raising Chainsaw");
                     dPlayer.audS.clip = reader.newWad.sounds["DSSAWUP"];
@@ -206,6 +206,12 @@ public class WeaponController : MonoBehaviour
                 dPlayer.A_Punch();
             else if (funct == "A_Saw")
                 dPlayer.A_Saw();
+            else if (funct == "A_FireCGun")
+                dPlayer.A_FireCGun();
+            else if (funct == "A_FireShotgun")
+                dPlayer.A_FireShotgun();
+            else if (funct == "A_FireShotgun2")
+                dPlayer.A_FireShotgun2();
         }
     }
 
@@ -213,6 +219,22 @@ public class WeaponController : MonoBehaviour
     {
         if (Input.GetButton("Fire1"))
         {
+            //Checking for ammo before firing
+            if (dPlayer.currentWeapon == dPlayer.inv.pistol && dPlayer.inv.bull < 1)
+                return;
+            else if (dPlayer.currentWeapon == dPlayer.inv.shotgun && dPlayer.inv.shell < 1)
+                return;
+            else if (dPlayer.currentWeapon == dPlayer.inv.superShotgun && dPlayer.inv.shell < 2)
+                return;
+            else if (dPlayer.currentWeapon == dPlayer.inv.chaingun && dPlayer.inv.bull < 1)
+                return;
+            else if (dPlayer.currentWeapon == dPlayer.inv.plasmaRifle && dPlayer.inv.cell < 1)
+                return;
+            else if (dPlayer.currentWeapon == dPlayer.inv.BFG9000 && dPlayer.inv.cell < 20)
+                return;
+            else if (dPlayer.currentWeapon == dPlayer.inv.rocketLauncher && dPlayer.inv.rckt < 1)
+                return;
+
             string st = "Fire";
             OverrideState(ref st);
             shootAccuracy = 0f;
@@ -237,6 +259,22 @@ public class WeaponController : MonoBehaviour
     {
         if (Input.GetButton("Fire1"))
         {
+            //Checking for ammo before firing
+            if (dPlayer.currentWeapon == dPlayer.inv.pistol && dPlayer.inv.bull < 1)
+                return;
+            else if (dPlayer.currentWeapon == dPlayer.inv.shotgun && dPlayer.inv.shell < 1)
+                return;
+            else if (dPlayer.currentWeapon == dPlayer.inv.superShotgun && dPlayer.inv.shell < 2)
+                return;
+            else if (dPlayer.currentWeapon == dPlayer.inv.chaingun && dPlayer.inv.bull < 1)
+                return;
+            else if (dPlayer.currentWeapon == dPlayer.inv.plasmaRifle && dPlayer.inv.cell < 1)
+                return;
+            else if (dPlayer.currentWeapon == dPlayer.inv.BFG9000 && dPlayer.inv.cell < 20)
+                return;
+            else if (dPlayer.currentWeapon == dPlayer.inv.rocketLauncher && dPlayer.inv.rckt < 1)
+                return;
+
             string st = "Fire";
             OverrideState(ref st);
             dPlayer.shooting = false;

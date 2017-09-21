@@ -634,7 +634,7 @@ public class Shotgun : Weapon                 // Shotgun
             inv.shotgun = player.gameObject.AddComponent<Shotgun>();
         }
 
-        if (inv.shell < inv.shell - 2)
+        if (inv.shell < inv.shellMax - 2)
             inv.shell += 2;//give the player some ammo
         else
             inv.shell = inv.shellMax;
