@@ -209,7 +209,10 @@ public class DoomPlayer : MonoBehaviour
         {
             //chainsaw or fist
             if (inv.chainsaw != null && currentWeapon != inv.chainsaw)
+            {
                 currentWeapon = inv.chainsaw;
+                audS.loop = true;
+            }
             else if (inv.fist != null && currentWeapon != inv.fist)
                 currentWeapon = inv.fist;
 
@@ -314,7 +317,8 @@ public class DoomPlayer : MonoBehaviour
         {
             if(hit.collider.gameObject.tag == "Monster")
             {
-                hit.collider.GetComponent<ThingController>().gotHurt(UnityEngine.Random.Range(5, 15), gameObject.transform);
+                if(hit.collider.GetComponent<ThingController>().health > 0)
+                    hit.collider.GetComponent<ThingController>().gotHurt(UnityEngine.Random.Range(5, 15), gameObject.transform);
             }
 
             //Debug.DrawLine(cam.transform.position, hit.point, Color.green, 5f);
@@ -338,9 +342,42 @@ public class DoomPlayer : MonoBehaviour
                 if (berserk)
                     damage *= 10;
 
-                hit.collider.GetComponent<ThingController>().gotHurt(damage, gameObject.transform, berserk, transform.forward);
+                if (hit.collider.GetComponent<ThingController>().health > 0)
+                    hit.collider.GetComponent<ThingController>().gotHurt(damage, gameObject.transform, berserk, transform.forward);
             }
         }
+    }
+
+    public void A_Saw()
+    {
+        if (shooting)
+            return;
+
+        shooting = true;
+
+        audS.clip = reader.newWad.sounds["DSSAWFUL"];
+        audS.Play();
+
+        RaycastHit hit;
+        if (Physics.Raycast(cam.position, shootDir, out hit, 65, ~(1 << 8)))
+        {
+            if (hit.collider.gameObject.tag == "Monster")
+            {
+                int damage = UnityEngine.Random.Range(1, 5);
+                damage *= (damage % 10 + 1);
+
+                if (hit.collider.GetComponent<ThingController>().health > 0)
+                    hit.collider.GetComponent<ThingController>().gotHurt(damage, gameObject.transform);
+
+                if (currentWeapon = inv.chainsaw)
+                {
+                    audS.clip = reader.newWad.sounds["DSSAWHIT"];
+                    audS.Play();
+                }
+                    
+            }
+        }
+
     }
 }
 

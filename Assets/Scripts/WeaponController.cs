@@ -56,11 +56,17 @@ public class WeaponController : MonoBehaviour
             img.rectTransform.anchoredPosition = vec;
             if (vec.y <= 0)
             {
+                if (dPlayer.currentWeapon = dPlayer.inv.chainsaw)
+                {
+                    dPlayer.audS.loop = false;
+                    dPlayer.audS.Stop();
+                }
+
                 lowering = false;
                 actor = dPlayer.currentWeapon;
                 string st = "Select";
                 OverrideState(ref st);
-            }     
+            }
         }
 
         if (raising)
@@ -73,6 +79,9 @@ public class WeaponController : MonoBehaviour
                 raising = false;
                 string st = "Ready";
                 OverrideState(ref st);
+
+                if (dPlayer.currentWeapon == dPlayer.inv.chainsaw)
+                    StartCoroutine(ChainsawIdle());
             }
         }
 
@@ -178,6 +187,14 @@ public class WeaponController : MonoBehaviour
                 yHeight = img.rectTransform.anchoredPosition.y;
                 img.rectTransform.anchoredPosition = new Vector2(img.rectTransform.anchoredPosition.x, 0);
                 raising = true;
+
+                if (dPlayer.currentWeapon = dPlayer.inv.chainsaw)
+                {
+                    Debug.Log("Raising Chainsaw");
+                    dPlayer.audS.clip = reader.newWad.sounds["DSSAWUP"];
+                    dPlayer.audS.Play();
+                }
+
             }
             else if (funct == "A_WeaponReady")
                 A_WeaponReady();
@@ -187,6 +204,8 @@ public class WeaponController : MonoBehaviour
                 dPlayer.A_FirePistol();
             else if (funct == "A_Punch")
                 dPlayer.A_Punch();
+            else if (funct == "A_Saw")
+                dPlayer.A_Saw();
         }
     }
 
@@ -199,8 +218,19 @@ public class WeaponController : MonoBehaviour
             shootAccuracy = 0f;
             dPlayer.shootDir = dPlayer.cam.transform.forward;
         }
-
         //bobbing?
+    }
+
+    IEnumerator ChainsawIdle()
+    { 
+        if (!Input.GetButton("Fire1") && (dPlayer.currentWeapon = dPlayer.inv.chainsaw))
+        {
+            dPlayer.audS.clip = reader.newWad.sounds["DSSAWIDL"];
+            dPlayer.audS.Play();
+        }
+        yield return new WaitForSeconds(0.3f);
+        if (dPlayer.currentWeapon == dPlayer.inv.chainsaw)
+            StartCoroutine(ChainsawIdle());
     }
 
     void A_ReFire()
