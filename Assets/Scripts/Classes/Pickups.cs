@@ -366,8 +366,6 @@ public class Pistol : Weapon                  // Pistol
                    info = new List<StateInfo>
                    {
                        new StateInfo{spr = "PISF", sprInd = "A", time = 7, bright = true, function = "A_Light1"},
-                       new StateInfo{function = "LightDone"},
-                       new StateInfo{spr = "PISF", sprInd = "A", time = 7, bright = true, function = "A_Light1"},
                        new StateInfo{function = "LightDone"}
                    }
                }
@@ -448,8 +446,6 @@ public class PlasmaRifle : Weapon             // Plasma Gun
                 {
                    info = new List<StateInfo>
                    {
-                       new StateInfo{spr = "PLSF", sprInd = "A", time = 4, bright = true, function = "A_Light1"},
-                       new StateInfo{function = "LightDone"},
                        new StateInfo{spr = "PLSF", sprInd = "A", time = 4, bright = true, function = "A_Light1"},
                        new StateInfo{function = "LightDone"}
                    }

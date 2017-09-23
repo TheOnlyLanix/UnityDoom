@@ -11,10 +11,15 @@ public class WeaponController : MonoBehaviour
     THINGS thing;
     public Actor actor;
     Image img;
+    public Image flash;
     public State state;
+    State flashState;
     float time = 0;
+    float flashTime = 0;
     int infoIndex = 0;
+    int flashIndex = 0;
     int sprIndex = 0;
+    int flashSprIndex = 0;
     public bool stopped = false;
     public bool debug;
     public string overrideState = ""; // TODO: remove? only for debugging
@@ -26,6 +31,8 @@ public class WeaponController : MonoBehaviour
     bool raising = false;
     float yHeight = 0;
     float shootAccuracy = 0f;
+    float topOfs = 0;
+    float yOfs = 0;
 
     public void OnCreate(wadReader read, Actor weap)
     {
@@ -34,22 +41,24 @@ public class WeaponController : MonoBehaviour
         dPlayer = player.GetComponent<DoomPlayer>();
         actor = dPlayer.currentWeapon;
         img = dPlayer.hud.Weapon;
+        flash = dPlayer.hud.Flash;
         state = actor.actorStates["Ready"];
         actor = weap;
         canvas = GameObject.Find("DoomHUD").GetComponent<Canvas>();
-        
+        actor.actorStates.TryGetValue("Flash", out flashState);
+
     }
 
-    void Update ()
+    void Update()
     {
-        if(actor != dPlayer.currentWeapon)
+        if (actor != dPlayer.currentWeapon)
         {
             //first run 'deselect' state, once completed switch weapons, and run 'select' state
             string st = "Deselect";
             OverrideState(ref st);
         }
 
-        if(lowering)
+        if (lowering)
         {
             Vector2 vec = img.rectTransform.anchoredPosition;
             vec.y -= Time.deltaTime * 100f;
@@ -72,13 +81,15 @@ public class WeaponController : MonoBehaviour
         if (raising)
         {
             Vector2 vec = img.rectTransform.anchoredPosition;
-            vec.y += Time.deltaTime *100f;
+            vec.y += Time.deltaTime * 100f;
             img.rectTransform.anchoredPosition = vec;
+
             if (vec.y >= yHeight)
             {
                 raising = false;
                 string st = "Ready";
                 OverrideState(ref st);
+                actor.actorStates.TryGetValue("Flash", out flashState);
 
                 if (dPlayer.currentWeapon == dPlayer.inv.chainsaw)
                     StartCoroutine(ChainsawIdle());
@@ -87,12 +98,14 @@ public class WeaponController : MonoBehaviour
 
         OverrideState(ref overrideState);
 
-        if(!lowering && !raising)
+        if (!lowering && !raising)
         {
             PICTURES spr = UpdateSprite(reader.newWad.sprites);
             SpritePicker();
         }
 
+        FlashSpritePicker();
+        Flash(reader.newWad.sprites);
     }
 
 
@@ -243,8 +256,96 @@ public class WeaponController : MonoBehaviour
         //bobbing?
     }
 
+    public PICTURES Flash(Dictionary<string, PICTURES> sprites)
+    {
+        //display the flash state images 
+
+        if (flashState == null)
+            return null;//dont do anything if there is no flash state
+
+        string sprAndSide = flashState.info[flashIndex].sprInd[flashSprIndex] + "0";
+
+        foreach (PICTURES sprite in sprites.Values)
+        {
+            if (!sprite.texture.name.Contains(flashState.info[flashIndex].spr))
+                continue;
+
+            if (sprite.texture.name.Substring(4).Contains(sprAndSide))
+            {
+                Sprite newSpr = Sprite.Create(sprite.texture, new Rect(0, 0, sprite.Width, sprite.Height), new Vector2(0, 0));
+                sprite.texture.filterMode = FilterMode.Point;
+                flash.rectTransform.sizeDelta = new Vector2(sprite.Width, sprite.Height);
+                float scaleX = (canvas.GetComponent<RectTransform>().sizeDelta.x / 320f);
+                float scaleY = (canvas.GetComponent<RectTransform>().sizeDelta.y / 200f);
+                flash.rectTransform.localScale = new Vector2(scaleX, scaleY);
+                float xOffset = Mathf.Abs(sprite.LeftOffset) * scaleX;
+                float yOffset = yOfs + (Mathf.Abs((200 - topOfs) - (200 - sprite.TopOffset)))* scaleY;
+                flash.rectTransform.anchoredPosition = new Vector2(xOffset, yOffset);
+                flash.sprite = newSpr;//apply it to the HUD image
+
+                return sprite;
+            }
+        }
+
+        return null;
+
+    }
+
+    public void WeaponFlash()
+    {
+        flashTime = 0f;
+        flash.enabled = true;
+    }
+
+    public void FlashSpritePicker()
+    {
+
+        if (flashState == null)
+            return; //dont do anything if there is no flash state
+
+        // advance the time
+        float ticksPerSecond = 35f;
+        flashTime += Time.deltaTime;
+
+        // if we've spent enough time in current flashSprIndex, advance flashSprIndex
+        if (flashTime >= flashState.info[flashIndex].time / ticksPerSecond)
+        {
+            if (flashState.info[flashIndex].time < 0) { return; } // if time is -1, never advance from here
+
+            flashTime -= flashState.info[flashIndex].time / ticksPerSecond;
+            flashSprIndex++;
+
+
+
+            // if we've run out of sprIndices, advance the flashIndex
+            if (flashSprIndex >= flashState.info[flashIndex].sprInd.Length)
+            {
+                flashSprIndex = 0;
+                flashIndex++;
+
+                
+
+                // if we're at the last flashIndex, figure out what function we need to follow
+                if (flashIndex >= flashState.info.Count - 1)
+                {
+                    string func = flashState.info[flashIndex].function;
+                    if (func == "LightDone")
+                    {
+                        flashIndex = 0;
+                        flash.enabled = false;
+                    }
+                    else
+                    {
+                        Debug.Log("Flash Error!");
+                        return;
+                    }
+                }
+            }
+        }
+    }
+
     IEnumerator ChainsawIdle()
-    { 
+    {
         if (!Input.GetButton("Fire1") && (dPlayer.currentWeapon = dPlayer.inv.chainsaw))
         {
             dPlayer.audS.clip = reader.newWad.sounds["DSSAWIDL"];
@@ -301,11 +402,12 @@ public class WeaponController : MonoBehaviour
                 float scaleX = (canvas.GetComponent<RectTransform>().sizeDelta.x / 320f);
                 float scaleY = (canvas.GetComponent<RectTransform>().sizeDelta.y / 200f);
                 img.rectTransform.localScale = new Vector2(scaleX, scaleY);
-                float xOffset = Mathf.Abs(sprite.LeftOffset)*scaleX;
-                float yOffset = (((sprite.Height*scaleY) - sprite.Height) + (200 - Mathf.Abs(sprite.TopOffset)));
+                float xOffset = Mathf.Abs(sprite.LeftOffset) * scaleX;
+                float yOffset = (((sprite.Height * scaleY) - sprite.Height) + (200 - Mathf.Abs(sprite.TopOffset)));
                 img.rectTransform.anchoredPosition = new Vector2(xOffset, yOffset);
                 img.sprite = newSpr;//apply it to the HUD image
-
+                topOfs = sprite.TopOffset;
+                yOfs = yOffset;
                 return sprite;
             }
         }

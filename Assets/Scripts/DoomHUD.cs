@@ -33,7 +33,7 @@ public class DoomHUD : MonoBehaviour {
     public Text Ammo;
     public Image Face;
     public Image Weapon;
-
+    public Image Flash;
 
     //Values
     public int bullMax = 0;

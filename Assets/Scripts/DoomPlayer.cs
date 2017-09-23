@@ -342,8 +342,10 @@ public class DoomPlayer : MonoBehaviour
         audS.PlayOneShot(reader.newWad.sounds["DSPISTOL"]);
         inv.bull -= 1;
         hud.Ammo.text = inv.bull + "";
-        RaycastHit hit;
 
+        weapC.WeaponFlash();
+
+        RaycastHit hit;
         if (Physics.Raycast(cam.position, shootDir, out hit, 10000, ~(1 << 8)))
         {
             if(hit.collider.gameObject.tag == "Monster")
@@ -423,6 +425,9 @@ public class DoomPlayer : MonoBehaviour
         audS.PlayOneShot(reader.newWad.sounds["DSPISTOL"]);
         inv.bull -= 1;
         hud.Ammo.text = inv.bull + "";
+
+        weapC.WeaponFlash();
+
         RaycastHit hit;
         if (Physics.Raycast(cam.position, shootDir, out hit, 10000, ~(1 << 8)))
         {
@@ -448,6 +453,8 @@ public class DoomPlayer : MonoBehaviour
 
         inv.shell -= 1;
         hud.Ammo.text = inv.shell + "";
+
+        weapC.WeaponFlash();
 
         //Fires 7 pellets
         for (int i = 0; i < 7; i++)
@@ -478,7 +485,10 @@ public class DoomPlayer : MonoBehaviour
         shootDir = new Vector3(cam.transform.forward.x + UnityEngine.Random.Range(-0.05f, 0.05f), cam.transform.forward.y, cam.transform.forward.z + UnityEngine.Random.Range(-0.05f, 0.05f));
         inv.shell -= 2;
         hud.Ammo.text = inv.shell + "";
-        //Fires 7 pellets
+
+        weapC.WeaponFlash();
+
+        //Fires 20 pellets
         for (int i = 0; i < 20; i++)
         {
             RaycastHit hit;
@@ -492,11 +502,6 @@ public class DoomPlayer : MonoBehaviour
             }
         }
     }
-
-
-
-
-
 }
 
 
