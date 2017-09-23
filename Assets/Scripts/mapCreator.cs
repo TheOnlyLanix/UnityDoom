@@ -328,7 +328,7 @@ public class mapCreator : MonoBehaviour
             
             RaycastHit hit;
             //getting the Z(Y) height
-            if (Physics.Raycast(new Vector3(thing.xPos, 1000, thing.yPos), Vector3.down, out hit))
+            if (Physics.Raycast(new Vector3(thing.xPos, 5000, thing.yPos), Vector3.down, out hit, 10000, 1))
                 Zpos = hit.point.y + 1;
 
             Vector3 pos = new Vector3(thing.xPos, Zpos, thing.yPos);

@@ -163,9 +163,8 @@ public class Chaingun : Weapon                // Chaingun
                 {
                    info = new List<StateInfo>
                    {
-                       new StateInfo{spr = "CHGF", sprInd = "A", time = 5, bright = true, function = "A_Light1"},
-                       new StateInfo{function = "LightDone"},
-                       new StateInfo{spr = "CHGF", sprInd = "B", time = 5, bright = true, function = "A_Light1"},
+                       new StateInfo{spr = "CHGF", sprInd = "A", time = 4, bright = true, function = "A_Light1"},
+                       new StateInfo{spr = "CHGF", sprInd = "B", time = 4, bright = true, function = "A_Light1"},
                        new StateInfo{function = "LightDone"}
                    }
                }

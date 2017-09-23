@@ -315,15 +315,11 @@ public class WeaponController : MonoBehaviour
             flashTime -= flashState.info[flashIndex].time / ticksPerSecond;
             flashSprIndex++;
 
-
-
             // if we've run out of sprIndices, advance the flashIndex
             if (flashSprIndex >= flashState.info[flashIndex].sprInd.Length)
             {
                 flashSprIndex = 0;
                 flashIndex++;
-
-                
 
                 // if we're at the last flashIndex, figure out what function we need to follow
                 if (flashIndex >= flashState.info.Count - 1)
