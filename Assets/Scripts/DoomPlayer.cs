@@ -343,8 +343,6 @@ public class DoomPlayer : MonoBehaviour
         inv.bull -= 1;
         hud.Ammo.text = inv.bull + "";
 
-        weapC.WeaponFlash();
-
         RaycastHit hit;
         if (Physics.Raycast(cam.position, shootDir, out hit, 10000, ~(1 << 8)))
         {
@@ -426,7 +424,6 @@ public class DoomPlayer : MonoBehaviour
         inv.bull -= 1;
         hud.Ammo.text = inv.bull + "";
 
-        weapC.WeaponFlash();
 
         RaycastHit hit;
         if (Physics.Raycast(cam.position, shootDir, out hit, 10000, ~(1 << 8)))
@@ -453,8 +450,6 @@ public class DoomPlayer : MonoBehaviour
 
         inv.shell -= 1;
         hud.Ammo.text = inv.shell + "";
-
-        weapC.WeaponFlash();
 
         //Fires 7 pellets
         for (int i = 0; i < 7; i++)
@@ -486,8 +481,6 @@ public class DoomPlayer : MonoBehaviour
         inv.shell -= 2;
         hud.Ammo.text = inv.shell + "";
 
-        weapC.WeaponFlash();
-
         //Fires 20 pellets
         for (int i = 0; i < 20; i++)
         {
@@ -501,6 +494,35 @@ public class DoomPlayer : MonoBehaviour
                 }
             }
         }
+    }
+
+    public void A_FireMissile()
+    {
+        if (shooting)
+            return;
+
+        if (inv.rckt < 1)
+            return;
+
+        shooting = true;
+        audS.PlayOneShot(reader.newWad.sounds["DSRLAUNC"]);
+
+        shootDir = new Vector3(cam.transform.forward.x, cam.transform.forward.y, cam.transform.forward.z);
+        inv.rckt -= 1;
+        hud.Ammo.text = inv.rckt + "";
+        
+        //create a rocket projectile, and propel it in a direction.
+        string type = "Rocket";
+        GameObject go = new GameObject(type);
+        BoxCollider coll = go.AddComponent<BoxCollider>();
+        Rocket rckt = go.AddComponent<Rocket>();
+        ProjectileController pc = go.AddComponent<ProjectileController>();
+        pc.OnCreate(shootDir, rckt.Speed, rckt, reader.newWad.sprites, gameObject);
+        coll.size = new Vector3(rckt.Radius * 2, rckt.Height, rckt.Radius * 2);
+        coll.center = new Vector3(0, rckt.Height / 2, 0);
+        go.transform.position = new Vector3(transform.position.x, transform.position.y + 32, transform.position.z);
+        go.transform.rotation = transform.rotation;
+        Physics.IgnoreCollision(coll, GetComponent<Collider>());
     }
 }
 

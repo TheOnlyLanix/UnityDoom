@@ -131,15 +131,16 @@ public class StateController
                         }
                     }
                 }
-
-                if (state.info[infoIndex].bright)
+                if(brightLight != null)
                 {
-                    brightLight.color = state.info[infoIndex].brightColor;
-                    brightLight.enabled = true;
+                    if (state.info[infoIndex].bright)
+                    {
+                        brightLight.color = state.info[infoIndex].brightColor;
+                        brightLight.enabled = true;
+                    }
+                    else
+                        brightLight.enabled = false;
                 }
-                else
-                    brightLight.enabled = false;
-
             }
         }
 
